@@ -1,0 +1,12 @@
+**/*.log*
+*lock*
+.vscode
+node_modules
+worktree*/**/*
+docs
+coverage
+
+dist
+bin
+old-src/**/*
+
