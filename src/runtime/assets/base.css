@@ -1,0 +1,83 @@
+html {
+	padding:none;
+}
+
+.tiptap {
+	.tableWrapper {
+		& table {
+			border-collapse: separate;
+			border-spacing: 0;
+			margin: 0;
+			overflow: hidden;
+			width: 100%;
+			table-layout: fixed;
+			thead {
+					font-weight: bold;
+			}
+			td,
+			th {
+				border-right: 1px solid;
+				border-top: 1px solid;
+				border-color: var(--color-neutral-500);
+				padding: var(--spacing);
+				min-width: 1em;
+				position: relative;
+				&:first-of-type {
+					border-left: 1px solid;
+					border-color: var(--color-neutral-500);
+				}
+				
+			}
+			
+			tr:last-of-type {
+				& td, & th {
+					border-bottom: 1px solid;
+					border-color: var(--color-neutral-500);
+					&:last-of-type {
+						border-radius: 0 0 var(--radius-sm);
+					}
+					&:first-of-type {
+						border-radius: 0 0 0 var(--radius-sm);
+					}
+				}
+			}
+			tr:first-of-type {
+				& td, & th {
+					&:last-of-type {
+						border-radius: 0 var(--radius-sm) 0 0;
+					}
+					&:first-of-type {
+						border-radius: var(--radius-sm) 0 0 0;
+					}
+				}
+			}
+
+			.selectedCell:after {
+				background-color: --alpha(var(--color-blue-500) / 20%);
+				content: '';
+				inset: 0;
+				pointer-events: none;
+				position: absolute;
+				z-index: 10;
+			}
+
+			.column-resize-handle {
+				background-color: --alpha(var(--color-blue-500) / 20%);
+				top: 0;
+				bottom: -2px;
+				right: -2px;
+				width: 4px;
+				position: absolute;
+				pointer-events: none;
+			}
+		}
+
+		overflow-x: auto;
+
+	}
+	&.resize-cursor {
+		cursor: ew-resize;
+		cursor: col-resize;
+	}
+}
+

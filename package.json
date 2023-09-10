@@ -1,0 +1,238 @@
+{
+	"name": "@witchcraft/editor",
+	"description": "Block base prosemirror editor with partial/full editable document embeds, infinite embeds, and document uploads.",
+	"version": "0.0.0",
+	"main": "./dist/runtime/main.lib.js",
+	"type": "module",
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/runtime/main.lib.d.ts",
+			"import": "./dist/runtime/main.lib.js"
+		},
+		"./*": {
+			"types": "./dist/runtime/*.d.ts",
+			"import": "./dist/runtime/*.js"
+		},
+		"./assets/*": {
+			"import": "./dist/runtime/assets/*"
+		},
+		"./components/*": {
+			"types": "./dist/runtime/components/*/*.vue.d.ts",
+			"import": "./dist/runtime/components/*/*.vue"
+		},
+		"./composables/*": {
+			"types": "./dist/runtime/composables/*.d.ts",
+			"import": "./dist/runtime/composables/*.js"
+		},
+		"./pm/features/Blocks/components/*": {
+			"types": "./dist/runtime/pm/features/Blocks/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/Blocks/components/*.vue"
+		},
+		"./pm/features/CodeBlock/components/*": {
+			"types": "./dist/runtime/pm/features/CodeBlock/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/CodeBlock/components/*.vue"
+		},
+		"./pm/features/EmbeddedDocument/components/*": {
+			"types": "./dist/runtime/pm/features/EmbeddedDocument/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/EmbeddedDocument/components/*.vue"
+		},
+		"./pm/features/FileLoader/components/*": {
+			"types": "./dist/runtime/pm/features/FileLoader/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/FileLoader/components/*.vue"
+		},
+		"./pm/features/Iframe/components/*": {
+			"types": "./dist/runtime/pm/features/Iframe/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/Iframe/components/*.vue"
+		},
+		"./pm/features/Menus/components/*": {
+			"types": "./dist/runtime/pm/features/Menus/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/Menus/components/*.vue"
+		},
+		"./pm/*": {
+			"types": "./dist/runtime/pm/*.d.ts",
+			"import": "./dist/runtime/pm/*.js"
+		},
+		"./nuxt": {
+			"import": "./dist/module.mjs"
+		},
+		"./base.css": "./src/runtime/assets/base.css",
+		"./utils.css": "./src/runtime/assets/utils.css",
+		"./@types/*": "./@types/*"
+	},
+	"unbuild": {
+		"failOnWarn": false
+	},
+	"scripts": {
+		"//prepare": "echo Needed so that if we pull the package from git it will get built and installed properly.",
+		"prepare": "husky && pnpm build",
+		"build:only": "nuxt-module-build build",
+		"build": "pnpm gen:highlightJsLangInfo && nuxt-module-build prepare && nuxt-module-build build && nuxi generate playground",
+		"dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+		"dev": "nuxi dev playground",
+		"//dev:vite": "The module needs to be build, not stubbed, for vite's dev to work.",
+		"dev:vite": "concurrently \"pnpm build\" \"vite --mode development --config vite.config.ts\"",
+		"lint:eslint": "eslint \"{src,tests,playground/app}/**/*.{cjs,js,ts,vue}\" \"*.{cjs,js,ts}\" --max-warnings=0 --report-unused-disable-directives",
+		"lint:commits": "commitlint --from $(git rev-list --max-parents=0 HEAD) --to HEAD --verbose",
+		"lint:imports": "echo not working madge --circular --extensions ts ./src",
+		"lint": "pnpm lint:eslint && pnpm lint:types && pnpm lint:imports",
+		"lint:types": "vue-tsc --noEmit",
+		"test": "vitest",
+		"test:watch": "vitest --watch",
+		"doc": "typedoc --options typedoc.config.js",
+		"doc:watch": "onchange -i \"src/**/*.ts\" \"typedoc.config.cjs\" -- pnpm doc",
+		"doc:serve": "http-server docs --port=5001",
+		"doc:dev": "concurrently \"pnpm doc:watch\" \"pnpm doc:serve\"",
+		"doc:check-invalid": "typedoc --options typedoc.config.cjs --listInvalidSymbolLinks",
+		"//actions:debug": "echo For debugging github build action locally with nektos/act. Requires act and docker. Note: Cache will never work locally because of https://github.com/nektos/act/issues/285",
+		"actions:debug": "act -r -v -j release",
+		"gen:highlightJsLangInfo": "node src/runtime/pm/features/CodeBlock/build/generateHighlightJsInfo.js"
+	},
+	"pnpm": {
+		"overrides": {
+			"@tiptap/pm": "^3.4.2",
+			"@tiptap/vue-3": "^3.4.2",
+			"@tiptap/core": "^3.4.2"
+		}
+	},
+	"peerDependencies": {
+		"@tiptap/core": "^3.4.2",
+		"@tiptap/extension-blockquote": "^3.4.2",
+		"@tiptap/extension-bold": "^3.4.2",
+		"@tiptap/extension-code": "^3.4.2",
+		"@tiptap/extension-code-block": "^3.4.2",
+		"@tiptap/extension-code-block-lowlight": "^3.4.2",
+		"@tiptap/extension-dropcursor": "^3.4.2",
+		"@tiptap/extension-gapcursor": "^3.4.2",
+		"@tiptap/extension-hard-break": "^3.4.2",
+		"@tiptap/extension-heading": "^3.4.2",
+		"@tiptap/extension-highlight": "^3.4.2",
+		"@tiptap/extension-history": "^3.4.2",
+		"@tiptap/extension-image": "^3.4.2",
+		"@tiptap/extension-italic": "^3.4.2",
+		"@tiptap/extension-link": "^3.4.2",
+		"@tiptap/extension-paragraph": "^3.4.2",
+		"@tiptap/extension-strike": "^3.4.2",
+		"@tiptap/extension-subscript": "^3.4.2",
+		"@tiptap/extension-superscript": "^3.4.2",
+		"@tiptap/extension-table": "^3.4.2",
+		"@tiptap/extension-table-cell": "^3.4.2",
+		"@tiptap/extension-table-header": "^3.4.2",
+		"@tiptap/extension-table-row": "^3.4.2",
+		"@tiptap/extension-text": "^3.4.2",
+		"@tiptap/extension-underline": "^3.4.2",
+		"@tiptap/pm": "^3.4.2",
+		"@tiptap/vue-3": "^3.4.2",
+		"@witchcraft/ui": "^0.2.1",
+		"tailwindcss": "^4.0.0",
+		"vue": "^3.2.47"
+	},
+	"peerDependenciesMeta": {
+		"@witchcraft/ui": {
+			"optional": false
+		},
+		"tailwindcss": {
+			"optional": false
+		},
+		"vue": {
+			"optional": false
+		}
+	},
+	"dependencies": {
+		"@alanscodelog/eslint-config": "^6.3.1",
+		"@alanscodelog/utils": "^6.0.1",
+		"@commitlint/cli": "^19.8.1",
+		"@fortawesome/fontawesome-svg-core": "^7.0.1",
+		"@fortawesome/free-brands-svg-icons": "^7.0.1",
+		"@fortawesome/free-regular-svg-icons": "^7.0.1",
+		"@fortawesome/free-solid-svg-icons": "^7.0.1",
+		"@nuxt/eslint-config": "^1.9.0",
+		"@witchcraft/nuxt-utils": "^0.3.2",
+		"@witchcraft/ui": "^0.2.1",
+		"colord": "^2.9.3",
+		"defu": "^6.1.4",
+		"highlight.js": "^11.11.1",
+		"lowlight": "^3.3.0",
+		"metamorphosis": "^0.6.1",
+		"mime": "^4.1.0",
+		"nanoid": "^5.1.5",
+		"reka-ui": "^2.5.0",
+		"tailwind-merge": "^3.3.1",
+		"unplugin-vue-components": "^29.0.0",
+		"uuid": "^13.0.0",
+		"y-prosemirror": "^1.3.7",
+		"yjs": "^13.6.27"
+	},
+	"devDependencies": {
+		"@alanscodelog/commitlint-config": "^3.1.2",
+		"@alanscodelog/semantic-release-config": "^5.0.4",
+		"@alanscodelog/tsconfigs": "^6.2.0",
+		"@alanscodelog/vite-config": "^0.0.6",
+		"@iconify/json": "^2.2.384",
+		"@nuxt/kit": "^4.1.2",
+		"@nuxt/module-builder": "^1.0.2",
+		"@nuxt/schema": "^4.1.2",
+		"@nuxt/types": "^2.18.1",
+		"@playwright/test": "=1.54.0",
+		"@rollup/plugin-dynamic-import-vars": "^2.1.5",
+		"@tailwindcss/cli": "^4.1.13",
+		"@tailwindcss/vite": "^4.1.13",
+		"@testing-library/vue": "^8.1.0",
+		"@types/node": "^24.4.0",
+		"@vitejs/plugin-vue": "^6.0.1",
+		"@vitest/browser": "^3.0.0",
+		"@vitest/coverage-v8": "^3.0.0",
+		"@witchcraft/ui": "^0.2.1",
+		"concurrently": "^9.2.1",
+		"cross-env": "^10.0.0",
+		"eslint": "^9.35.0",
+		"fast-glob": "^3.3.3",
+		"http-server": "^14.1.1",
+		"husky": "^9.1.7",
+		"madge": "^8.0.0",
+		"nuxt": "^4.1.2",
+		"onchange": "^7.1.0",
+		"playwright": "=1.54.0",
+		"playwright-core": "=1.54.0",
+		"prosemirror-test-builder": "^1.1.1",
+		"radix-vue": "^1.9.17",
+		"semantic-release": "^24.2.8",
+		"tailwindcss": "^4.1.13",
+		"typedoc": "^0.28.13",
+		"typescript": "~5.9.2",
+		"unplugin-icons": "^22.3.0",
+		"vite": "^7.1.5",
+		"vitest": "^3.0.0",
+		"vue": "^3.5.21",
+		"vue-component-type-helpers": "^3.0.7",
+		"vue-tsc": "^2.2.12"
+	},
+	"author": "Alan <alanscodelog@gmail.com>",
+	"repository": "https://github.com/witchcraftjs/editor",
+	"license": "MIT",
+	"files": [
+		"src",
+		"dist",
+		"@types"
+	],
+	"release": {
+		"extends": [
+			"@alanscodelog/semantic-release-config"
+		]
+	},
+	"commitlint": {
+		"extends": [
+			"@alanscodelog"
+		]
+	},
+	"browserslist": "defaults and supports es6-module,maintained node versions",
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"@comments": {
+		"vue-tsc": "Do not upgrade to 3.0, #awaiting https://github.com/vuejs/language-tools/issues/5644"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

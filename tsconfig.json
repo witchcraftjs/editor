@@ -1,0 +1,27 @@
+// https://www.typescriptlang.org/tsconfig/
+{
+	// ./node_modules/@alanscodelog/tsconfigs/tsconfig.json
+	// https://github.com/AlansCodeLog/tsconfigs
+	"extends": [
+		// "./.nuxt/tsconfig.json",
+		"@alanscodelog/tsconfigs"
+	],
+	"compilerOptions": {
+		"noEmit": true,
+		"skipLibCheck": true,
+		"types": [
+			"node",
+			"unplugin-icons/types/vue3",
+			"vite/client",
+			"vitest/importMeta",
+			"@vitest/browser/providers/playwright"
+		]
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.vue",
+		"src/**/*.js",
+		"*.ts",
+		"tailwind.config.js"
+	],
+}

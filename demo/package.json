@@ -1,0 +1,18 @@
+{
+	"private": true,
+	"name": "@witchcraft/ui-playground",
+	"type": "module",
+	"scripts": {
+		"dev": "nuxi dev",
+		"build": "nuxi build",
+		"generate": "nuxi generate",
+		"update-dep": "cd ../ && pnpm build:only && cd playground && pnpm update @witchcraft/editor"
+	},
+	"dependencies": {
+		"@alanscodelog/vite-config": "^0.0.6",
+		"@witchcraft/editor": "file:../",
+		"@witchcraft/ui": "^0.2.1",
+		"tailwindcss": "^4.1.12",
+		"vite": "^7.1.3"
+	}
+}
