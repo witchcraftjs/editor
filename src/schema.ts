@@ -1,6 +1,6 @@
 import { type Attrs, Schema } from "prosemirror-model"
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 const getAttrs = (dom: string | Node): Attrs => ({
 	class: (dom as Element).getAttribute("class") ?? "",
 	level: parseInt((dom as Element).getAttribute("level") ?? "0", 10),

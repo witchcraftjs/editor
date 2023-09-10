@@ -1,11 +1,16 @@
 import type { Node } from "prosemirror-model"
 
 
-export function recurse(node: Node, deep = true, props: ("size" | "is" | "attrs")[] = [], depth = 0): string {
-	let obj: any = {}
-	let text = []
+export function recurse(
+	node: Node,
+	deep: boolean = true,
+	props: ("size" | "is" | "attrs")[] = [],
+	depth: number = 0
+): string {
+	const obj: any = {}
+	const text = []
 
-	text.push(`=${node?.type?.name ?? "unknown"} ${node.firstChild?.textContent as string}`)
+	text.push(`=${node?.type?.name ?? "unknown"} ${node.firstChild?.textContent ?? ""}`)
 	if (node.textContent !== "" && node.isText) {text.push(`"${node.textContent}"`)}
 	if (props.includes("size")) {text.push(node.nodeSize)}
 	if (props.includes("is")) {
@@ -19,22 +24,22 @@ export function recurse(node: Node, deep = true, props: ("size" | "is" | "attrs"
 	if (props.includes("attrs")) {
 		obj.attrs = node.attrs
 	}
-	let content = (node.content as any).content as Node[]
+	const content = (node.content as any).content as Node[]
 	if (content && content.length > 0) {
 		if (deep) {
-			obj.children = `\n${Object.values(content).map((node_inner: Node) => recurse(node_inner, deep, props, depth + 1)).join("\n")}`
+			obj.children = `\n${Object.values(content).map((nodeInner: Node) => recurse(nodeInner, deep, props, depth + 1)).join("\n")}`
 		} else {
 			obj.children = `[${content.length}]`
 		}
 	}
-	let indent = "\t".repeat(depth)
-	let top = text.length > 0 ? indent + text.join(`\n${indent}`) : ""
-	let bottom_content = Object.entries(obj).map(([key, val]) => key === "children"
+	const indent = "\t".repeat(depth)
+	const top = text.length > 0 ? indent + text.join(`\n${indent}`) : ""
+	const bottomContent = Object.entries(obj).map(([key, val]) => key === "children"
 		? `${indent}${val as string}`
 		: key === "attrs"
-			? `${val ? indent + (Object.keys(val as any).length > 0 ? JSON.stringify(val) : "")/* attrs_to_classes(val as any).trim() */ : ""}`
+			? `${val ? indent + (Object.keys(val as any).length > 0 ? JSON.stringify(val) : "")/* attrsToClasses(val as any).trim() */ : ""}`
 			: `${indent}${key}: ${val as string}`)
-	let bottom = bottom_content.length > 0 ? `\n${bottom_content.join("\n")}` : ""
-	let res = top + bottom
+	const bottom = bottomContent.length > 0 ? `\n${bottomContent.join("\n")}` : ""
+	const res = top + bottom
 	return res
 }

@@ -2,7 +2,6 @@ import { type Node, NodeType, type ResolvedPos } from "prosemirror-model"
 import { type Command, TextSelection, type Transaction } from "prosemirror-state"
 
 import { PARENT } from "../types.js"
-// import { type Command, type Dispatch, PARENT } from "@/components/Editor/types"
 import { findUp } from "../utils/findUp.js"
 
 
@@ -148,7 +147,7 @@ export const enter = ({
 				tr.setSelection(TextSelection.create(tr.doc, insertPos + offset))
 			}
 		}
-		dispatch(tr)
+		dispatch?.(tr)
 
 		return true
 	}) satisfies Command

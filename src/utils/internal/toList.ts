@@ -1,13 +1,10 @@
-import type { DevListItem, DevStringList } from "src/types.js"
-
-
-export function toList(list: DevStringList): DevListItem[] {
-	const res = list.map(item => {
+export function toList(list: any): any {
+	const res = list.map((item: any) => {
 		if (typeof item === "string") {
 			return { name: item }
 		} else {
-			const name = item[0] as string
-			const children = toList(item.slice(1, item.length) as DevStringList)
+			const name = item[0]
+			const children = toList(item.slice(1, item.length))
 			return { name, children }
 		}
 	})

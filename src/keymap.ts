@@ -1,9 +1,9 @@
-import { chainCommands, createParagraphNear, deleteSelection, exitCode, joinBackward, liftEmptyBlock, newlineInCode, splitBlock, toggleMark } from "prosemirror-commands"
+import { toggleMark } from "prosemirror-commands"
 import { redo, undo } from "prosemirror-history"
-import type { Command, EditorState } from "prosemirror-state"
-import type { EditorProps, EditorView } from "prosemirror-view"
+import type { Command } from "prosemirror-state"
+import type { EditorProps } from "prosemirror-view"
 
-import { backspace, enter/* , liftList, moveListDown, moveListUp, sinkList */ } from "./commands/index.js"
+import { enter, liftList, moveListDown, moveListUp, sinkList } from "./commands/index.js"
 import { schema } from "./schema.js"
 import { debugSel } from "./utils/internal/debugSel.js"
 
@@ -44,7 +44,7 @@ export const createKeyupHandler = (exec: any) => (e: KeyboardEvent): void => {
 	}
 }
 
-export const createKeydownHandler = (exec: any): EditorProps["handleKeyDown"] => (_view, e) => {
+export const createKeydownHandler = (exec: any): EditorProps["handleKeyDown"] => (view, e) => {
 	if (e.key === "Enter" && enterHeld === undefined) {
 		if (enterTimeout === undefined) {
 			enterTimeout = setTimeout(() => {
@@ -60,42 +60,42 @@ export const createKeydownHandler = (exec: any): EditorProps["handleKeyDown"] =>
 		alreadyExecutedEnter = false
 		enterHeld = undefined
 	}
-	// if (e.ctrlKey && e.key === "b") {
-	// 	exec(toggleMark(schema.marks.strong))
-	// 	return true
-	// }
-	// if (e.ctrlKey && e.key === "z") {
-	// 	e.preventDefault()
-	// 	exec(undo)
-	// 	return true
-	// }
-	// if (e.ctrlKey && e.key === "y") {
-	// 	e.preventDefault()
-	// 	exec(redo)
-	// 	return true
-	// }
-	// if (e.key === "Tab") {
-	// 	if (e.shiftKey) {
-	// 		exec(liftList(schema.nodes.item))
-	// 	} else {
-	// 		exec(sinkList(schema.nodes.item))
-	// 	}
-	// 	e.preventDefault()
-	// 	return true
-	// }
-	// if (e.ctrlKey && e.key === "/") {
-	// 	debug_sel(view.state.selection)
-	// 	return true
-	// }
-	// if (e.ctrlKey && e.key === "ArrowUp") {
-	// 	exec(moveListUp(schema.nodes.item))
-	// 	e.preventDefault()
-	// 	return true
-	// }
-	// if (e.ctrlKey && e.key === "ArrowDown") {
-	// 	exec(moveListDown(schema.nodes.item))
-	// 	e.preventDefault()
-	// 	return true
-	// }
+	if (e.ctrlKey && e.key === "b") {
+		exec(toggleMark(schema.marks.strong))
+		return true
+	}
+	if (e.ctrlKey && e.key === "z") {
+		e.preventDefault()
+		exec(undo)
+		return true
+	}
+	if (e.ctrlKey && e.key === "y") {
+		e.preventDefault()
+		exec(redo)
+		return true
+	}
+	if (e.key === "Tab") {
+		if (e.shiftKey) {
+			exec(liftList(schema.nodes.item))
+		} else {
+			exec(sinkList(schema.nodes.item))
+		}
+		e.preventDefault()
+		return true
+	}
+	if (e.ctrlKey && e.key === "/") {
+		debugSel(view.state.selection)
+		return true
+	}
+	if (e.ctrlKey && e.key === "ArrowUp") {
+		exec(moveListUp(schema.nodes.item))
+		e.preventDefault()
+		return true
+	}
+	if (e.ctrlKey && e.key === "ArrowDown") {
+		exec(moveListDown(schema.nodes.item))
+		e.preventDefault()
+		return true
+	}
 	return false
 }
