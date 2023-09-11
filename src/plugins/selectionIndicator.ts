@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
  
-import { debounce, keys } from "@alanscodelog/utils"
+import { capitalize, debounce, keys } from "@alanscodelog/utils"
 import type { Node, NodeType, ResolvedPos } from "prosemirror-model"
 import { type EditorState, Plugin, PluginKey, TextSelection, type Transaction } from "prosemirror-state"
 import { Decoration, DecorationSet, type EditorView } from "prosemirror-view"
-import { findEqualLevelNodes } from "src/utils/findEqualLevelNodes.js"
-import { nodesBetween } from "src/utils/nodesBetween.js"
 
 // eslint-disable-next-line camelcase
 import { restoreOffset, restoreSelection, type TaggedEvent_DragSelectionRestorer } from "./dragSelectionRestorer.js"
 import { styleElement } from "./styleElement.js"
 
 import type { FullHandleOptions, HandleOptions, PluginListeners, Rect } from "../types.js"
+import { findEqualLevelNodes } from "../utils/findEqualLevelNodes.js"
+import { nodesBetween } from "../utils/nodesBetween.js"
 
 
 type SelectionIndicatorListeners = PluginListeners<"mousedown" | "mousemove" | "dragend">
@@ -181,7 +181,7 @@ export class Handle {
 		this.boundMousedown = this.mousedown.bind(this)
 		this.boundDragend = this.dragend.bind(this)
 		keys(this.listeners).forEach(name => {
-			listeners[name].push((this as any)[`bound_${name}`])
+			listeners[name].push((this as any)[`bound${capitalize(name)}`])
 		})
 		this.element = document.createElement("div")
 		this.element.classList.add(this.opts.classes.handle)

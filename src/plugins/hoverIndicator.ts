@@ -2,7 +2,7 @@ import { closeHistory } from "prosemirror-history"
 import type { NodeType, ResolvedPos } from "prosemirror-model"
 import { type EditorState, Plugin, PluginKey, type Transaction } from "prosemirror-state"
 import { Decoration, DecorationSet, type EditorView } from "prosemirror-view"
-import { findUp } from "src/utils/findUp.js"
+import { findUp } from "../utils/findUp.js"
 
 import { type PluginListeners, SELF } from "../types.js"
 

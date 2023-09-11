@@ -1,9 +1,9 @@
 import { closeHistory } from "prosemirror-history"
 import type { NodeType } from "prosemirror-model"
 import type { Command } from "prosemirror-state"
-import { SELF } from "src/types.js"
-import { findNext } from "src/utils/findNext.js"
-import { findUp } from "src/utils/findUp.js"
+import { SELF } from "../types.js"
+import { findNext } from "../utils/findNext.js"
+import { findUp } from "../utils/findUp.js"
 
 
 export const liftList = (type: NodeType): Command => (state, dispatch) => {

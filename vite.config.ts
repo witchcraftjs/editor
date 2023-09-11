@@ -5,6 +5,11 @@ import { externalizeDeps } from "vite-plugin-externalize-deps"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
+import postcss from "./postcss.config"
+
+
+console.log(postcss)
+
 
 const typesPlugin = (): PluginOption => ({
 	name: "typesPlugin",
@@ -38,6 +43,9 @@ export default async ({ mode }: { mode: string }) => defineConfig({
 	resolve: {
 		alias: [
 		],
+	},
+	css: {
+		postcss,
 	},
 	server: {
 		// for locally linked repos when using vite server (i.e. not needed for libraries)

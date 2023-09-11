@@ -1,5 +1,5 @@
 import type { Node, ResolvedPos } from "prosemirror-model"
-import { type Filter, PARENT, PREV } from "src/types.js"
+import { type Filter, PARENT, PREV } from "../types.js"
 
 import { indexIn } from "./indexIn.js"
 import { sumChildren } from "./sumChildren.js"

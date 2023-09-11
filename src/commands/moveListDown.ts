@@ -1,9 +1,9 @@
 import { closeHistory } from "prosemirror-history"
 import type { NodeType, ResolvedPos } from "prosemirror-model"
 import { type Command, TextSelection } from "prosemirror-state"
-import { NEXT } from "src/types.js"
-import { findEqualLevelNodes } from "src/utils/findEqualLevelNodes.js"
-import { findNext } from "src/utils/findNext.js"
+import { NEXT } from "../types.js"
+import { findEqualLevelNodes } from "../utils/findEqualLevelNodes.js"
+import { findNext } from "../utils/findNext.js"
 
 /**
  * Move a list item down.

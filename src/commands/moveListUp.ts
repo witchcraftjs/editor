@@ -1,9 +1,9 @@
 import { closeHistory } from "prosemirror-history"
 import type { NodeType, ResolvedPos } from "prosemirror-model"
 import { type Command, TextSelection } from "prosemirror-state"
-import { findEqualLevelNodes } from "src/utils/findEqualLevelNodes.js"
-import { findNext } from "src/utils/findNext.js"
-import { findPrev } from "src/utils/findPrev.js"
+import { findEqualLevelNodes } from "../utils/findEqualLevelNodes.js"
+import { findNext } from "../utils/findNext.js"
+import { findPrev } from "../utils/findPrev.js"
 
 import { NEXT, PREV } from "../types.js"
 

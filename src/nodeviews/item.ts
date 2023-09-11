@@ -30,7 +30,7 @@ export class Item implements NodeView {
 
 	view: EditorView
 
-	getPos: () => number
+	getPos: () => number | undefined
 
 	handleInner: HTMLDivElement
 
@@ -65,12 +65,11 @@ export class Item implements NodeView {
 		type: NodeType,
 		node: ProsemirrorNode,
 		view: EditorView,
-		getPos: (() => number) | undefined,
-		decos: Decoration[]
+		getPos: () => number | undefined,
+		decos: readonly Decoration[]
 	) {
 		this.view = view
 		this.type = type
-		if (getPos === undefined) throw new Error("why")
 		this.getPos = getPos
 		this.level = node.attrs.level
 		const { dom, contentDOM } = DOMSerializer.renderSpec(document, type.spec.toDOM!(node))
@@ -277,6 +276,7 @@ export class Item implements NodeView {
 
 					// force the selection to be within the node and it's children
 					const start = this.getPos()
+					if (start === undefined) return false // todo tocheck
 					const $node = this.view.state.doc.resolve(start + 1)
 
 					const { $start, $end } = findEqualLevelNodes(this.view.state.doc, { $from: $node, $to: $node }, schema.nodes.item)

@@ -65,7 +65,9 @@ export const schema = new Schema({
 			parseDOM: [{ tag: "img", getAttrs: dom => ({ src: (dom as HTMLImageElement).src }) }],
 			toDOM: node => ["img", { src: node.attrs.src }, 0],
 		},
-		hardBreak: {
+		// todo
+		// eslint-disable-next-line camelcase
+		hard_break: {
 			inline: true,
 			group: "inline",
 			selectable: false,
