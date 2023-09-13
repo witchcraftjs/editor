@@ -16,8 +16,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { DevListItem } from "../types.js"
 import { computed, type PropType } from "vue"
+
+import type { DevListItem } from "../types.js"
 
 
 const props = defineProps({
