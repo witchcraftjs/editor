@@ -9,7 +9,7 @@ export function debugNode(
 	title?: string | number,
 	collapse: boolean = true,
 	deep: boolean = true,
-	props: ("size" | "is" | "attrs")[] = []
+	props: ("size" | "is" | "attrs")[] = ["size"]
 ): void {
 	if (doc instanceof ResolvedPos) { doc = doc.node() }
 	const isSlice = (doc as any)?.constructor?.name === "Slice"

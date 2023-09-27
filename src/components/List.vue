@@ -1,18 +1,21 @@
 <template>
 <div
-	:style="`padding-left:calc(${level}*10px);white-space:pre-wrap;`"
-	:level="level"
-	v-html="content"
-/>
-<template v-if="children && children.length > 0">
-	<list
-		:level="level + 1"
-		:name="child.name"
-		:children="child.children"
-		v-for="(child, index) in children"
-		:key="index"
-	/>
-</template>
+	:node-type="nodeType"
+	:style="`padding-left:10px;white-space:pre-wrap;`"
+>
+	<div v-html="content"/>
+	<template v-if="children && children.length > 0">
+		<div node-type="list">
+			<list
+				:name="child.name"
+				:children="child.children"
+				:node-type="child.type"
+				v-for="(child, index) in children"
+				:key="index"
+			/>
+		</div>
+	</template>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -23,7 +26,7 @@ import type { DevListItem } from "../types.js"
 
 const props = defineProps({
 	name: { required: true, type: String, default: "" },
-	level: { required: false, type: Number, default: 0 },
+	nodeType: { required: false, type: String, default: "none" },
 	children: { required: false, type: Array as PropType<DevListItem[]>, default: undefined },
 })
 

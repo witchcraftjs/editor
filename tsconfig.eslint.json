@@ -1,12 +1,14 @@
 {
-	// i give up, idk why eslint thinks vue files are not included in the regular tsconfig
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "dist",
-		"baseUrl": "."
+		"outDir": "dist"
 	},
 	"include": [
-		"**/*",
-		"*"
+		"src/**/*",
+		"tests/**/*",
+		"*.js",
+		"*.cjs",
+		"*.mjs",
+		"*.ts"
 	]
 }

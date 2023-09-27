@@ -140,7 +140,7 @@ const keyupHandler = createKeyupHandler(exec)
 </script>
 <!-- import "prosemirror-gapcursor/style/gapcursor"; -->
 <style lang="scss">
-:root {
+	:root {
   --margin: 10px;
   --font-size: 1rem;
   --grip-dots: 3px;

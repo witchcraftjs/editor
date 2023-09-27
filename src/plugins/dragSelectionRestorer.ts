@@ -155,8 +155,8 @@ export function dragSelectionRestorer({
 	fallback?: "select" | "start" | "end" | ((prevSelection: Selection, offset: number, oldState: EditorState, newState: EditorState) => [number] | [number, number])
 	debug?: SelectionRestorerDebug
 } = {}): Plugin {
-	const DID_NOT_DRAG = new PluginKey("restore-selection-did-not-drag")
-	const key = new PluginKey(`selection-restorer`)
+	const DID_NOT_DRAG = new PluginKey("restoreSelectionDidNotDrag")
+	const key = new PluginKey(`dragSelectionRestorer`)
 	let dropped = false
 	let prevSelection: Selection | undefined
 	let alreadySaved = false

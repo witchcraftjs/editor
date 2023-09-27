@@ -1,15 +1,17 @@
 export type DevListItem = {
 	name: string
+	type: string
 	level?: number
 	children?: DevListItem[]
 }
 
 
-export type DevStringList = (string | [string, DevStringList] | DevStringList)[]
+export type DevStringList = (string | ([string, string] | string)[] | DevStringList[])[]
 
 
+import type { Editor } from "@tiptap/vue-3"
 import type { Node, ResolvedPos } from "prosemirror-model"
-import type { Transaction } from "prosemirror-state"
+import type { Command, Transaction } from "prosemirror-state"
 import type { Decoration } from "prosemirror-view"
 
 // eslint-disable-next-line camelcase
@@ -124,3 +126,21 @@ export type FullHandleOptions = {
 	}
 }
 export type PluginListeners<T extends string> = Record<T, ((...args: any[]) => any)[]>
+// =====================================
+
+import { type rawCommands } from "./core/commands.js"
+
+
+export type CoreCommands<TReturn> = {
+	[key in keyof typeof rawCommands]: (...args: Parameters<ReturnType<typeof rawCommands[key]["create"]>>) => TReturn
+}
+export type PmPoint = { left: number, top: number }
+export type Point = { x: number, y: number }
+
+export type CssVariables = {
+	// gripDotsSize: `${number}px`,
+	// selectionGripSize: `${number}px`,
+	itemLeftMargin: string
+	handleMargin: string
+	handleSize: string
+}

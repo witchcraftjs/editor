@@ -17,11 +17,11 @@ import type { EditorView } from "prosemirror-view"
  * It's divided into 3 parts:
  * ```
  * _____________________________________________________________________________________
- * 1. Before B1 + 2x Indent      + Text Top Half
  *                            |
+ * 1. Before B1 + 2x Indent   +  Text Top Half
  * ___________________________|_________________________________________________________
- *                            | Text Bottom Half
- * 2. Before B1 + Indent      |                      | 3. Text Bottom Half (1 Indent In)
+ *                            |
+ * 2. Before B1 + Indent      |  Text Bottom Half    | 3. Text Bottom Half (1 Indent In)
  * ___________________________|______________________|__________________________________
  * ```
  * - If the mouse is in `2` or `3`, `$drop` points to `B1`. If it's in `2` before where children would go, `insert` is `after`, otherwise in `3` insert is `child`

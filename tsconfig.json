@@ -5,26 +5,20 @@
 	"extends": "@alanscodelog/tsconfigs",
 	"compilerOptions": {
 		"outDir": "dist",
-		"baseUrl": "",
 		"paths": {},
-		// "types": [
-		// 	/* "node" */
-		// ],
+		/* "types" : [ "node" ], */
 		// the libs are explicitly specified because otherwise typescript includes the dom by default
 		"lib": [
-			"dom",
+			 "dom", 
 			"esnext"
 		]
 	},
 	"include": [
-		"./src/**/*.ts",
-		"./src/**/*.js",
-		"./src/**/*.vue",
-		"./tests/**/*.ts",
-		// so eslint doesn't bother us, we don't build with tsc anyways, and to emit types, there's tsconfig.types.json
-		"./*.ts",
-		"./*.cjs",
-		"./*.js"
+		"src/**/*.ts",
+		"src/**/*.vue"
 	],
-	"exclude": []
+	"exclude": [],
+	"tsc-alias": {
+		"resolveFullPaths": true // for esm compatibility
+	}
 }

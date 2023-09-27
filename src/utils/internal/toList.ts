@@ -1,12 +1,22 @@
-export function toList(list: any): any {
-	const res = list.map((item: any) => {
-		if (typeof item === "string") {
-			return { name: item }
+import type { DevListItem, DevStringList } from "src/types.js"
+
+
+export function toList(list: DevStringList): DevListItem[] {
+	const res = list.map(entry => {
+		let type = "none"
+		if (typeof entry === "string") {
+			return { name: entry, type }
 		} else {
-			const name = item[0]
-			const children = toList(item.slice(1, item.length))
-			return { name, children }
+			const item = entry[0]
+			let name = item
+			console.log(name, item)
+			if (Array.isArray(name)) {
+				name = item[1]
+				type = item[0]
+			}
+			const children = toList(entry.slice(1, entry.length) as DevStringList)
+			return { name, children, type }
 		}
 	})
-	return res
+	return res as DevListItem[]
 }
