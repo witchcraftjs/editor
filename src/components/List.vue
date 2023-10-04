@@ -3,7 +3,7 @@
 	:node-type="nodeType"
 	:style="`padding-left:10px;white-space:pre-wrap;`"
 >
-	<div v-html="content"/>
+	<div ref="contentEl"/>
 	<template v-if="children && children.length > 0">
 		<div node-type="list">
 			<list
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, type PropType } from "vue"
+import { computed, onMounted, type PropType, ref } from "vue"
 
 import type { DevListItem } from "../types.js"
 
@@ -30,6 +30,7 @@ const props = defineProps({
 	children: { required: false, type: Array as PropType<DevListItem[]>, default: undefined },
 })
 
+const contentEl = ref<HTMLElement | null>(null)
 const content = computed(() => {
 	const type = props.name!.match(/<.*?>/)
 	const beginning = (type ? type : "<p>")
@@ -42,5 +43,9 @@ const content = computed(() => {
 		return line
 	}).join("<br/>")
 	return [beginning, center, end].join("")
+})
+onMounted(() => {
+	// todo fixed cursed hack
+	contentEl.value!.outerHTML = content.value
 })
 </script>

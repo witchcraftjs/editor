@@ -1,6 +1,6 @@
 import { type Ref, ref } from "vue"
-import type { Point } from "../types.js"
 
+import type { Point } from "../types.js"
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -30,7 +30,7 @@ export const useDragWithThreshold = ({
 		// don't allow it to be reset to false
 		passedDragThreshold.value ||=
 		initialOffset.value !== undefined &&
-		getDistance(initialOffset.value, pointerCoords.value) >= threshold.value
+			getDistance(initialOffset.value, pointerCoords.value) >= threshold.value
 	}
 	function startDragThresholdCheck(e: PointerEvent): void {
 		passedDragThreshold.value = false

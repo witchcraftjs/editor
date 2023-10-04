@@ -38,7 +38,7 @@ p-2
 			type="button"
 			v-for="args in command.buttons"
 			:key="command.key as string + pretty(args)"
-			@click="editor.chain().focus()[command.key](...args).run()"
+			@mousedown="$event.preventDefault();$event.stopPropagation(); editor.chain().focus()[command.key](...args).run()"
 		>
 			{{ command.buttons.length === 1 ? command.key : '' }}
 			{{ args.map(_ => pretty(_)).join(' ' ) }}

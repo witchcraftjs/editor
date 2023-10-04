@@ -89,7 +89,7 @@ export function selectionIndicator(
 				// if (!same_as_prev) {
 				set = set.remove(prevDecos)
 				const decos: Decoration[] = []
-				nodesBetween(tr, $start, $end, (node, pos) => {
+				nodesBetween(tr.doc, $start, $end, (node, pos) => {
 					if (node?.type === type) {
 						const ignored = ignore?.(tr, $start!, $end!, node, pos, className)
 						let finalClassName = className

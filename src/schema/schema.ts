@@ -1,15 +1,18 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { keys } from "@alanscodelog/utils"
+import { castType, keys } from "@alanscodelog/utils"
 import { Extension, getSchema, Mark, mergeAttributes, Node } from "@tiptap/core"
 import { History } from "@tiptap/extension-history"
 import { VueNodeViewRenderer } from "@tiptap/vue-3"
 import { type ParseRule } from "prosemirror-model"
+import { Plugin } from "prosemirror-state"
+import { Decoration, DecorationSet } from "prosemirror-view"
 
 import { type StatefulNodeStates, statefulStates } from "./stateful.js"
 
 import ItemNodeView from "../components/ItemNodeView.vue"
 import { rawCommands } from "../core/commands.js"
 import { debugSelection } from "../plugins/debugSelection.js"
+import { debugNode } from "../utils/internal/debugNode.js"
 
 
 type HTMLAttributesOptions = {
@@ -21,14 +24,11 @@ export const Document = Node.create({
 	topNode: true,
 	content: "list*",
 })
-export const Dummy = Node.create({
-	name: "dummy",
-	content: "(item|block)*",
-	priority: 0,
-})
+
 export const List = Node.create({
 	name: "list",
 	content: "item+",
+
 	addOptions() {
 		return { HTMLAttributes: {} }
 	},
@@ -58,15 +58,15 @@ export const List = Node.create({
 		]
 	},
 	// eslint-disable-next-line @typescript-eslint/typedef
-	renderHTML({ HTMLAttributes, node }) {
+	renderHTML({ HTMLAttributes: attrs }) {
 		return [
 			"div",
 			mergeAttributes(
 				this.options.HTMLAttributes,
 				{
-					"node-type": node.attrs.type,
+					"node-type": attrs.type,
+					role: "list",
 				},
-				HTMLAttributes
 			),
 			0,
 		]
@@ -78,9 +78,11 @@ export const Item = Node.create<HTMLAttributesOptions & {
 	states: StatefulNodeStates
 }>({
 	name: "item",
-	draggable: false,
-	content: "block list?",
-	defining: false,
+	// draggable: false,
+	content: "block list? | list",
+	// defining: true,
+	// definingForContent: true,
+	// definingAsContext: false,
 	addOptions() {
 		return {
 			HTMLAttributes: {},
@@ -142,17 +144,16 @@ export const Item = Node.create<HTMLAttributesOptions & {
 	},
 
 	// eslint-disable-next-line @typescript-eslint/typedef
-	renderHTML({ HTMLAttributes, node }) {
+	renderHTML({ HTMLAttributes: attrs, node }) {
 		return [
 			"div",
 			mergeAttributes(
 				this.options.HTMLAttributes,
 				{
-					"node-type": node.attrs.type,
-					"node-state": node.attrs.state,
-					"node-hide-children": node.attrs.hideChildren,
+					"node-type": attrs.type,
+					"node-state": attrs.state,
+					"node-hide-children": attrs.hideChildren,
 				},
-				HTMLAttributes
 			),
 			0,
 		]
@@ -167,7 +168,10 @@ export const Item = Node.create<HTMLAttributesOptions & {
 				allowedStates: statefulStates,
 				stateAttributeKey: "state",
 			}),
-			deleteNodes: rawCommands.deleteNodes.create({ nodeType: this.type }),
+			deleteNodes: rawCommands.deleteNodes.create(),
+			indentListItem: rawCommands.indentListItem.create("item"),
+			unindentListItem: rawCommands.unindentListItem.create("item"),
+
 		}
 	},
 	addKeyboardShortcuts() {
@@ -191,6 +195,32 @@ export const Item = Node.create<HTMLAttributesOptions & {
 	addNodeView() {
 		return VueNodeViewRenderer(ItemNodeView)
 	},
+	addProseMirrorPlugins() {
+		return [new Plugin({
+
+			props: {
+				// eslint-disable-next-line @typescript-eslint/typedef
+				decorations(state) {
+					const selection = state.selection
+					if (selection.from === selection.to) {
+						if (selection.from === 0) return undefined
+						const resolved = state.doc.resolve(selection.from)
+						const decoration = Decoration.node(
+							resolved.before(-1),
+							resolved.after(-1),
+							// values are passed correctly to the node view
+							// they can be booleans instead of strings at least
+							// not sure objects
+							{ hasSingularSelection: true } as any
+						)
+						return DecorationSet.create(state.doc, [decoration])
+					}
+					return undefined
+				},
+			},
+
+		})]
+	},
 })
 
 export const Text = Node.create({
@@ -201,7 +231,7 @@ export const Text = Node.create({
 export const Paragraph = Node.create<HTMLAttributesOptions>({
 	name: "paragraph",
 	group: "block",
-	draggable: false,
+	// draggable: false,
 	content: "inline*",
 	addOptions() {
 		return { HTMLAttributes: {} }
@@ -213,7 +243,6 @@ export const Paragraph = Node.create<HTMLAttributesOptions>({
 			"p",
 			mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
 				class: "pm-block block",
-
 			}),
 			0,
 		]
@@ -224,7 +253,7 @@ export const HardBreak = Node.create({
 	name: "hardBreak",
 	inline: true,
 	group: "inline",
-	selectable: false,
+	// selectable: false,
 	renderHTML() { return ["br"] },
 	parseHTML() { return [{ tag: "br" }] },
 })
@@ -235,7 +264,7 @@ export const Heading = Node.create<HTMLAttributesOptions & {
 	name: "heading",
 	group: "block",
 	content: "inline*",
-	draggable: false,
+	// draggable: false,
 	addOptions() {
 		return {
 			levels: [1, 2, 3, 4, 5, 6],
@@ -286,23 +315,68 @@ export const Heading = Node.create<HTMLAttributesOptions & {
 			}),
 		}
 	},
-
-	addKeyboardShortcuts() {
-		return Object.fromEntries(this.options.levels.map(level => [
-			`Mod-Alt-${level}`,
-			({ editor }) => {
-				editor.commands.changeLevelAttr({ level })
-				return true
+	
+})
+export const CodeBlock = Node.create<HTMLAttributesOptions >({
+	name: "code",
+	group: "block",
+	marks: "",
+	content: "text*",
+	code: true,
+	defining: true,
+	// draggable: false,
+	addOptions() {
+		return {
+			HTMLAttributes: {},
+		}
+	},
+	addAttributes() {
+		return {
+			language: {
+				default: "",
+				rendered: false,
 			},
-		]))
+		}
+	},
+	parseHTML() {
+		return [{
+			tag: "pre",
+			preserveWhitespace: "full",
+			getAttrs: node => {
+				castType<HTMLElement>(node)
+				let lang = node.getAttribute("language") ?? undefined
+				lang ||= Array.from(node.classList).find(c => c.startsWith("language-"))?.slice("language-".length)
+				if (lang) {return { language: lang }}
+				// allow no language to also match
+				return null
+			},
+		}]
+	},
+	// eslint-disable-next-line @typescript-eslint/typedef
+	renderHTML({ HTMLAttributes: attrs }) {
+		return [
+			`pre`,
+			mergeAttributes(this.options.HTMLAttributes, attrs),
+			[
+				"code",
+				0,
+			],
+		]
+	},
+	addCommands() {
+		return {
+			toggleCodeBlock: rawCommands.toggleCodeBlock.create(),
+		}
 	},
 })
+
+
 export const Image = Node.create<HTMLAttributesOptions & {
 }>({
 	name: "image",
 	group: "inline",
 	inline: true,
-	draggable: false,
+	// draggable: false,
 	addAttributes() {
 		return {
 			src: { default: "" },
@@ -318,8 +392,8 @@ export const Image = Node.create<HTMLAttributesOptions & {
 		]
 	},
 })
-export const Em = Mark.create({
-	name: "em",
+export const Italic = Mark.create({
+	name: "italic",
 	parseHTML() {
 		return [
 			{
@@ -336,8 +410,8 @@ export const Em = Mark.create({
 	renderHTML() { return ["em", 0] },
 })
 
-export const Strong = Mark.create({
-	name: "strong",
+export const Bold = Mark.create({
+	name: "bold",
 	parseHTML() {
 		return	[
 			{ tag: "strong" },
@@ -352,20 +426,30 @@ export const Strong = Mark.create({
 		]
 	},
 	renderHTML() { return ["strong", { style: "font-weight: bold" }, 0] },
-
 })
+
+export const Code = Mark.create({
+	name: "inline-code",
+	parseHTML() {
+		return	[
+			{ tag: "code" },
+		]
+	},
+	renderHTML() { return ["code", 0] },
+})
+
 const extensions = [
 	Document,
-	Dummy,
 	List,
 	Item,
 	Paragraph,
 	Text,
 	HardBreak,
+	CodeBlock,
 	Heading,
 	Image,
-	Em,
-	Strong,
+	Italic,
+	Bold,
 	History,
 	Extension.create({
 		addProseMirrorPlugins() {
@@ -377,6 +461,8 @@ const extensions = [
 			return {
 				backspace: rawCommands.backspace.create(),
 				changeAttrs: rawCommands.changeAttrs.create(),
+				copyOrMoveListItem: rawCommands.copyOrMoveListItem.create(),
+				toggleBold: rawCommands.toggleBold.create(),
 			}
 		},
 

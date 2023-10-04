@@ -1,4 +1,4 @@
-import type { ResolvedPos } from "prosemirror-model"
+import type { Node, ResolvedPos } from "prosemirror-model"
 import type { EditorState, Selection, SelectionRange, Transaction } from "prosemirror-state"
 
 import type { NodesBetweenFilter } from "../types.js"
@@ -15,7 +15,7 @@ import type { NodesBetweenFilter } from "../types.js"
  * If the cursor is here, you will only get a text node. To get whatever it's parent item is, use `{shift: -1}` which is short fro `{fromShift: -1, toShift:-1}`
  *
  */
-export function nodesBetween(tr: EditorState | Transaction,
+export function nodesBetween(doc: Node,
 	{ $from, $to }: Pick<Selection, "$from" | "$to">,
 	opts: ({ shift?: number, fromShift?: number, toShift?: number }),
 	filter: NodesBetweenFilter
@@ -26,7 +26,7 @@ export function nodesBetween(tr: EditorState | Transaction,
 		shiftFrom = opts.shift
 		shiftTo = opts.shift
 	}
-	tr.doc.nodesBetween($from.start(), $to.start(), (node, pos, ...args) => {
+	doc.nodesBetween($from.start(), $to.start(), (node, pos, ...args) => {
 		const isAfterStart = pos >= $from.start(shiftFrom) - 1
 		const isBeforeEnd = pos <= $to.end(shiftTo) + 1
 		if (isAfterStart && isBeforeEnd) {
