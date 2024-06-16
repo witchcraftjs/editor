@@ -1,8 +1,8 @@
 import type { Editor } from "@tiptap/vue-3"
 import { onMounted, type Ref } from "vue"
 
-import { debugNode } from "../utils/internal/debugNode.js"
-import { nodesBetween } from "../utils/nodesBetween.js"
+import { debugNode } from "../pm/utils/internal/debugNode.js"
+import { nodesBetween } from "../pm/utils/nodesBetween.js"
 
 
 export const useWindowDebugging = (editor: Ref<Editor>): void => {

@@ -1,0 +1,4 @@
+- on mobile we would not need the hover indicators, we would only need to add handles on click
+- change what shift+up/down selects, sometimes it selects the parent
+- drop point conform
+- change how menu works

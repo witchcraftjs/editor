@@ -1,6 +1,6 @@
 import type { InjectionKey, Ref } from "vue"
 
-import type { StatefulNodeStates } from "./schema/stateful.js"
+import type { StatefulNodeStates } from "./pm/schema/stateful.js"
 import type { CssVariables } from "./types.js"
 
 

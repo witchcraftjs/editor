@@ -1,5 +1,6 @@
 **/*.log*
-*lock*
+*.lock*
+*-lock*
 .vscode
 node_modules
 worktree*/**/*
@@ -8,5 +9,5 @@ coverage
 
 dist
 bin
-old-src/**/*
+old-src/()
 

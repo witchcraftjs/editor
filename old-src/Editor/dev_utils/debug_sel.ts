@@ -1,0 +1,11 @@
+/* eslint-disable no-console */
+import { EditorState } from "prosemirror-state"
+
+
+export function debug_sel(sel: EditorState | { from: number, to: number }, title: string | number = ""): void {
+	if (sel instanceof EditorState) {
+		console.log(title, sel.selection.from, sel.selection.to)
+	} else {
+		console.log(title, sel.from, sel.to)
+	}
+}

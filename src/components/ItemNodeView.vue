@@ -218,9 +218,9 @@ import { useHandleHeight } from "../composables/useHandleHeight.js"
 import { useHasChildren } from "../composables/useHasChildren.js"
 import { useNodeStates } from "../composables/useNodeStates.js"
 import { editorStateInjectionKey, statesInjectionKey } from "../injectionKeys.js"
+import { DROP_X, DROP_Y, dropPointInfo } from "../pm/utils/dropPointInfo.js"
+import { debugNode } from "../pm/utils/internal/debugNode.js"
 import type { Point } from "../types.js"
-import { DROP_X, DROP_Y, dropPointInfo } from "../utils/dropPointInfo.js"
-import { debugNode } from "../utils/internal/debugNode.js"
 
 
 const props = defineProps(nodeViewProps)
