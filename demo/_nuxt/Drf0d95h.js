@@ -1,0 +1,54 @@
+import{aK as Y,v as F,x as w,y as E,H as R,aN as Z,aP as _,K as O,j as f,R as ee,r as B,a2 as ae,aR as le,aS as se,V as r,W as o,X as c,Q as $,T as b,O as s,U as m,aT as L,aU as te,ai as ue,M as N,B as I,C as ie,z as ne,aV as re,A as q,a5 as oe,$ as z,a6 as de,aW as ce}from"#entry";import ve from"./Cf4ihJdr.js";const ge={style:{"vertical-align":"-0.125em",height:"1em",display:"inline-block",width:"auto"},viewBox:"0 0 512 512"};function pe(l,S){return w(),F("svg",ge,[...S[0]||(S[0]=[E("path",{fill:"currentColor",d:"M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3L86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"},null,-1)])])}const fe=Y({name:"fa6-solid-chevron-up",render:pe}),be=["data-border","data-invalid","data-disabled","data-read-only","data-is-open"],me=["data-is-open"],we=Object.assign({name:"LibSimpleInputDeprecated",inheritAttrs:!1},{__name:"WInputDeprecated",props:R({suggestions:{type:Array,required:!1,default:void 0},suggestionLabel:{type:Function,required:!1},restrictToSuggestions:{type:Boolean,required:!1},updateOnlyOnSubmit:{type:Boolean,required:!1,default:!1},suggestionsFilter:{type:Function,required:!1},allowOpenEmpty:{type:Boolean,required:!1},canOpen:{type:Boolean,required:!1},canClose:{type:Boolean,required:!1},isValid:{type:Boolean,required:!1},suggestionSelector:{type:Function,required:!1},showSelectedValues:{type:Boolean,required:!1},id:{type:String,required:!1},label:{type:String,required:!1},disabled:{type:Boolean,required:!1,default:!1},readonly:{type:Boolean,required:!1,default:!1},border:{type:Boolean,required:!1,default:!0},unstyle:{type:Boolean,required:!1,default:!1},valid:{type:Boolean,required:!1,default:!0}},{values:{type:null,default:void 0},valuesModifiers:{},modelValue:{type:String,required:!0},modelModifiers:{},inputValue:{type:String,default:""},inputValueModifiers:{}}),emits:R(["input","submit","keydown","blur","focus","indicatorClick"],["update:values","update:modelValue","update:inputValue"]),setup(l,{expose:S,emit:K}){const y=Z(),v=K,P=ee(),a=l,u=_(["wrapper","inner-wrapper","suggestions","multivalues"]),t=O(l,"values",{type:null,default:void 0}),i=O(l,"modelValue",{type:String,required:!0}),V=f(()=>a.id??P),n=O(l,"inputValue",{type:String,default:""});n.value=i.value??"";const W=f(()=>!a.disabled&&!a.readonly),p=B(null),x=B(0);ae(i,()=>{n.value=i.value});const U=B(null),d=B(!1),C=e=>{ue(()=>{a.suggestions&&p.value?.suggestions.toggle()}),v("indicatorClick",e)},j=e=>{a.suggestions&&(e.key==="Enter"&&x.value===-1&&t.value?(L(t.value,[n.value]),n.value="",i.value=""):(p.value?.inputKeydownHandler?.(e),t.value&&(i.value=""))),v("keydown",e)},D=e=>{a.suggestions&&p.value?.inputBlurHandler?.(e),v("blur",e)},Q=e=>{a.suggestions&&p.value?.inputFocusHandler?.(e),v("focus",e)};function X(e){t.value!==void 0&&(te(e)||(L(t.value,[e]),n.value="",i.value=""))}const h=le(a,"suggestions"),G=se(V,d,x,h),M=f(()=>({id:V.value,border:!1,disabled:a.disabled,readonly:a.readonly,isValid:a.valid,onKeydown:j,onBlur:D,onFocus:Q,modelValue:n.value,"onUpdate:modelValue":e=>{n.value=e,!a.suggestions&&!a.updateOnlyOnSubmit&&!a.restrictToSuggestions&&(i.value=e)},onSubmit:e=>{a.suggestions||(i.value=t.value?"":e,v("submit",e),t.value&&X(e))},...G.value,canEdit:W.value,...u.value.attrs,class:void 0}));function J(e,k){v("submit",e)}const g=f(()=>({id:V.value,isOpen:d.value,valid:a.valid,disabled:a.disabled,readonly:a.readonly,emitSubmit:J})),T=f(()=>({id:V.value,suggestions:a.suggestions,allowOpenEmpty:a.allowOpenEmpty,restrictToSuggestions:a.restrictToSuggestions,suggestionLabel:a.suggestionLabel,suggestionsFilter:a.suggestionsFilter,modelValue:t.value??i.value.toString(),inputValue:n.value,isValid:a.isValid,"onUpdate:inputValue":e=>n.value=e,onSubmit:(e,k,A)=>{i.value=A?"":e,v("submit",e,k)},"onUpdate:modelValue":e=>{t.value&&=e},"onUpdate:isOpen":e=>{d.value=e},"onUpdate:activeSuggestion":e=>x.value=e,...u.value.suggestionsAttrs,class:void 0})),H=f(()=>({hasSlotRight:!y.right,label:a.label,border:a.border,disabled:a.disabled,readonly:a.readonly,modelValue:t.value,"onUpdate:modelValue":e=>t.value=e,...u.value.multivaluesAttrs,class:void 0}));return S({suggestionsComponent:p,el:U}),(e,k)=>(w(),F("div",b({class:s(m)(`input--outer-wrapper
+			grow
+			flex
+			flex-wrap
+			`,l.disabled&&`
+			text-neutral-400
+			dark:text-neutral-600
+		`,s(u).wrapperAttrs?.class),tabindex:"-1"},{...s(u).wrapperAttrs,class:void 0},{ref_key:"inputWrapperEl",ref:U}),[r(e.$slots,"label",o(c({...g.value,label:l.label})),()=>[l.label||s(y).default?(w(),N(re,{key:0,id:l.id??s(P),disabled:l.disabled,readonly:l.readonly,valid:l.valid,class:"input--label"},{default:I(()=>[r(e.$slots,"default",o(c(g.value)),()=>[ie(ne(l.label),1)])]),_:3},8,["id","disabled","readonly","valid"])):$("",!0),k[0]||(k[0]=E("div",{class:"input--label-spacer flex-1"},null,-1))]),E("div",b({"data-border":l.border,"data-invalid":!l.valid,"data-disabled":l.disabled,"data-read-only":l.readonly,"data-is-open":d.value},{...s(u)["inner-wrapperAttrs"],class:void 0},{class:s(m)(`input--inner-wrapper
+				relative
+				flex
+				flex-1
+				basis-[100%]
+				flex-wrap
+				rounded-sm
+				gap-2
+				px-2
+			`,l.border&&`
+				bg-inherit
+				border
+				border-neutral-500
+				outlined-within:border-accent-500
+			`,d.value&&"rounded-b-none",!l.valid&&`
+				border-danger-700
+				outlined:!outline-danger-700
+				text-danger-800
+				dark:text-danger-400
+				dark:border-danger-600
+				`,l.readonly&&`
+				bg-neutral-50
+				text-neutral-800
+				dark:bg-neutral-950
+				dark:text-neutral-200
+				`,l.disabled&&`
+				bg-neutral-50
+				text-neutral-400
+				dark:border-neutral-600
+				border-neutral-400
+			`,s(u)["inner-wrapperAttrs"]?.class)}),[r(e.$slots,"left",o(c(g.value))),r(e.$slots,"input",o(c({...M.value,...g.value,suggestionsIndicatorClickHandler:C})),()=>[q(oe,b({class:s(m)("input--input p-0",!s(y).left&&"-ml-2 pl-2",!s(y).right&&(!t.value||t.value.length===0)&&!h.value&&"-mr-2 -pr-2",s(u).attrs?.class)},M.value),null,16,["class"])]),r(e.$slots,"indicator",o(c({isOpen:d.value,suggestionsIndicatorClickHandler:C})),()=>[h.value?(w(),F("div",{key:0,"data-is-open":d.value,class:z(s(m)("input--indicator flex flex-col justify-center")),onClick:C},[q(de,{class:z(d.value&&"rotate-180")},{default:I(()=>[q(s(fe))]),_:1},8,["class"])],10,me)):$("",!0)]),r(e.$slots,"values",o(c({...H.value,...g.value})),()=>[t.value&&t.value.length>0?(w(),N(ve,b({key:0,class:s(m)(`
+							input--multivalues
+							grow-[9000]
+							justify-space-between
+							py-1
+						`,!s(y).right&&"-mr-1",s(u).multivaluesAttrs?.class)},H.value),null,16,["class"])):$("",!0)]),r(e.$slots,"right",o(c(g.value))),h.value?r(e.$slots,"suggestions",o(b({key:0},{...T.value,...g.value})),()=>[q(ce,b({class:s(m)(`
+						input--suggestions
+						absolute
+						-inset-x-px
+						z-10
+						rounded-b-sm
+						border-accent-500
+						border
+						top-full
+					`,!l.border&&`
+						rounded-sm
+					`,s(u).suggestionsAttrs?.class),ref_key:"suggestionsComponent",ref:p},T.value),{item:I(A=>[r(e.$slots,"suggestion-item",o(c(A)))]),_:3},16,["class"])]):$("",!0)],16,be)],16))}});export{we as default};

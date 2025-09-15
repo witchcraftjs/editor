@@ -1,0 +1,1 @@
+import{J as t,F as n,r as a,j as c}from"#entry";const r=Symbol("showDevOnly"),l=r,i={__name:"WDevOnly",props:{show:{type:Boolean,required:!1,default:!1}},setup(e){t();const s=e,o=n(l,a(!1));return c(()=>s.show||o.value),(u,p)=>null}};export{i as default};
