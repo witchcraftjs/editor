@@ -34,12 +34,10 @@ export default defineConfig({
 	plugins: [
 		highlightJsLanguageInfoPlugin(),
 		vue() as any,
-		// @ts-expect-error vue-tsc issue
 		Components({
 			// don't auto-import our own components
 			dirs: [],
 			resolvers: [
-				// @ts-expect-error vue-tsc issue
 				IconsResolver(),
 				WitchcraftUiResolver()
 			],
@@ -52,9 +50,6 @@ export default defineConfig({
 	}
 }, {
 	test: {
-		// exclude: [
-		// 	"**/playground/**"
-		// ],
 		// specifying just tests/... is including stuff it shouldn't ???
 		dir: `${path.resolve(import.meta.dirname)}/tests`,
 		projects: [
