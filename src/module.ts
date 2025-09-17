@@ -4,10 +4,12 @@ import {
 	addImportsDir,
 	addTemplate,
 	createResolver,
-	defineNuxtModule,
-	installModule } from "@nuxt/kit"
+	defineNuxtModule
+} from "@nuxt/kit"
 import { defu } from "defu"
 import fs from "node:fs/promises"
+
+import pkg from "../package.json" with { type: "json" }
 
 const { resolve } = createResolver(import.meta.url)
 
@@ -31,13 +33,17 @@ export default defineNuxtModule<ModuleOptions>({
 	defaults: {
 		_playgroundWorkaround: false
 	},
+	moduleDependencies: {
+		"@witchcraft/ui/nuxt": {
+			version: pkg.dependencies["@witchcraft/ui"]
+		}
+	},
 	async setup(options, nuxt) {
 		nuxt.options.runtimeConfig.public.witchcraftEditor = defu(
 			nuxt.options.runtimeConfig.public.witchcraftEditor,
 			{
 			}
 		)
-		await installModule("@witchcraft/ui/nuxt", (nuxt.options as any).witchcraftUi)
 
 		addComponentsDir({ path: resolve("./runtime/components") })
 

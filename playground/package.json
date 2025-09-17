@@ -9,7 +9,7 @@
 		"update-dep": "cd ../ && pnpm build:only && cd playground && pnpm update @witchcraft/editor"
 	},
 	"dependencies": {
-		"@witchcraft/ui": "^0.2.1",
+		"@witchcraft/ui": "^0.2.3",
 		"@witchcraft/editor": "file:../",
 		"lowlight": "^3.1.0",
 		"nuxt": "^4.0.3",
