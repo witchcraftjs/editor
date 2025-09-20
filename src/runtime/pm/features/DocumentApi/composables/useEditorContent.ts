@@ -1,6 +1,6 @@
 import type { Content, Editor, EditorOptions } from "@tiptap/core"
 import type { Transaction } from "@tiptap/pm/state"
-import { nextTick, onBeforeUnmount, type Ref, watch } from "vue"
+import { nextTick, onBeforeUnmount, type Ref, type ShallowRef, watch } from "vue"
 
 import type { DocumentApiInterface, OnUpdateDocumentCallback } from "../types.js"
 import { convertTrForInstance } from "../utils/convertTrForInstance.js"
@@ -15,7 +15,7 @@ import { convertTrForInstance } from "../utils/convertTrForInstance.js"
 	* The second option is usually the best, as multiple editors can load the same content and it's automatically kept in sync. See {@link DocumentApi} for more info.
 	*/
 export function useEditorContent(
-	editor: Ref<Editor | undefined>,
+	editor: ShallowRef<Editor | undefined>,
 	content: Ref<Content | undefined>,
 	id: Ref<string | undefined>,
 	documentApi: DocumentApiInterface | undefined,

@@ -1,5 +1,5 @@
 import type { EditorOptions } from "@tiptap/core"
-import { Editor } from "@tiptap/core"
+import { Editor } from "@tiptap/vue-3"
 import { onBeforeUnmount, shallowRef } from "vue"
 /**
  * Unline tiptap's useEditor, this does not auto-mount the editor. Instead the returned `recreate` function must be called manually. This was built with the use of {@link useContentEditor} in mind.

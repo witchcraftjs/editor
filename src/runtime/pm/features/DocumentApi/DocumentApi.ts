@@ -1,9 +1,10 @@
 import { debounce, type DebounceQueue } from "@alanscodelog/utils/debounce"
 import { unreachable } from "@alanscodelog/utils/unreachable"
-import { type Content, Editor, type EditorOptions } from "@tiptap/core"
+import type { Content, EditorOptions } from "@tiptap/core"
 import type { Schema } from "@tiptap/pm/model"
 import type { EditorState, Plugin, Transaction } from "@tiptap/pm/state"
-import { toRaw } from "vue"
+import { Editor } from "@tiptap/vue-3"
+import { isProxy } from "vue"
 
 import type { DocId, DocumentApiInterface, EmbedId, OnSaveDocumentCallback, OnUpdateDocumentCallback } from "./types.js"
 import { convertTransactionForFullState } from "./utils/convertTransactionForFullState.js"
@@ -165,7 +166,7 @@ export class DocumentApi<
 		const newState = stateBefore.apply(modifiedTr)
 		this._cache.set(embedId.docId, newState)
 		for (const cb of this._callbacks.update) {
-			cb(embedId, modifiedTr, toRaw(stateBefore), toRaw(newState), updaterSymbol)
+			cb(embedId, modifiedTr, stateBefore, newState, updaterSymbol)
 		}
 	}
 
@@ -210,12 +211,18 @@ export class DocumentApi<
 		if (res === undefined) unreachable()
 		this._loading[docId] = undefined
 		this._refCounter.load(docId, res)
+		if (isProxy(res.state)) {
+			throw new Error("State cannot be a reactive proxy. You can use toRaw as a temporary workaround but you should ideally not make it reactive")
+		}
 		this._cache.set(docId, res.state)
 		return res
 	}
 
 	private async _loadInternal({ docId }: DocId): Promise<{ state: EditorState, data?: T }> {
 		const cachedState = this.getFromCache({ docId }, { errorIfNotFound: false })
+		if (isProxy(cachedState)) {
+			throw new Error("State cannot be a reactive proxy. You can use toRaw as a temporary workaround but you should ideally not make it reactive")
+		}
 		if (cachedState) {
 			const res = { state: cachedState }
 			this._refCounter.load(docId, res)
@@ -255,6 +262,9 @@ export class DocumentApi<
 		if (cached) return cached
 		if (options?.errorIfNotFound) {
 			throw new Error(`Could not find cached state for document ${docId}. Expected document to be loaded.`)
+		}
+		if (isProxy(cached)) {
+			throw new Error("State cannot be a reactive proxy. You can use toRaw as a temporary workaround but you should ideally not make it reactive")
 		}
 		return undefined
 	}

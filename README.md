@@ -106,6 +106,7 @@ src/
 # Dev Notes
 
 - Be very careful passing things from vue to tiptap/prosemirror. The reactive wrappings can break a lot of things.
+- If making an editor it MUST use the import from `@tiptap/vue-3` and not `@tiptap/core` as the former will mark itself with vue's markRaw so it doesn't accidentally become reactive.
 - Be careful when applying steps/transactions across different editor instances. They do not share the same schema instance and are therefore considered incompatible for many operations. Likeliest cause of "invalid content" errors.
 - Invalid node content errors while testing are likely the result of using an invalid doc since the builder nodes are not created and filled. For example, items require some content (e.g. a paragraph).
 
