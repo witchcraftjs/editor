@@ -9,10 +9,6 @@
 		"update-dep": "cd ../ && pnpm build:only && cd playground && pnpm update @witchcraft/editor"
 	},
 	"dependencies": {
-		"@witchcraft/ui": "^0.2.3",
-		"@witchcraft/editor": "file:../",
-		"lowlight": "^3.1.0",
-		"nuxt": "^4.0.3",
 		"@tiptap/core": "^3.4.2",
 		"@tiptap/extension-blockquote": "^3.4.2",
 		"@tiptap/extension-bold": "^3.4.2",
@@ -39,6 +35,10 @@
 		"@tiptap/extension-text": "^3.4.2",
 		"@tiptap/extension-underline": "^3.4.2",
 		"@tiptap/pm": "^3.4.2",
-		"@tiptap/vue-3": "^3.4.2"
+		"@tiptap/vue-3": "^3.4.2",
+		"@witchcraft/editor": "file:..",
+		"@witchcraft/ui": "^0.2.3",
+		"lowlight": "^3.1.0",
+		"nuxt": "^4.0.3"
 	}
 }
