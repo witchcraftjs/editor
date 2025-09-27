@@ -37,7 +37,7 @@
 		"@tiptap/pm": "^3.4.2",
 		"@tiptap/vue-3": "^3.4.2",
 		"@witchcraft/editor": "file:..",
-		"@witchcraft/ui": "^0.2.3",
+		"@witchcraft/ui": "^0.3.0",
 		"lowlight": "^3.1.0",
 		"nuxt": "^4.0.3"
 	}
