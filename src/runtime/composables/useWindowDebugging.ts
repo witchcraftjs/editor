@@ -9,7 +9,7 @@ export const useWindowDebugging = (editor: ShallowRef<Editor | undefined>): void
 	watch(editor, () => {
 		if (!editor.value) return
 		if (typeof window === "undefined" || typeof process === "undefined") return
-		if (process.env.NODE_ENV === "development" && editor.value !== undefined) {
+		if (import.meta.dev && editor.value !== undefined) {
 			const w = window as any
 			w.editor = editor.value
 			w.tr = () => editor.value!.state.tr

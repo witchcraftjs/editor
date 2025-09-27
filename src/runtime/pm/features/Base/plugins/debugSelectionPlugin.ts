@@ -9,7 +9,7 @@ const SUB_SELECTION_REGEX = /(\[[0-9 -]*\])/
 
 export const debugSelectionPluginKey = new PluginKey("debugSelection")
 /**
- * Sets the window title to the current selection for debugging in development mode (by checking process.env.NODE_ENV).
+ * Sets the window title to the current selection for debugging in development mode (by checking import.meta.dev).
  *
  * For embedded editors, adds the selection as `[from - to]`.
  */
@@ -20,7 +20,7 @@ export const debugSelectionPlugin = (editor: Editor, log: boolean = false): Plug
 		state: {
 			init(): void { /**/ },
 			apply(tr: Transaction): void {
-				if (process.env.NODE_ENV === "production") { return }
+				if (!import.meta.dev) { return }
 				const sel = `${tr.selection.from} - ${tr.selection.to}`
 				if (isEmbeddedBlock(editor.view)) {
 					if (log) {
