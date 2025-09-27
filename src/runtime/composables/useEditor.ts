@@ -18,6 +18,11 @@ export const useEditor = (options: Partial<EditorOptions> = {}) => {
 	onBeforeUnmount(() => {
 		// Cloning root node (and its children) to avoid content being lost by destroy
 		const nodes = editor.value?.options.element
+		if (nodes && !(nodes instanceof HTMLElement)) {
+			// eslint-disable-next-line no-console
+			console.warn(`Expected editor element to be an HTMLElement, got ${nodes.constructor.name}: ${nodes}`)
+			return
+		}
 		const newEl = nodes?.cloneNode(true) as HTMLElement
 
 		nodes?.parentNode?.replaceChild(newEl, nodes)
