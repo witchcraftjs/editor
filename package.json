@@ -64,8 +64,7 @@
 		"failOnWarn": false
 	},
 	"scripts": {
-		"//prepare": "echo Needed so that if we pull the package from git it will get built and installed properly.",
-		"prepare": "husky && pnpm build",
+		"prepare": "husky && pnpm nuxt-module-build prepare && pnpm build:only && cd playground && pnpm i --ignore-scripts --ignore-workspace",
 		"build:only": "nuxt-module-build build",
 		"build": "pnpm gen:highlightJsLangInfo && nuxt-module-build prepare && nuxt-module-build build && nuxi generate playground",
 		"dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",

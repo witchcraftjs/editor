@@ -26,9 +26,6 @@ jobs:
       with:
         USE_LOCKFILE: ${{ env.USE_LOCKFILE }}
 
-    - run: pnpm i --frozen-lockfile
-      working-directory: playground 
-
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
