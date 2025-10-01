@@ -93,14 +93,12 @@
 		</div>
 	</div>
 	<div class="flex flex-row no-wrap gap-2 justify-end">
-		<!-- @vue-expect-error -->
 		<WButton
 			color="danger"
 			@click="emit('cancel')"
 		>
 			Cancel
 		</WButton>
-		<!-- @vue-expect-error -->
 		<WButton
 			color="ok"
 			@click="submit"

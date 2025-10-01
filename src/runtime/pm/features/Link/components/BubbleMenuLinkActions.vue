@@ -1,6 +1,5 @@
 <template>
 <div class="flex flex-nowrap flex-row gap-1 border border-transparent">
-	<!-- @vue-expect-error -->
 	<WButton
 		:border="false"
 		:disabled="!isChanged"
@@ -16,7 +15,6 @@
 			<i-fa-solid-plus/>
 		</WIcon>
 	</WButton>
-	<!-- @vue-expect-error -->
 	<WButton
 		v-if="linkHref"
 		:border="false"
@@ -27,7 +25,6 @@
 	>
 		<WIcon><i-fa-solid-copy class="w-[1.25em]"/></WIcon>
 	</WButton>
-	<!-- @vue-expect-error -->
 	<WButton
 		v-if="linkMark"
 		:border="false"

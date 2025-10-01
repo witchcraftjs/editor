@@ -7,7 +7,6 @@
 	ref="el"
 >
 	<div class="flex flex-nowrap flex-row gap-1 items-center">
-		<!-- @vue-expect-error -->
 		<WLabel
 			id="menu-link-input"
 			title="Internal Link"
@@ -42,8 +41,7 @@
 		ref="suggestionsComponent"
 		v-model="linkText"
 		v-model:input-value="inputValue"
-		v-model:is-open="isOpen"
-		v-model:active-suggestion="activeSuggestion"
+		v-model:open="isOpen"
 		@submit="submitHandler"
 	/>
 </div>
@@ -82,7 +80,6 @@ const linkText = defineModel<string>("linkText", { required: true })
 const inputValue = defineModel<string>("tempLinkTextValue", { default: "" })
 const canOpen = ref(false)
 const isOpen = ref(false)
-const activeSuggestion = ref(-1)
 const el = ref<HTMLElement | null>(null)
 const suggestionsComponent = ref<ComponentExposed<typeof WSuggestions>>()
 

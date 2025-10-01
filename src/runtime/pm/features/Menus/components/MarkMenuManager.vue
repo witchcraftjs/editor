@@ -1,5 +1,4 @@
 <template>
-<!-- @vue-expect-error -->
 <WPopup
 	:model-value="!!activeMarkMenu"
 	:preferred-horizontal="['center-most']"

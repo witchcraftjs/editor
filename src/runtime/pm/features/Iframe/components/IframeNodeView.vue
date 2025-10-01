@@ -28,21 +28,18 @@
 			transition-opacity
 		"
 	>
-		<!-- @vue-expect-error -->
 		<WButton
 			:border="false"
 			@click="deleteNode();editor.commands.focus()"
 		>
 			<WIcon><i-fa-solid-trash/></WIcon>
 		</WButton>
-		<!-- @vue-expect-error -->
 		<WButton
 			:border="false"
 			@click="copy(node.attrs.src)"
 		>
 			<WIcon><i-fa-solid-copy/></WIcon>
 		</WButton>
-		<!-- @vue-expect-error -->
 		<WButton
 			:border="false"
 			@click="openLink"

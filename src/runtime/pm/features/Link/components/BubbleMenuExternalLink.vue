@@ -56,7 +56,6 @@
 			@remove="emit('remove')"
 		/>
 		<div class="flex flex-nowrap flex-row gap-1 justify-start border border-transparent">
-			<!-- @vue-expect-error -->
 			<WButton
 				v-if="linkHref"
 				:border="false"

@@ -41,7 +41,6 @@
 			>
 				Blank Embed
 			</div>
-			<!-- @vue-expect-error -->
 			<WButton
 				v-if="editor?.isEditable"
 				title="Change embed link."
@@ -50,7 +49,6 @@
 			>
 				<WIcon><i-fa-solid-link class="w-[0.7rem]"/></WIcon>
 			</WButton>
-			<!-- @vue-expect-error -->
 			<WPopup
 				:use-backdrop="true"
 				:preferred-horizontal="['center-screen']"
