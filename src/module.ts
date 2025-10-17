@@ -9,7 +9,6 @@ import {
 import { defu } from "defu"
 import fs from "node:fs/promises"
 
-import pkg from "../package.json" with { type: "json" }
 
 const { resolve } = createResolver(import.meta.url)
 
@@ -35,7 +34,7 @@ export default defineNuxtModule<ModuleOptions>({
 	},
 	moduleDependencies: {
 		"@witchcraft/ui/nuxt": {
-			version: pkg.dependencies["@witchcraft/ui"]
+			version: "^0.3.2"
 		}
 	},
 	async setup(options, nuxt) {
