@@ -1,4 +1,7 @@
 const pxRegex = /([0-9.]+)px/g
+/**
+ * Returns any **pixel** css property as an integer.
+ */
 export function getElPropertyAsInt(el: HTMLElement, prop: string): number {
 	const value = window.getComputedStyle(el).getPropertyValue(prop)
 	if (!pxRegex.test(value)) {

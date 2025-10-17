@@ -148,7 +148,7 @@
 		:style="`
 			left:${dropIndicator.x}px;
 			top:calc(${dropIndicator.y}px ${dropIndicator.type !== 'before' ? `- (var(--pmDragDropIndicatorHeight, 5px))` : ''});
-			width:${dropIndicator.width - dropIndicator.x}px;
+			width:calc(${dropIndicator.width}px);
 		`"
 	/>
 </Teleport>

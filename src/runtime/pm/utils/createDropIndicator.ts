@@ -15,12 +15,12 @@ export interface DropIndicator extends Point {
 export function createDropIndicator(
 	/** The drop point information object. */
 	dropInfo: DropInfo,
-	/** The bounding rectangle of the element being dragged over. */
+	/** The bounding rectangle of the element being dragged over. It will be used for positioning the indicator and constraining it's width `(target.x < indicator < target.right)`. */
 	targetRect: DOMRect,
 	/**
-	 * The indentation of the dragged item.
+	 * Determines the additional indentation to add when indicating a child drop operation. You normally want this to be the indentation of the dragged item.
 	 *
-	 * Can be gotten with {@link getElPropertyAsInt}
+	 * Can be gotten with {@link getElPropertyAsInt}, see it for details.
 	 */
 	indentX: number,
 	/** Maximum width of the drop indicator. See {@link getElMaxVisualSize}. */
@@ -56,6 +56,12 @@ export function createDropIndicator(
 				width: maxWidth
 			}
 		}
+	}
+
+	const rightDiff = (dropIndicator.x + dropIndicator.width) - (targetRect.right)
+
+	if (rightDiff > 0) {
+		dropIndicator.width -= rightDiff
 	}
 	return dropIndicator
 }
