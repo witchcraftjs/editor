@@ -64,7 +64,7 @@
 		"failOnWarn": false
 	},
 	"scripts": {
-		"prepare": "husky && pnpm dev:prepare",
+		"prepare": "husky && pnpm build",
 		"build:only": "nuxt-module-build build",
 		"build": "pnpm gen:highlightJsLangInfo && nuxt-module-build prepare && nuxt-module-build build && nuxi generate playground",
 		"dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
