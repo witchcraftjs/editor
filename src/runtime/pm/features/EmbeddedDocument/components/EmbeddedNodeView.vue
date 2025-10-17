@@ -26,7 +26,7 @@
 		contenteditable="false"
 	>
 		<div
-			class="bg-neutral-100 dark:bg-neutral-900 flex p-1 gap-2 no-wrap justify-between align-center"
+			class="bg-neutral-100 dark:bg-neutral-900 flex p-1 gap-2 no-wrap justify-between items-center"
 			contenteditable="false"
 		>
 			<div

@@ -38,7 +38,6 @@ export default defineConfig({
 			// don't auto-import our own components
 			dirs: [],
 			resolvers: [
-				// @ts-expect-error - vue-tsc error
 				IconsResolver(),
 				WitchcraftUiResolver()
 			],
