@@ -97,22 +97,27 @@
 </div>
 </template>
 
-<!--
-	Multipurpose drag handle + collapse indicator.
-
-	This is incredibly useful for making a compact draggable tree view.
-
-	The collapse indicator has a default height, but it should be set manually. For example `[&>.collapse-indicator]:h-[...]`
-
-	The component only emits a few events, it does not handle the dragging itself or what actually happens on any clicks/input.
--->
 <script lang="ts">
+/**
+ * 	Multipurpose drag handle + collapse indicator.
+ *
+ * 	This is incredibly useful for making a compact draggable tree view.
+ *
+ * 	The collapse indicator has a default height, but it should be set manually. For example `[&>.collapse-indicator]:h-[...]`
+ *
+ * 	The component only emits a few events, it does not handle the dragging itself or what actually happens on any clicks/input.
+ */
+export default { }
 </script>
 
 <script setup lang="ts">
 import { twMerge } from "@witchcraft/ui/utils/twMerge"
 import { onMounted, onUnmounted, ref, useAttrs } from "vue"
 
+
+defineOptions({
+	name: "DragTreeHandle"
+})
 interface Props {
 	hasChildren: boolean
 	passedDragThreshold: boolean
