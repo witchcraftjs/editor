@@ -14,7 +14,7 @@ import type { PluginOption } from "vite"
 const highlightJsLanguageInfoPlugin = (): PluginOption => ({
 	name: "highlightJsLanguageInfoPlugin",
 	// eslint-disable-next-line no-console
-	buildStart: async () => run(`npm run gen:highlightJsLangInfo`).promise.catch(e => { console.log(e.stdout); process.exit(1) }).then(() => undefined)
+	buildStart: async () => run(`pnpm gen:highlightJsLangInfo`).promise.catch(e => { console.log(e); process.exit(1) }).then(() => undefined)
 })
 
 export default defineConfig({
