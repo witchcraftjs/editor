@@ -14,7 +14,7 @@
     };
     # IMPORTANT: this must be pinned to the same version in package.json
     # and no reading it directly is not supported (https://github.com/NixOS/nix/issues/4945)
-    playwright.url = "github:pietdevries94/playwright-web-flake/1.54.0";
+    playwright.url = "github:pietdevries94/playwright-web-flake/1.56.0";
   };
 
   nixConfig = {
