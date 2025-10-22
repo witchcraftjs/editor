@@ -17,7 +17,7 @@ declare module "@tiptap/core" {
 			 */
 			moveItem: (
 				dir: "down" | "up",
-				pos?: number,
+				pos?: number
 			) => ReturnType
 		}
 	}

@@ -9,7 +9,7 @@ declare module "@tiptap/core" {
 		changeAttrs: {
 			changeAttrs: (
 				nodeType: string | undefined,
-				attrs: Record<string, unknown>,
+				attrs: Record<string, unknown>
 			) => ReturnType
 		}
 	}

@@ -10,7 +10,7 @@ declare module "@tiptap/core" {
 		embeddedCommandRedirect: {
 			embeddedCommandRedirect: (
 				commandName: string,
-				args: any,
+				args: any
 			) => ReturnType
 		}
 	}

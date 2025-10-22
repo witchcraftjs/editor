@@ -46,7 +46,7 @@ export type IFileLoaderHandler<
 		editor: Editor,
 		pos: number | undefined,
 		error: Error,
-		loadingKey: TKey,
+		loadingKey: TKey
 	) => void
 
 	/**
@@ -77,7 +77,7 @@ export type IFileLoaderHandler<
 		editor: Editor,
 		pos: number,
 		res: T,
-		loadingKey: TKey,
+		loadingKey: TKey
 	) => void
 	/**
 	 * Return the file (or whatever type you'd like) to allow the extension to handle it.
