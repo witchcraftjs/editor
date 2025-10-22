@@ -32,7 +32,6 @@ declare module "@tiptap/core" {
 export const Item = Node.create<ItemNodeOptions>({
 	name: "item" satisfies NodeItemName,
 	content: "block list? | list",
-
 	addOptions() {
 		return {
 			HTMLAttributes: {},
@@ -174,3 +173,4 @@ export const Item = Node.create<ItemNodeOptions>({
 	}
 })
 export type NodeItemName = "item"
+

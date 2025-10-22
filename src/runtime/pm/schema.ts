@@ -126,3 +126,4 @@ const _schema = getSchema(extensions) as Schema<
 	| MarkHighlightName
 >
 export const schema = _schema
+
