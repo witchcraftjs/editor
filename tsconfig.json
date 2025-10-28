@@ -1,14 +1,12 @@
 // https://www.typescriptlang.org/tsconfig/
 {
-	// ./node_modules/@alanscodelog/tsconfigs/tsconfig.json
-	// https://github.com/AlansCodeLog/tsconfigs
 	"extends": [
-		// "./.nuxt/tsconfig.json",
-		"@alanscodelog/tsconfigs"
+		"./.nuxt/tsconfig.json",
 	],
 	"compilerOptions": {
 		"noEmit": true,
 		"skipLibCheck": true,
+		"noUncheckedIndexedAccess": false,
 		"types": [
 			"node",
 			"unplugin-icons/types/vue3",

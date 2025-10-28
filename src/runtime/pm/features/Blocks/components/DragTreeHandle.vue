@@ -107,7 +107,11 @@
  *
  * 	The component only emits a few events, it does not handle the dragging itself or what actually happens on any clicks/input.
  */
-export default { }
+interface Props {
+	hasChildren: boolean
+	passedDragThreshold: boolean
+	hideChildren: boolean
+}
 </script>
 
 <script setup lang="ts">
@@ -118,11 +122,6 @@ import { onMounted, onUnmounted, ref, useAttrs } from "vue"
 defineOptions({
 	name: "DragTreeHandle"
 })
-interface Props {
-	hasChildren: boolean
-	passedDragThreshold: boolean
-	hideChildren: boolean
-}
 
 const $attrs = useAttrs()
 defineProps<Props>()
