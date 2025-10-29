@@ -26,7 +26,6 @@
 	v-bind="$attrs"
 >
 	<!-- The class `is-embedded-block` is not needed internally, but is added for consistency in case it might be useful. -->
-	<!-- @vue-expect-error -->
 	<editor-content
 		:editor="editor! as any"
 		spellcheck="false"

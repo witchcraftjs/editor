@@ -1,6 +1,5 @@
 <template>
 <WRoot class="items-center py-4">
-	<!-- @vue-expect-error use unhead in a real app -->
 	<style>
 		{{ codeBlocksThemeCss.join("\n") }}
 	</style>

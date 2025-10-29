@@ -44,7 +44,6 @@
 		/>
 	</div>
 
-	<!-- @vue-expect-error -->
 	<node-view-content
 		:class="twMerge(`
 			hljs

@@ -1,5 +1,4 @@
 <template>
-<!-- @vue-expect-error -->
 <WPopup
 	:model-value="menu.opened"
 	:preferred-horizontal="['left-most']"

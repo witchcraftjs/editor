@@ -1,5 +1,4 @@
 <template>
-<!-- @vue-expect-error contenteditable exists -->
 <node-view-wrapper
 	:class="twMerge(`
 		group/file-loader

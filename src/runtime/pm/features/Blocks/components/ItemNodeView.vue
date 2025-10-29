@@ -12,7 +12,6 @@
 	--pmNodeTypeMargin
 	--pmDragDropIndicatorHeight
 -->
-<!-- @vue-expect-error role is a valid attribute -->
 <node-view-wrapper
 	:class="twMerge(`
 		group/item

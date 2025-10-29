@@ -8,7 +8,6 @@
 		:item="item"
 		v-extract-root-el="(_: any) => el = _"
 	/>
-	<!-- @vue-expect-error -->
 	<WPopup
 		:model-value="showSubMenu"
 		:preferred-horizontal="['right-most']"

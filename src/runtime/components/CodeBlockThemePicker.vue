@@ -42,7 +42,6 @@ const codeBlocksTheme = defineModel<string>("codeBlocksTheme", { required: true 
 				gap-2
 			"
 		>
-			<!-- @vue-expect-error -->
 			<ComboboxInput
 				class="
 					bg-inherit

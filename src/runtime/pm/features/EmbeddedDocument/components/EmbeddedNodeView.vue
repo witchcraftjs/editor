@@ -1,5 +1,4 @@
 <template>
-<!-- @vue-expect-error -->
 <node-view-wrapper
 	:class="`
 		group/embedded-doc

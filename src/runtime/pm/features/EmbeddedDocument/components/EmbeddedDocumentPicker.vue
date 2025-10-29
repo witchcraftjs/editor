@@ -84,7 +84,6 @@
 			@pointerdown.prevent
 			@pointerup.prevent="pickBlockId"
 		>
-			<!-- @vue-expect-error -->
 			<Editor
 				:is-embedded="true"
 				:doc-id="newEmbedId.docId"

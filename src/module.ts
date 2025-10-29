@@ -89,6 +89,7 @@ export default defineNuxtModule<ModuleOptions>({
 		nuxt.options.build.transpile.push("@tiptap/pm")
 
 		nuxt.hook("vite:extendConfig", config => {
+			// @ts-expect-error - optimizeDeps is now readonly but also possibly undefined :/
 			config.optimizeDeps ??= {}
 			config.optimizeDeps.exclude ??= []
 			// causes issues with the import.meta.globs here
