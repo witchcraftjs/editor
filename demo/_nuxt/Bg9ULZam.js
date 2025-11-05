@@ -1,0 +1,4 @@
+import{I as s,v as r,x as i,R as o,P as n,N as a,Q as f}from"./C3NUVL-0.js";import{g as u}from"./CUphBgkF.js";const c=["id","data-disabled","data-invalid","for"],p=Object.assign({name:"LibLabel"},{__name:"WLabel",props:{id:{type:String,required:!1,default:""},label:{type:String,required:!1},disabled:{type:Boolean,required:!1,default:!1},readonly:{type:Boolean,required:!1,default:!1},border:{type:Boolean,required:!1,default:!0},unstyle:{type:Boolean,required:!1,default:!1},unstyled:{type:Boolean,required:!1},valid:{type:Boolean,required:!1,default:!0}},setup(e){const t=u(),l=s();return(d,b)=>(i(),r("label",n({id:`label-${e.id??a(t)}`,class:!a(l).unstyle&&a(f)(`
+			pr-0
+			text-sm
+		`,!e.valid&&"text-danger-700",a(l)?.class),"data-disabled":e.disabled,"data-invalid":!e.valid,for:e.id},{...a(l),class:void 0}),[o(d.$slots,"default")],16,c))}});export{p as default};
