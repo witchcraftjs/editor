@@ -57,7 +57,6 @@
 		:style="`aspect-ratio: ${node.attrs.aspectRatio}`"
 		v-bind="node.attrs"
 	/>
-	{{ Object.keys(node.attrs) }}
 </node-view-wrapper>
 </template>
 
