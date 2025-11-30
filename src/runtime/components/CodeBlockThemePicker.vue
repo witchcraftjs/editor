@@ -81,7 +81,6 @@ const codeBlocksTheme = defineModel<string>("codeBlocksTheme", { required: true 
 					rounded-sm
 					shadow-[0_0_10px_1px]
 					shadow-black/30
-					mt-2
 					max-h-[50vh]
 				"
 				ref="contentComponent"

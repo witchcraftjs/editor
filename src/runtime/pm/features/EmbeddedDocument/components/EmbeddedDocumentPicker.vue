@@ -28,7 +28,7 @@
 		}
 	</component>
 	<!-- @vue-expect-error -->
-	<WSimpleInput
+	<WInputDeprecated
 		placeholder="Change document."
 		suggestions-class="max-h-[200px] overflow-y-auto"
 		:suggestions="searchSuggestions"
@@ -49,7 +49,7 @@
 		<template #suggestion-item="{ item }">
 			{{ item.title }}
 		</template>
-	</WSimpleInput>
+	</WInputDeprecated>
 	<WCheckbox v-model="embedFullDocument">
 		Embed Full Document
 	</WCheckbox>
@@ -112,8 +112,7 @@
 import WIcon from "@witchcraft/ui/components/Icon"
 import WButton from "@witchcraft/ui/components/LibButton"
 import WCheckbox from "@witchcraft/ui/components/LibCheckbox"
-import type WInputDeprecated from "@witchcraft/ui/components/LibInputDeprecated"
-import WSimpleInput from "@witchcraft/ui/components/LibSimpleInput"
+import WInputDeprecated from "@witchcraft/ui/components/LibInputDeprecated"
 import { inject, nextTick, provide, ref, toRef, watch } from "vue"
 
 import ILineMdLoadingLoop from "~icons/line-md/loading-loop"
