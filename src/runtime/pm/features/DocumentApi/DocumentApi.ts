@@ -60,6 +60,8 @@ export class DocumentApi<
 	 * The refCounter is called every time an editor loads or unloads a document. It's used to keep track of the number of editors that are using a document, and to unload it when no editors are using it.
 	 *
 	 * Note that you need not immediately unload the cached document. So long as the count is immediatly updated you can set a timeout to actually delete the cache entry (be sure to check the count it still 0 and you can delete it).
+	 *
+	 * Load is also passed the data property returned by the regular load function if it returns it.
 	 */
 	private readonly _refCounter: {
 		load: (docId: string, loaded: { state: EditorState, data?: T }) => void
@@ -101,6 +103,7 @@ export class DocumentApi<
 		editorOptions: Partial<EditorOptions>
 		getTitle?: (docId: string, blockId?: string) => string
 		getSuggestions: DocumentApiInterface["getSuggestions"]
+		/** Load should create the editor state and return it. It can also optionally return extra data which will be passed to the refCounter's load function. */
 		load: (docId: string, schema: Schema, plugins: Plugin[]) => Promise<{ state: EditorState, data?: T }>
 		save?: DocumentApi["_save"]
 		saveDebounce?: number

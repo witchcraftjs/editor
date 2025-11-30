@@ -71,10 +71,11 @@ export function useTestDocumentApi(
 				schema,
 				plugins
 			})
-			return { state }
+			return { state /** , data: {...any additional data} */ }
 		},
 		refCounter: {
 			load(docId: string, loaded) {
+				// loaded.data can be accessed here if we need it
 				cache.value[docId] ??= { ...loaded, count: 0 }
 				cache.value[docId].count++
 			},
