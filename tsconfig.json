@@ -11,8 +11,7 @@
 			"node",
 			"unplugin-icons/types/vue3",
 			"vite/client",
-			"vitest/importMeta",
-			"@vitest/browser/providers/playwright"
+			"vitest/importMeta"
 		]
 	},
 	"include": [

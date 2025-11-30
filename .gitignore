@@ -31,3 +31,5 @@ todo.md
 components.d.ts
 .direnv
 .devenv
+
+*.tsbuildinfo

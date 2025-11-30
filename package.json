@@ -89,9 +89,9 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@tiptap/pm": "^3.4.2",
-			"@tiptap/vue-3": "^3.4.2",
-			"@tiptap/core": "^3.4.2"
+			"@tiptap/pm": "catalog:",
+			"@tiptap/vue-3": "catalog:",
+			"@tiptap/core": "catalog:"
 		}
 	},
 	"peerDependencies": {
@@ -120,6 +120,7 @@
 		"@tiptap/extension-table-row": "catalog:",
 		"@tiptap/extension-text": "catalog:",
 		"@tiptap/extension-underline": "catalog:",
+		"@tiptap/html": "catalog:",
 		"@tiptap/pm": "catalog:",
 		"@tiptap/vue-3": "catalog:",
 		"@witchcraft/ui": "catalog:",
@@ -181,7 +182,7 @@
 		"@testing-library/vue": "catalog:",
 		"@types/node": "catalog:",
 		"@vitejs/plugin-vue": "catalog:",
-		"@vitest/browser": "catalog:",
+		"@vitest/browser-playwright": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@witchcraft/ui": "catalog:",
 		"concurrently": "catalog:",

@@ -2,6 +2,7 @@
 import { run } from "@alanscodelog/utils/node"
 import { defineConfig } from "@alanscodelog/vite-config"
 import vue from "@vitejs/plugin-vue"
+import { playwright } from "@vitest/browser-playwright"
 import { unpluginIconViteOptions } from "@witchcraft/ui/build/unpluginIconViteOptions"
 import { WitchcraftUiResolver } from "@witchcraft/ui/build/WitchcraftUiResolver"
 import path from "node:path"
@@ -66,7 +67,7 @@ export default defineConfig({
 					dir: "tests",
 					browser: {
 						enabled: true,
-						provider: "playwright",
+						provider: playwright(),
 						instances: [
 							{
 								browser: "chromium"

@@ -1,4 +1,4 @@
-import { type EditorOptions, type Extension, getSchema, type Mark, type Node } from "@tiptap/core"
+import { type EditorOptions, getSchema } from "@tiptap/core"
 import { Bold } from "@tiptap/extension-bold"
 import { Code } from "@tiptap/extension-code"
 import { Dropcursor } from "@tiptap/extension-dropcursor"
@@ -30,7 +30,7 @@ import { Link } from "./features/Link/Link.js"
 import { Menus } from "./features/Menus/Menus.js"
 import { type NodeTableCellName, type NodeTableHeaderName, type NodeTableName, type NodeTableRowName, TableExtensions } from "./features/Tables/index.js"
 
-function stripShortcuts<T extends Node | Mark | Extension>(c: T): T {
+function stripShortcuts<T extends { extend: any }>(c: T): T {
 	return c.extend({
 		addKeyboardShortcuts() {
 			return {}
