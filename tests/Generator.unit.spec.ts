@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest"
 
 import { schema } from "../src/runtime/pm/schema.js"
 import { generateRandomDoc } from "../src/runtime/pm/utils/generateRandomDoc.js"
-import { generateRandomTree } from "../src/runtime/pm/utils/generateRandomTree.js"
 
 describe("Generator", () => {
 	it("generates a random doc and does not throw", () => {

@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker"
-import type { Mark, Node } from "@tiptap/pm/model"
+import type { Node } from "@tiptap/pm/model"
 import { nanoid } from "nanoid"
 import { builders } from "prosemirror-test-builder"
 
@@ -7,86 +7,21 @@ import { schema } from "./schema.js"
 
 export const pm = builders(schema)
 
-export type GeneratorConfigEntry<
-	TChildrenType extends "node" | "text" = "node" | "text",
-	TParentType extends "node" | "text" = "node" | "text",
-	TChildren extends TChildrenType extends "node" ? Node : Mark | string = TChildrenType extends "node" ? Node : Mark | string,
-	TParent extends TParentType extends "node" ? Node : Mark | string = TParentType extends "node" ? Node : Mark | string
-> = {
-	parents: {
-		/**
-		 * The type of the parent (node or "text") where "text" is a string or mark.
-		 * Determines the call signature of the create function.
-		 */
-		type: TParentType
-		/** Possible parent nodes that can have the given children. The children need not be direct descendants, see `ignoreValidation`. */
-		names: string[]
-	}
-	children: {
-		/**
-		 * The type of children (node or "text") where "text" is a string or mark.
-		 * Determines the call signature of the create function.
-		 */
-		type: TChildrenType
-		/* Children types to generate. */
-		names?: string[]
-	}
-	/**
-	 * Set to true to ignore all children mismatches, or set an array of children names to ignore.
-	 *
-	 * This is needed for creating "end" nodes that aren't valid names (e.g. `text` is not technically allowed since you can't do `builder.text()`).
-	 *
-	 * Or when the children are not direct children of the parent types as there is some in-between wrapper node that needs to be generated.
-	 */
-	ignoreValidation?: boolean | string[]
-	/* Whether the parent listed is the root node. */
-	isRoot?: boolean
-	/**
-	 * Creates the node. Can return undefined to "terminate" the branch being created, the node will be filtered out of the nodes passed to it's parent.
-	 *
-	 * If not set, a default `builder[parentType]({}, ...children)` will be used.
-	 *
-	 * Note also, it is not required to use the children. You can ignore them or use a subset or create a different one if needed (some node types *require* text and if your text not can return "" this can be a problem).
-	 */
-	create?: (parent: string, children: TChildren[]) => TParent | undefined
-}
-
-export function getTextOrMarkLength(textOrMark: string | Mark) {
-	if (typeof textOrMark === "string") {
-		return textOrMark.length
-	}
-	const textNodes = (textOrMark as any).flat.map((_: any) => "text" in _ ? _.text.length : getTextOrMarkLength(_ as any)) as number[]
-	return textNodes.reduce((a, b) => a + b, 0)
-}
-
-export function createGeneratorConfig<
-	TChildrenType extends "node" | "text" = "node" | "text",
-	TParentType extends "node" | "text" = "node" | "text",
-	TChildren extends TChildrenType extends "node" ? Node : Mark | string = TChildrenType extends "node" ? Node : Mark | string,
-	TParent extends TParentType extends "node" ? Node : Mark | string = TParentType extends "node" ? Node : Mark | string
->(
-	config: GeneratorConfigEntry<TChildrenType, TParentType, TChildren, TParent>
-): GeneratorConfigEntry<TChildrenType, TParentType, TChildren, TParent> {
-	return config
-}
-
-function createPsuedoSentence() {
-	// sentence generated with string.sample (which contains all possible chars) instead of lorem.sentence
-	const sentenceLength = faker.number.int({ min: 0, max: 1000 })
-	const sentence = Array.from(
-		{ length: sentenceLength },
-		() => faker.string.sample({ min: 0, max: 1000 })
-	).join(" ")
-	return sentence
-}
+import { highlightJsLanaguages } from "./features/CodeBlock/highlightJsInfo.js"
+import { createGeneratorConfig } from "./utils/generator/createGeneratorConfig.js"
+import { createPsuedoSentence } from "./utils/generator/createPsuedoSentence.js"
+import { createRandomChildCountGenerator } from "./utils/generator/createRandomChildCountGenerator.js"
+import { sometimesZero } from "./utils/generator/sometimesZero.js"
 
 export const generatorConfig = [
 	createGeneratorConfig({
-		isRoot: true,
 		parents: { type: "node", names: ["doc"] },
-		ignoreValidation: true,
-		children: { type: "node", names: ["item"] },
-		create: (_parent, children) => {
+		children: {
+			type: "node",
+			names: [["item", 1]]
+		},
+		count: createRandomChildCountGenerator({ max: 50, zeroChance: 0 }),
+		create: (pm, _parent, children) => {
 			if (!children || children.length === 0) {
 				return pm.doc(pm.list(pm.item({ blockId: nanoid(10) }, pm.paragraph({}, ""))))
 			}
@@ -94,9 +29,12 @@ export const generatorConfig = [
 		}
 	}),
 	createGeneratorConfig({
-		parents: { type: "node", names: ["list"] },
-		children: { type: "node", names: ["item"] },
-		create: (_parent, children) => {
+		parents: { type: "node", names: ["list", "doc"] },
+		children: { type: "node", names: [
+			["item", 1]
+		] },
+		count: createRandomChildCountGenerator({ max: 30 }),
+		create: (pm, _parent, children) => {
 			if (!children || children.length === 0) {
 				return pm.list(pm.item({ blockId: nanoid(10) }, pm.paragraph("")))
 			}
@@ -104,18 +42,19 @@ export const generatorConfig = [
 		}
 	}),
 	createGeneratorConfig({
-		parents: { type: "node", names: ["item"] },
-		children: { type: "node", names: [
-			"paragraph",
-			"heading",
-			"codeBlock",
-			"embeddedDoc",
-			"iframe",
-			"table",
-			"image",
-			"blockquote"
+		parents: { type: "node" as const, names: ["item"] },
+		children: { type: "node" as const, names: [
+			["paragraph", 14],
+			["heading", 4],
+			["codeBlock", 2],
+			["table", 2],
+			["image", 3],
+			["blockquote", 4],
+			["embeddedDoc", 1],
+			["iframe", 1]
 		] },
-		create: (_parent, children) => {
+		count: createRandomChildCountGenerator({ max: 20, depthInfluence: 0.5 }),
+		create: (pm, _parent, children) => {
 			if (!children || children.length === 0) {
 				return pm.item({ blockId: nanoid(10) }, pm.paragraph(""))
 			}
@@ -135,8 +74,12 @@ export const generatorConfig = [
 	}),
 	createGeneratorConfig({
 		parents: { type: "node", names: ["blockquote"] },
-		children: { type: "node", names: ["paragraph", "cite"] },
-		create: (_parent, children) => {
+		children: { type: "node", names: [
+			["paragraph", 1],
+			["cite", 1]
+		] },
+		count: () => faker.number.int({ min: 1, max: 2 }),
+		create: (pm, _parent, children) => {
 			const parTypes = []
 			const citeTypes = []
 			for (const child of children) {
@@ -149,7 +92,7 @@ export const generatorConfig = [
 			if (parTypes.length === 0) {
 				return pm.blockquote({}, pm.paragraph(""))
 			} else {
-				const someCite = citeTypes.find(_ => _.textContent.length > 0) ?? pm.cite({}, createPsuedoSentence())
+				const someCite = citeTypes.find(_ => _.textContent.length > 0) ?? pm.cite({}, createPsuedoSentence({ min: 1 }))
 				return pm.blockquote({}, ...parTypes, someCite)
 			}
 		}
@@ -157,60 +100,62 @@ export const generatorConfig = [
 	createGeneratorConfig({
 		parents: { type: "node", names: ["table"] },
 		children: { type: "node", names: [
-			"tableHeader",
-			"tableCell"
+			["tableCell", 1]
 		] },
-		ignoreValidation: true, // we're handling the in-between tableRow nodes
-		create: (_parent, children) => {
-			const headerType = []
-			const cellType = []
-
-			for (const child of children) {
-				if (child.type.name === "tableHeader") {
-					headerType.push(child)
-				} else if (child.type.name === "tableCell") {
-					cellType.push(child)
-				}
-			}
-			const colNum = headerType.length
-
-			if (colNum === 0) {
-				return pm.table({}, pm.tableRow({}, pm.tableCell(pm.paragraph(""))))
-			}
-			const rowCount = Math.ceil(cellType.length / colNum)
+		count: createRandomChildCountGenerator({ max: 50, depthInfluence: 0.5, zeroChance: 0 }),
+		create: (pm, _parent, children) => {
+			const colNum = faker.number.int({ min: 1, max: Math.min(children.length, 10) })
+			const rowCount = Math.floor(children.length / colNum)
 			const rows: Node[] = []
+			const addHeader = faker.datatype.boolean()
+			if (addHeader) {
+				const nodes = Array.from(
+					{ length: colNum },
+					() => pm.tableHeader({}, pm.paragraph({}, createPsuedoSentence({ min: 1 })))
+				)
+				rows.push(pm.tableRow({}, ...nodes))
+			}
 			for (let i = 0; i < rowCount; i++) {
-				rows.push(pm.tableRow({}, ...cellType.slice(i * colNum, (i + 1) * colNum)))
+				const rowChildren = children.slice(i * colNum, (i + 1) * colNum)
+				if (rowChildren.length === 0) continue
+				rows.push(pm.tableRow({}, ...rowChildren))
 			}
 
-			return pm.table({}, pm.tableRow({}, ...headerType), ...rows)
+			if (rows.length === 0) return undefined
+			return pm.table({}, ...rows)
 		}
 	}),
 	createGeneratorConfig({
-		parents: { type: "node", names: ["tableHeader", "tableCell"] },
-		children: { type: "node", names: ["paragraph"] },
-		create: (_parent, children) => {
+		parents: { type: "node", names: ["tableCell"] },
+		children: { type: "node", names: [
+			["paragraph", 1]
+		] },
+		count: () => sometimesZero(1),
+		create: (pm, _parent, children) => {
 			if (!children || children.length === 0) {
 				return pm.tableCell(pm.paragraph(""))
 			}
 			return pm.tableCell(...children.slice(0, 1))
 		}
 	}),
+
 	createGeneratorConfig({
-		parents: { type: "node", names: ["paragraph", "heading", "codeBlock", "cite", "heading"] },
+		parents: { type: "text", names: ["paragraph", "heading", "codeBlock", "cite", "heading"] },
 		children: { type: "text", names: [
-			"bold",
-			"italic",
-			"underline",
-			"strike",
-			"subscript",
-			"superscript",
-			"code",
-			"link"
+			["bold", 1],
+			["italic", 1],
+			["underline", 1],
+			["strike", 1],
+			["subscript", 1],
+			["superscript", 1],
+			["code", 1],
+			["link", 1],
+			["text", 10]
 		] },
-		create(parent, children) {
+		count: createRandomChildCountGenerator({ max: 5, depthInfluence: 0.2 }),
+		create(pm, parent, children) {
 			if (parent === "heading") {
-				return pm[parent]({ level: 1 }, ...children as any)
+				return pm[parent]({ level: faker.number.int({ min: 1, max: 6 }) }, ...children as any)
 			}
 			if (parent === "cite") {
 				// citation must have SOME text
@@ -220,8 +165,18 @@ export const generatorConfig = [
 				const someIndex = faker.number.int({ min: 0, max: children.length })
 				children.splice(someIndex, 0, pm.hardBreak() as any)
 			}
+			if (parent === "codeBlock") {
+				// aliases contains both the names and the aliases
+				const lang = faker.helpers.arrayElement([...Object.keys(highlightJsLanaguages.aliases), undefined])
+				const lines = faker.number.int({ min: 1, max: 10 })
+				const code = Array.from(
+					{ length: lines },
+					() => createPsuedoSentence()
+				).join("\n")
+				return pm[parent]({ language: lang }, code)
+			}
 
-			return pm[parent]({}, ...children as any)
+			return pm[parent]({}, ...children as any) as any
 		}
 	}),
 	createGeneratorConfig({
@@ -235,32 +190,30 @@ export const generatorConfig = [
 			"link"
 		]
 		},
-		// note the addition of text
+		skipChild(parentType, childType, depth) {
+			if (depth > 20) return true
+			return parentType === childType
+		},
 		children: { type: "text", names: [
-			"bold",
-			"italic",
-			"underline",
-			"strike",
-			"subscript",
-			"superscript",
-			"link",
-			"text"
+			["bold", 1],
+			["italic", 1],
+			["underline", 1],
+			["strike", 1],
+			["subscript", 1],
+			["superscript", 1],
+			["link", 1],
+			["text", 10]
 		] },
-		ignoreValidation: ["text"] // text is not a real node
-		// create: (parent, children) => {
-		// 	return pm[parent]({}, ...children as any) as any
-		// }
-	}),
-	createGeneratorConfig({
-		ignoreValidation: true, // text is not a real node
-		parents: { type: "text", names: ["code"] },
-		children: { type: "text", names: ["text"] }
+		count: createRandomChildCountGenerator({ max: 5, depthInfluence: 0.7 }),
+		create: (pm, parent, children) => {
+			return pm[parent]({}, ...children as any) as any
+		}
 	}),
 	createGeneratorConfig({
 		parents: { type: "text", names: ["text"] },
-		children: { type: "text" },
-		create: _parent => {
+		create: () => {
 			return createPsuedoSentence()
 		}
 	})
 ]
+
