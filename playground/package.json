@@ -38,6 +38,6 @@
 		"@witchcraft/editor": "workspace:*",
 		"@witchcraft/ui": "catalog:",
 		"lowlight": "catalog:",
-		"nuxt": "^4.0.3"
+		"nuxt": "^4.2.1"
 	}
 }

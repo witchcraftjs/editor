@@ -61,7 +61,7 @@ catalog:
   '@vitest/browser-playwright': ^4.0.14
   '@vitest/coverage-v8': ^4.0.14
   '@witchcraft/nuxt-utils': ^0.3.6
-  '@witchcraft/ui': ^0.3.9
+  '@witchcraft/ui': ^0.3.19
   colord: ^2.9.3
   concurrently: ^9.2.1
   cross-env: ^10.0.0
