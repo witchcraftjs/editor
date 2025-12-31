@@ -1,7 +1,7 @@
 {
 	"name": "@witchcraft/editor",
 	"description": "Block base prosemirror editor with partial/full editable document embeds, infinite embeds, and document uploads.",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"main": "./dist/runtime/main.lib.js",
 	"type": "module",
 	"sideEffects": false,
