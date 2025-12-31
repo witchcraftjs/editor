@@ -98,13 +98,13 @@ const menus = shallowRef<Record<string, MenuRenderInfo>>({
 		popupOptions: {
 			pinToItemDistance: state => {
 				const { $from, $to } = state.selection
-				const fromNode = $from.node(-1)
-				const toNode = $to.node(-1)
+				const fromNode = -1 < $from.depth ? $from.node(-1) : undefined
+				const toNode = -1 < $to.depth ? $to.node(-1) : undefined
 				// tables don't support selections outside of each cell, so no need to check we're in the same table or anything
-				if (fromNode.type !== toNode.type) {
+				if (fromNode?.type !== toNode?.type) {
 					return 0
 				}
-				return (fromNode.type.name.startsWith("table")) ? 120 : 0
+				return (fromNode?.type.name.startsWith("table")) ? 120 : 0
 			}
 		}
 	}

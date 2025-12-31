@@ -76,8 +76,11 @@ export const toggleSuperscriptCommand: CommandBarCommand = {
 	icon: { component: SuperscriptIcon }
 }
 
-export const tableCanShow = (state: EditorState): boolean => state.selection.$from.node(-1).type.name === "tableCell"
-	&& state.selection.$to.node(-1).type.name === "tableCell"
+export const tableCanShow = (state: EditorState): boolean => {
+	const fromNode = -1 < state.selection.$from.depth ? state.selection.$from.node(-1) : undefined
+	const toNode = -1 < state.selection.$to.depth ? state.selection.$to.node(-1) : undefined
+	return fromNode?.type.name === "tableCell" && toNode?.type.name === "tableCell"
+}
 
 export const tableAddColBeforeCommand: CommandBarCommand = {
 	type: "command" as const,
