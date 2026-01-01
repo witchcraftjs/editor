@@ -1,5 +1,7 @@
 <template>
-<Demo/>
+<NuxtLayout data-allow-mismatch>
+	<NuxtPage/>
+</NuxtLayout>
 </template>
 
 <script setup lang="ts">

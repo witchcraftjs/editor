@@ -10,8 +10,34 @@
 	<EditorDemoControls
 		:code-blocks-theme-list="codeBlocksThemeList"
 		v-model:code-blocks-theme="codeBlocksTheme"
+		v-model:use-two-editors="useTwoEditors"
+	/>
+
+	<Editor
+		class="
+			max-w-[700px]
+			flex-1
+			flex
+			border
+			border-neutral-300
+			dark:border-neutral-700
+			rounded-sm
+			min-h-0
+		"
+		v-bind="{
+			codeBlocksThemeIsDark,
+			cssVariables: {
+				pmCodeBlockBgColor: codeBlocksThemeBgColor
+			},
+			docId,
+			documentApi,
+			linkOptions,
+			editorOptions,
+			menus
+		}"
 	/>
 	<Editor
+		v-if="useTwoEditors"
 		class="
 			max-w-[700px]
 			flex-1
@@ -41,6 +67,7 @@
 // all imports must be explicit so this also works without nuxt
 import type { EditorOptions } from "@tiptap/core"
 import WRoot from "@witchcraft/ui/components/LibRoot"
+import { useRoute } from "nuxt/app"
 import { reactive, ref, shallowRef } from "vue"
 
 import Editor from "./Editor.vue"
@@ -110,9 +137,13 @@ const menus = shallowRef<Record<string, MenuRenderInfo>>({
 	}
 })
 
+const useYjs = useRoute().query.useYjs as string
+const useTwoEditors = ref(false)
+
 const { documentApi } = useTestDocumentApi(
 	editorOptions as any,
-	testDocuments
+	testDocuments,
+	{ useCollab: useYjs === "true" }
 )
 const docId = ref("root")
 </script>
