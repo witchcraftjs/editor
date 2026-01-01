@@ -91,7 +91,8 @@
 		"overrides": {
 			"@tiptap/pm": "catalog:",
 			"@tiptap/vue-3": "catalog:",
-			"@tiptap/core": "catalog:"
+			"@tiptap/core": "catalog:",
+			"@tiptap/y-tiptap": "catalog:"
 		}
 	},
 	"peerDependencies": {
@@ -99,6 +100,7 @@
 		"@tiptap/extension-blockquote": "catalog:",
 		"@tiptap/extension-bold": "catalog:",
 		"@tiptap/extension-code": "catalog:",
+		"@tiptap/extension-collaboration": "catalog:",
 		"@tiptap/extension-code-block": "catalog:",
 		"@tiptap/extension-code-block-lowlight": "catalog:",
 		"@tiptap/extension-dropcursor": "catalog:",
@@ -123,6 +125,7 @@
 		"@tiptap/html": "catalog:",
 		"@tiptap/pm": "catalog:",
 		"@tiptap/vue-3": "catalog:",
+		"@tiptap/y-tiptap": "catalog:",
 		"@witchcraft/ui": "catalog:",
 		"tailwindcss": "catalog:",
 		"vue": "catalog:"
@@ -162,7 +165,6 @@
 		"tailwind-merge": "catalog:",
 		"unplugin-vue-components": "catalog:",
 		"uuid": "catalog:",
-		"y-prosemirror": "catalog:",
 		"yjs": "catalog:"
 	},
 	"devDependencies": {
