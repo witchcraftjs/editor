@@ -33,16 +33,33 @@ export type DocumentApiInterface<
 	getFromCache: (docId: DocId, options?: { errorIfNotFound?: boolean }) => EditorState | undefined
 	/** Load should be called the first time, before attempting to load the state. */
 	getFullState: (docId: DocId) => EditorState
-	/** Like {@link DocumentApi.preEditorInit}, but after initializing and loading the document (and before the transaction listeners are added). */
-	postEditorInit: (docId: string, editor: Editor) => void
 	/**
-	 * Sets options before initializing the editor. By default just does `options.content = state.doc.toJSON()`, but can be useful when managing the document state in some other way (e.g. collab.
+	 * For replacing {@link DocumentApi.preEditorInit} which runs after initializing and loading the document but before the transaction listeners are added.
 	 *
-	 * Also useful for creating per-doc instances for certain extensions, such as Collaboration.
+	 * Can be used to add the Collaboration extension for example (see useTestDocumentApi for an example).
 	 *
-	 * This is a bit tricky to do normally since the editor component initializes the editor before the document is loaded and is re-used (the wrapper Editor *component*, not the editor) when the document changes.
+	 * The default implementation just sets the content:
 	 *
-	 * So this hook can be used to add these additional per-doc instances of extensions. Be sure to clone the properties you are modifying. They are only shallow cloned before being passed to the function.
+	 * ```ts
+	 * preEditorInit: (_docId, options, state) => {
+	 *		options.content = state.doc.toJSON()
+	 *		return options
+	 *	}
+	 * ```
+	 *
+	 */
+	postEditorInit: (docId: string, editor: Editor) => void
+	connectedEditors: Record<string, Editor[]>
+	connectEditor: (docId: string, editor: Editor) => void
+	disconnectEditor: (docId: string, editor: Editor) => void
+	/**
+	 * Sets options before initializing the editor. By default just does `options.content = state.doc.toJSON()`, but can be useful for using **per editor component** plugins.
+	 *
+	 * This is normally a bit tricky to do since the editor component initializes the editor before the document is loaded and is re-used (the wrapper Editor *component*, not the editor) when the document changes.
+	 *
+	 * So this hook can be used to add these additional per-editor instances of extensions. Be sure to clone the properties you are modifying. They are only shallow cloned before being passed to the function.
+	 *
+	 * If you need **per doc** plugins use `load` instead. See {@link useTestDocumentApi} for an example.
 	 *
 	 * ```ts
 	 * preEditorInit(docId, options: Partial<EditorOptions>, state: EditorState) {
@@ -51,58 +68,19 @@ export type DocumentApiInterface<
 	 * 	const ydoc = cache.value[docId].ydoc
 	 * 	// it's suggested you add the collab extension only here
 	 *		// otherwise you would have to initially configure it with a dummy document
-	 * 	const collabExt = Collaboration.configure({
-	 * 		document: ydoc
-	 * 	}) as any
 	 * 	options.extensions = [
 	 * 		...(options.extensions ?? []),
-	 * 		collabExt
+	 *			// per editor extensions
 	 * 	]
 	 * 	return options
 	 * },
-	 * load: async (
-	 * 	docId: string,
-	 * 	schema: Schema,
-	 * 	plugins: Plugin[],
-	 * ) => {
-	 * 	if (cache.value[docId]?.state) {
-	 * 		return { state: toRaw(cache.value[docId].state) }
-	 * 	}
-	 * 	const doc = getFromYourDb(docId)
-	 * 	const decoded = toUint8Array(doc.contentBinary)
-	 * 	const yDoc = new Y.Doc()
-	 * 	Y.applyUpdate(yDoc, decoded)
-	 *
-	 * 	const yjs = initProseMirrorDoc(yDoc.getXmlFragment("prosemirror"), schema)
-	 * 	const state = EditorState.create({
-	 * 		doc: yjs.doc,
-	 * 		schema,
-	 * 		plugins:[
-	 * 			...plugins,
-	 * 			// the document api's yjs instance
-	 * 			ySyncPlugin(yDoc.getXmlFragment("prosemirror"), {mapping:yjs.mapping}),
-	 * 		]
-	 * 	})
-	 * 	// return the state and any additional data we want refCounter.load to be called with.
-	 * 	return { state, doc, yDoc }
-	 * },
-	 * updateFilter(tr:Transaction) {
-	 * 	const meta = tr.getMeta(ySyncPluginKey)
-	 * 	if (meta) return false
-	 * 	return true
-	 * },
 	 * ```
-	 * See {@link DocumentApi.updateFilter} for why yjs (and other syncronization mechanisms) might need to ignore transactions.
 	 */
 	preEditorInit: (docId: string, options: Partial<EditorOptions>, state: EditorState) => Partial<EditorOptions>
 	/**
-	 * Return false to ignore the transaction.
+	 * Return false to prevent applying the transaction to the state in the cache.
 	 *
-	 * This is useful when using a secondary syncronization mechanism, such as yjs.
-	 *
-	 * If you load all editors of a file with yjs's plugin and point to the same ydoc, yjs's plugin will sync them. But that means that when the DocumentApi tries to sync the transactions they will have already been applied and the document update will fail.
-	 *
-	 * So we have to ignore all of yjs's transactions, but NOT transactions from partially embedded docs => full state, as these do not pass through yjs.
+	 * This used to be needed to ignore yjs transactions, but that's no longer the case. Even with multiple editors loaded to use the same ydoc, everything should work. Leaving the option in case it's needed for some other rare use case.
 	 */
 	updateFilter?: (tr: Transaction) => boolean | undefined
 	updateDocument: (
@@ -110,10 +88,10 @@ export type DocumentApiInterface<
 		tr: Transaction,
 		selfSymbol?: symbol
 	) => void
-	addEventListener (type: "saving" | "saved", cb: OnSaveDocumentCallback): void
-	addEventListener (type: "update", cb: OnUpdateDocumentCallback): void
-	removeEventListener (type: "saving" | "saved", cb: OnSaveDocumentCallback): void
-	removeEventListener (type: "update", cb: OnUpdateDocumentCallback): void
+	addEventListener(type: "saving" | "saved", cb: OnSaveDocumentCallback): void
+	addEventListener(type: "update", cb: OnUpdateDocumentCallback): void
+	removeEventListener(type: "saving" | "saved", cb: OnSaveDocumentCallback): void
+	removeEventListener(type: "update", cb: OnUpdateDocumentCallback): void
 
 	/** For the embedded document picker, should return suggestions for the search string. */
 	getSuggestions: (searchString: string) => Promise<{ title: string, docId: string }[]>
@@ -123,7 +101,7 @@ export type DocumentApiInterface<
 	 * Tells the document api how to load an unloaded document and any additional data. Whatever this function returns will be passed to the refCounter.load option in the default DocumentApi implementation.
 	 *
 	 * ```ts
-	 *	 load: async ( docId: string, schema: Schema, plugins: Plugin[],) => {
+	 *	 load: async ( docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => {
 	 * 	const dbDoc = getFromYourDb(docId)
 	 *
 	 * 	const state = EditorState.create({

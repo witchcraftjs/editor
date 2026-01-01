@@ -1,9 +1,9 @@
 import { debounce, type DebounceQueue } from "@alanscodelog/utils/debounce"
 import { unreachable } from "@alanscodelog/utils/unreachable"
 import type { Content, EditorOptions } from "@tiptap/core"
+import { Editor } from "@tiptap/core"
 import type { Schema } from "@tiptap/pm/model"
 import type { EditorState, Plugin, Transaction } from "@tiptap/pm/state"
-import { Editor } from "@tiptap/vue-3"
 import { isProxy } from "vue"
 
 import type { DocId, DocumentApiInterface, EmbedId, OnSaveDocumentCallback, OnUpdateDocumentCallback } from "./types.js"
@@ -30,7 +30,17 @@ import { getEmbedNodeFromDoc } from "./utils/getEmbedNodeFromDoc.js"
  *
  * If there are extensions that use onCreate to set state or have plugins that need to change the state on init with appendTransaction, they will not work since there is no view to initialize the plugins. To get around this, plugins can specify a stateInit function that will be called with a transaction from the initial loaded state which it can then modify while having access to `this` and the extension options.
  *
- * The api creates a default instance of the editor to copy plugins from, this can be replaced by passing your own editor instance.
+ * ### Internals / How does it work?
+ *
+ * It can be a bit confusing how this works. It's quite different from how tiptap works.
+ *
+ * First, the api creates a **single** instance of the editor with the editor options **initially** provided (it can be replaced by passing your own editor instance).
+ *
+ * On load **per document**, the state of the doc is initialized. The plugins are copied from the single editor instance so that we can properly initialize the state. The plugin's `stateInit` is called, see above.
+ *
+ * When an editor **component** is mounted, useEditorContent will call the document api's `preEditorInit` to get a configuration for that component. This configuration can be edited in `preEditorInit` and is **per editor component**. It is disconnected from the **per document** configuration.
+ *
+ * There is no **per document** editor instance. This makes it tricky to work with extensions like Collaboration that expect this setup. They require some weird workarounds unfortunately.
  *
  * See {@link useTestDocumentApi} for an example of how to set things up.
  */
@@ -43,7 +53,7 @@ export class DocumentApi<
 		saving: OnSaveDocumentCallback[]
 	} = { update: [], saved: [], saving: [] }
 
-	private readonly _load: (docId: string, schema: Schema, plugins: Plugin[]) => Promise<{ state: EditorState, data?: T }>
+	private readonly _load: (docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => Promise<{ state: EditorState, data?: T }>
 
 	private readonly _save?: (docId: string) => Promise<void>
 
@@ -84,6 +94,8 @@ export class DocumentApi<
 
 	editor: Editor
 
+	connectedEditors: Record<string, Editor[]> = {}
+
 	constructor({
 		editorOptions,
 		getTitle,
@@ -104,7 +116,7 @@ export class DocumentApi<
 		getTitle?: (docId: string, blockId?: string) => string
 		getSuggestions: DocumentApiInterface["getSuggestions"]
 		/** Load should create the editor state and return it. It can also optionally return extra data which will be passed to the refCounter's load function. */
-		load: (docId: string, schema: Schema, plugins: Plugin[]) => Promise<{ state: EditorState, data?: T }>
+		load: (docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => Promise<{ state: EditorState, data?: T }>
 		save?: DocumentApi["_save"]
 		saveDebounce?: number
 		cache: DocumentApi["_cache"]
@@ -236,7 +248,8 @@ export class DocumentApi<
 		const loaded = await this._load(
 			docId,
 			schema,
-			[...this.editor.extensionManager.plugins]
+			[...this.editor.extensionManager.plugins],
+			() => this.connectedEditors[docId] ?? []
 		)
 		let state = loaded.state
 		const tr = state.tr
@@ -280,6 +293,23 @@ export class DocumentApi<
 			return undefined
 		} else {
 			return getEmbedJson(nodeWanted) ?? json
+		}
+	}
+
+	connectEditor(docId: string, editor: Editor) {
+		if (!this.connectedEditors[docId]) {
+			this.connectedEditors[docId] = []
+		}
+		this.connectedEditors[docId].push(editor)
+	}
+
+	disconnectEditor(docId: string, editor: Editor) {
+		if (!this.connectedEditors[docId]) {
+			return
+		}
+		const index = this.connectedEditors[docId].indexOf(editor)
+		if (index !== -1) {
+			this.connectedEditors[docId].splice(index, 1)
 		}
 	}
 }

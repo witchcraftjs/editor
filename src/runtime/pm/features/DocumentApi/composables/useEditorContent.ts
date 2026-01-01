@@ -58,6 +58,7 @@ export function useEditorContent(
 
 				recreate(options => documentApi.preEditorInit?.(id.value!, { ...options }, state))
 				await nextTick(async () => {
+					documentApi.connectEditor(id.value!, editor.value!)
 					editor.value!.on("transaction", onTransaction)
 					documentApi!.addEventListener("update", onUpdateDocument)
 					documentApi.postEditorInit(id.value!, editor.value!)
@@ -69,6 +70,7 @@ export function useEditorContent(
 	function unload(oldId: string): void {
 		if (oldId !== undefined && documentApi) {
 			documentApi.unload({ docId: oldId })
+			documentApi.disconnectEditor(id.value!, editor.value!)
 			if (attached) {
 				documentApi.removeEventListener("update", onUpdateDocument)
 				editor.value?.off("transaction", onTransaction)
