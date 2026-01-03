@@ -1,0 +1,1 @@
+import{p as u,v as r,m as i}from"./ChiTXbtN.js";const v=(l,o)=>{const e=u(()=>l.id??o),a=r(!1),t=u(()=>({"aria-label":a.value?void 0:l.label,"aria-labelledby":a.value?`label-${e.value}`:void 0}));return i(()=>{e.value&&document.querySelector(`#label-${e.value}`)&&(a.value=!0)}),t};export{v as u};

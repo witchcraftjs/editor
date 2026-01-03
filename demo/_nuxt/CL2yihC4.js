@@ -1,0 +1,1 @@
+import{_ as t,c as a,o as r,t as s}from"./ChiTXbtN.js";const o={tabindex:"0"},c=Object.assign({name:"Aria"},{__name:"WAria",props:{value:{type:String,required:!0}},setup(e){return(n,i)=>(r(),a("div",o,s(e.value),1))}}),p=t(c,[["__scopeId","data-v-9b274744"]]);export{p as default};

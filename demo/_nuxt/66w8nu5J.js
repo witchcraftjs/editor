@@ -1,0 +1,1 @@
+import{a as t}from"./9cslYIr4.js";import{a1 as r,c as o,H as n,D as c,q as s,o as l}from"./ChiTXbtN.js";const u=Object.assign({name:"Icon",inheritAttrs:!1},{__name:"WIcon",props:{},setup(i){const e=r();return(a,p)=>(l(),o("div",c({class:s(t)("icon inline-block",s(e)?.class)},{...s(e),class:void 0}),[n(a.$slots,"default")],16))}});export{u as default};

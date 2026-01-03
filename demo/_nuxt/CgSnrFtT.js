@@ -1,0 +1,1 @@
+import{s as o}from"./Bk2TiR2_.js";import{a1 as a,i as n,v as r,p as c}from"./ChiTXbtN.js";const i={__name:"WDevOnly",props:{show:{type:Boolean,required:!1,default:!1}},setup(e){a();const s=e,t=n(o,r(!1));return c(()=>s.show||t.value),(l,p)=>null}};export{i as default};
