@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "@witchcraft/ui-playground",
+	"name": "@witchcraft/editor-playground",
 	"type": "module",
 	"scripts": {
 		"dev": "nuxi dev",
