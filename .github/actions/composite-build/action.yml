@@ -1,31 +1,18 @@
 name: Build
-inputs:
-  build_script:
-    required: false
-    type: boolean
-    default: "pnpm build"
-  lint_script:
-    required: false
-    type: boolean
-    default: "pnpm lint"
-  test_script:
-    required: false
-    type: boolean
-    default: "pnpm test"
 
 # note it cannot contain the checkout, the must be checked out in the calling workflow or it will not be able to find the composite action
 runs:
   using: "composite"
   steps:
-    - run: ${{ inputs.build_script }}
+    - run: pnpm build
       shell: bash
 
-    - run: ${{ inputs.lint_script }}
+    - run: pnpm lint
       shell: bash
 
-    - run: ${{ inputs.test_script }}
+    - run: pnpm test
       shell: bash
-
+    
     - name: Coverage
       if: ${{ github.event_name == 'pull_request' }}
       uses: romeovs/lcov-reporter-action@v0.3.1
