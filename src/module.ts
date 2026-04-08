@@ -21,7 +21,7 @@ declare module "@nuxt/schema" {
 
 export interface ModuleOptions {
 	/** @internal */
-	_playgroundWorkaround?: boolean
+	_playgroundWorkaround?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -30,7 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
 		configKey: "witchcraftEditor"
 	},
 	defaults: {
-		_playgroundWorkaround: false
+		_playgroundWorkaround: undefined
 	},
 	moduleDependencies: {
 		"@witchcraft/ui/nuxt": {
@@ -60,7 +60,7 @@ export default defineNuxtModule<ModuleOptions>({
 		addTemplate({
 			filename: "witchcraft-editor.css",
 			write: true,
-			getContents: () => options._playgroundWorkaround
+			getContents: () => options._playgroundWorkaround === "@witchcraft/editor"
 				? crop`
 					@import "${resolve("./runtime/assets/base.css")}";
 					@import "${resolve("./runtime/assets/utils.css")}";

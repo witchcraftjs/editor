@@ -18,6 +18,6 @@ export default defineNuxtConfig({
 	witchcraftEditor: {
 		// only needed for the package's playground
 		// because we can't resolve the package name from tailwind
-		_playgroundWorkaround: true
+		_playgroundWorkaround: "@witchcraft/editor"
 	}
 })
