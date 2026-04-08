@@ -50,7 +50,11 @@ export function useEditorContent(
 
 	async function load(changed: boolean): Promise<void> {
 		if (content.value) {
-			editor.value?.commands.setContent(content.value)
+			if (!editor.value) {
+				recreate(options => ({ ...options, content: content.value }))
+			} else {
+				editor.value?.commands.setContent(content.value)
+			}
 		} else if (documentApi) {
 			if (changed && id.value) {
 				await documentApi.load({ docId: id.value })
@@ -93,7 +97,7 @@ export function useEditorContent(
 		if (oldId !== undefined && newId !== oldId && documentApi) {
 			unload(oldId)
 			await load(true)
-		} else if (_newContent) {
+		} else if (_newContent !== _oldContent && _newContent) {
 			await load(false)
 		}
 	}, { deep: false })
