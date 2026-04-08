@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker"
 
-export function createPsuedoSentence({ min = 0, max = 10}: { min?: number, max?: number } = {}) {
+export function createPsuedoSentence({ min = 0, max = 10 }: { min?: number, max?: number } = {}) {
 	// sentence generated with string.sample (which contains all possible chars) instead of lorem.sentence
 	const sentenceLength = faker.number.int({ min, max })
 	const sentence = Array.from(

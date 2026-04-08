@@ -23,7 +23,6 @@
 		ref="codeBlockLangPickerEl"
 	>
 		<!-- and here we only style everything but the suggestions so the input matches the code block background -->
-		<!-- @vue-expect-error -->
 		<WSimpleInput
 			:border="false"
 			wrapper-class="lang-picker-input flex-nowrap z-10"

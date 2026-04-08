@@ -15,7 +15,6 @@
 		>
 			<i-ic-round-link class="w-[1.25em] !h-auto"/>
 		</WLabel>
-		<!-- @vue-expect-error -->
 		<WSimpleInput
 			id="menu-link-input"
 			class="link-input"

@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     systems.url = "github:nix-systems/default";
     devenv = {
       url = "github:cachix/devenv";
@@ -61,7 +61,7 @@
                   ({ pkgs, config, ... }: {
                     custom.js.nodejs.package = pkgs.nodejs_24;
                     custom.js.setupPlaywright = true;
-                    custom.js.playwrightPackage = playwright;
+                    custom.js.playwrightDriverPackage = pkgs.playwright-driver;
                   })
                 ];
             };

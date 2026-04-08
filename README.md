@@ -54,6 +54,7 @@ The components library explains how to configure anything, you just need to add 
 //without Nuxt:
 @import "@witchcraft/ui/utils.css";
 @import "@witchcraft/ui/base.css";
+@import "@witchcraft/ui/animations.css";
 // source used components
 @source "/path/to/node_modules/@witchcraft/ui/src/runtime/components";
 

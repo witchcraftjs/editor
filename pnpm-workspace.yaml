@@ -7,9 +7,9 @@ allowUnusedPatches: true
 catalog:
   '@alanscodelog/commitlint-config': ^3.1.2
   '@alanscodelog/eslint-config': ^6.3.1
-  '@alanscodelog/semantic-release-config': ^6.0.0
-  '@alanscodelog/tsconfigs': ^6.2.0
-  '@alanscodelog/utils': ^6.0.2
+  '@alanscodelog/semantic-release-config': ^6.0.2
+  '@alanscodelog/tsconfigs': ^6.3.0
+  '@alanscodelog/utils': ^6.2.0
   '@alanscodelog/vite-config': ^0.0.7
   '@commitlint/cli': ^20.1.0
   '@faker-js/faker': ^10.0.0
@@ -31,10 +31,10 @@ catalog:
   '@tiptap/core': ^3.12.0
   '@tiptap/extension-blockquote': ^3.12.0
   '@tiptap/extension-bold': ^3.12.0
-  '@tiptap/extension-collaboration': ^3.12.0
   '@tiptap/extension-code': ^3.12.0
   '@tiptap/extension-code-block': ^3.12.0
   '@tiptap/extension-code-block-lowlight': ^3.12.0
+  '@tiptap/extension-collaboration': ^3.12.0
   '@tiptap/extension-dropcursor': ^3.12.0
   '@tiptap/extension-gapcursor': ^3.12.0
   '@tiptap/extension-hard-break': ^3.12.0
@@ -63,7 +63,7 @@ catalog:
   '@vitest/browser-playwright': ^4.0.14
   '@vitest/coverage-v8': ^4.0.14
   '@witchcraft/nuxt-utils': ^0.3.6
-  '@witchcraft/ui': ^0.3.19
+  '@witchcraft/ui': ^0.3.25
   colord: ^2.9.3
   concurrently: ^9.2.1
   cross-env: ^10.0.0

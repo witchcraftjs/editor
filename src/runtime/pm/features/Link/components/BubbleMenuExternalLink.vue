@@ -4,7 +4,6 @@
 	ref="el"
 >
 	<div class="flex flex-col gap-1">
-		<!-- @vue-expect-error -->
 		<WSimpleInput
 			class="text-input"
 			wrapper-class="flex flex-nowrap gap-1"
@@ -24,7 +23,6 @@
 				</WLabel>
 			</template>
 		</WSimpleInput>
-		<!-- @vue-expect-error -->
 		<WSimpleInput
 			class="link-input"
 			wrapper-class="flex flex-nowrap gap-1"

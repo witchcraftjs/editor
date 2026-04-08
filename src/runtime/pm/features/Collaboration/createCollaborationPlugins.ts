@@ -7,7 +7,6 @@ import {
 	yUndoPluginKey,
 	yXmlFragmentToProsemirrorJSON
 } from "@tiptap/y-tiptap"
-import type { Doc } from "yjs"
 
 /**
  * Copied from tiptap's collaboration extension with a few minor changes to make it work with our document api.
@@ -30,7 +29,11 @@ export function createCollaborationPlugins(
 	}
 	const fragment = options.fragment
 		? options.fragment
-		: (options.document as Doc).getXmlFragment(options.field)
+		: options.document?.getXmlFragment(options.field)
+
+	if (!fragment) {
+		throw new Error("No fragment or document provided.")
+	}
 
 	// Quick fix until there is an official implementation (thanks to @hamflx).
 	// See https://github.com/yjs/y-prosemirror/issues/114 and https://github.com/yjs/y-prosemirror/issues/102
