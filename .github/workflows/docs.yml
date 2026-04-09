@@ -44,7 +44,7 @@ jobs:
           cp -r playground/.output/public docs/demo
         fi
         if [ -d "demo" ]; then
-          pushcd demo && pnpm i --frozen-lockfile
+          pushd demo && pnpm i --frozen-lockfile
           popd
           cp -r demo/dist docs/demo
         fi
