@@ -1,6 +1,7 @@
 <template>
 <div
 	:class="twMerge(`
+		relative
 		editor-wrapper
 		[counter-reset:none]
 		flex-1

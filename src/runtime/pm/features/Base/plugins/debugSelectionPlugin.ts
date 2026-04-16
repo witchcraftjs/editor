@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import type { Editor } from "@tiptap/core"
 import { Plugin, PluginKey } from "@tiptap/pm/state"
-import { Decoration, DecorationSet } from "@tiptap/pm/view"
 
 import { isEmbeddedBlock } from "../../EmbeddedDocument/utils/isEmbeddedBlock.js"
 
@@ -9,18 +8,43 @@ const ROOT_SELECTION_REGEX = /(DEBUG: [0-9 -]*)(\[|$)/
 const SUB_SELECTION_REGEX = /(\[[0-9 -]*\])/
 
 export const debugSelectionPluginKey = new PluginKey("debugSelection")
+let pluginCount = 0
 
-/** Renders a floating tooltip directly above the selection point in dev mode only. */
+/** Renders a floating tooltip in the top-right corner of the editor's parent element. */
 export const debugSelectionPlugin = (editor: Editor, log: boolean = false): Plugin => {
 	let initialized = false
 	let currentDisplayString = ""
 
+	const container = document.createElement("div")
+	Object.assign(container.style, {
+		position: "absolute",
+		top: "5px",
+		right: "5px",
+		zIndex: "10000",
+		padding: "2px 6px",
+		fontSize: "10px",
+		fontFamily: "monospace",
+		color: "white",
+		backgroundColor: "rgba(0,0,0,0.7)",
+		borderRadius: "2px",
+		pointerEvents: "none",
+		whiteSpace: "nowrap",
+		lineHeight: "1",
+		display: "none"
+	})
+	container.id = "debug-selection-widget-" + pluginCount
+	pluginCount++
+
+	if (import.meta.dev) {
+		editor.view.dom.parentElement?.appendChild(container)
+	}
+
 	return new Plugin({
 		key: debugSelectionPluginKey,
 		state: {
-			init() { return DecorationSet.empty },
-			apply(tr, oldSet) {
-				if (!import.meta.dev) return oldSet.map(tr.mapping, tr.doc)
+			init() { return null },
+			apply(tr, _old) {
+				if (!import.meta.dev) return null
 				const sel = `${tr.selection.from} - ${tr.selection.to}`
 
 				if (isEmbeddedBlock(editor.view)) {
@@ -32,7 +56,7 @@ export const debugSelectionPlugin = (editor: Editor, log: boolean = false): Plug
 							`[${sel}]`
 						)
 					} else {
-						// Ensure prefix is present even if starting as an embedded block
+						// ensure prefix is present even if starting as an embedded block
 						const prefix = currentDisplayString.startsWith("DEBUG: ") ? "" : "DEBUG: "
 						currentDisplayString = `${prefix}${currentDisplayString} [${sel}]`
 					}
@@ -47,35 +71,19 @@ export const debugSelectionPlugin = (editor: Editor, log: boolean = false): Plug
 							`DEBUG: ${sel} $2`
 						)
 					}
-				} const widget = document.createElement("div")
-				Object.assign(widget.style, {
-					position: "absolute",
-					top: "110%",
-					right: "0",
-					zIndex: "100",
-					padding: "2px 6px",
-					fontSize: "10px",
-					fontFamily: "monospace",
-					color: "white",
-					backgroundColor: "rgba(0, 0, 0, 0.7)",
-					borderRadius: "2px",
-					pointerEvents: "none",
-					whiteSpace: "nowrap",
-					lineHeight: "1"
-				})
-				widget.textContent = currentDisplayString
+				}
 
-				const deco = Decoration.widget(tr.selection.to, widget, {
-					side: -1, // Ensure it stays to the left of the cursor
-					key: "debug-selection-tooltip"
-				})
+				container.textContent = currentDisplayString
+				container.style.display = currentDisplayString ? "block" : "none"
 
-				return DecorationSet.create(tr.doc, [deco])
+				return null
 			}
 		},
-		props: {
-			decorations(state) {
-				return debugSelectionPluginKey.getState(state)
+		view: () => {
+			return {
+				destroy: () => {
+					container.remove()
+				}
 			}
 		}
 	})
