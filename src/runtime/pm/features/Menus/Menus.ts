@@ -15,7 +15,7 @@ declare module "@tiptap/core" {
 			/** This will temporarily open and "pin" the menu, disabling the auto-prioritizing, until it's closed with `force: true`. */
 			pinOpenMenu: (options: Pick<OpenMenuInfo, "name">) => ReturnType
 			/**
-			 * Register a menu to be hnadled by the Menus extension.
+			 * Register a menu to be handled by the Menus extension.
 			 *
 			 * The ideal place to register them is usually in the onCreate hook of the extension. Do not do it from addProseMirrorPlugins as this will cause the menus to be registered more times than they should be.
 			 *

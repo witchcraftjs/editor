@@ -1,24 +1,9 @@
 <template>
 <div
-	class="
-	rounded-sm
-	border-neutral-300
-	dark:border-neutral-700
-	border
-	bg-neutral-50
-	dark:bg-neutral-950
-	p-1
-	flex
-	[&>div]:px-1
-	[&>div:last-of-type]:pr-0
-	[&>div]:border-neutral-300
-	[&>div]:dark:border-neutral-700
-	[&>div]:border-r
-	[&>div:last-of-type]:border-r-0
-"
+	class="flex items-center gap-2"
 >
 	<template
-		v-for="item in commands"
+		v-for="item, i in filteredCommands"
 		:key="item.title"
 	>
 		<div
@@ -32,10 +17,10 @@
 			<!-- @close="emit('close')" -->
 		</div>
 		<div
-			v-else-if="item.type === 'group' && item.variations.some(subItem => subItem.canShow === undefined || subItem.canShow(editor.state))"
+			v-else-if="item.type === 'group'"
 			class="
 				flex
-				gap-1
+				gap-2
 			"
 		>
 			<CommandBarItem
@@ -45,19 +30,33 @@
 				:key="subItem.title"
 			/>
 		</div>
+		<div
+			v-if="i !== filteredCommands.length - 1"
+			class="w-[2px] h-[1rem] bg-neutral-300 dark:bg-neutral-700"
+		/>
 	</template>
 </div>
 </template>
 
 <script setup lang="ts">
 import type { Editor } from "@tiptap/core"
+import { computed } from "vue"
 
 import CommandBarItem from "./CommandBarItem.vue"
 
 import type { CommandBarCommand, CommandBarGroup } from "../types"
 
-/* const props =  */defineProps<{
+const props = defineProps<{
 	editor: Editor
 	commands: (CommandBarCommand | CommandBarGroup)[]
 }>()
+
+const filteredCommands = computed(() => {
+	return props.commands.filter(item => {
+		if (item.type === "group") {
+			return item.variations.some(subItem => subItem.canShow === undefined || subItem.canShow(props.editor.state))
+		}
+		return true
+	})
+})
 </script>

@@ -8,7 +8,7 @@
 		:style="`background-color: ${color?.color}`"
 		:title="color?.name"
 	>
-		<FaSolidHighlighter class="mb-2 ml-1"/>
+		<IconHighlighter class="mb-2 ml-1"/>
 	</div>
 	<div
 		v-else
@@ -31,7 +31,7 @@
 import type { Editor } from "@tiptap/core"
 import { computed } from "vue"
 
-import FaSolidHighlighter from "~icons/lucide/highlighter"
+import IconHighlighter from "~icons/lucide/highlighter"
 
 import type { HighlightMarkOptions } from "../../Highlight/types.js"
 import { highlightPluginKey } from "../../Highlight/types.js"

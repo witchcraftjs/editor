@@ -1,126 +1,157 @@
 <template>
 <div
-	:class="twMerge(
-		`flex flex-col`,
-		isOpen && `gap-1`
-	)"
+	class="
+		grid
+		[grid-template-columns:repeat(3,min-content)]
+		gap-1
+	"
 	ref="el"
 >
-	<div class="flex flex-nowrap flex-row gap-1 items-center">
-		<WLabel
-			id="menu-link-input"
-			title="Internal Link"
-			aria-label="Internal Link"
-			class="flex items-center"
-		>
-			<i-ic-round-link class="w-[1.25em] !h-auto"/>
-		</WLabel>
-		<WSimpleInput
-			id="menu-link-input"
-			class="link-input"
-			:suggestions="linkSuggestions"
-			v-model="inputValue"
-			@submit="submitHandler"
-			@keydown="keydownHandler"
-			@blur="blurHandler"
-			@focus="canOpen = true"
-		/>
-		<BubbleMenuLinkActions
-			:link-mark="linkMark"
-			:is-changed="isChanged"
-			@save="saveChanges"
-			@copy="emit('copy', $event)"
-			@remove="emit('remove')"
-		/>
-	</div>
-	<WSuggestions
-		:suggestions="linkSuggestions"
-		:can-open="canOpen"
-		class="flex-1 rounded-sm overflow-hidden"
-		ref="suggestionsComponent"
+	<WIcon
+		aria-label="Internal Link Text"
+		class="flex items-center"
+	>
+		<IconText/>
+	</WIcon>
+	<WSimpleInput
+		aria-label="Link Text"
+		:valid="linkText !== ''"
+		:border="false"
+		class="
+			link-text-input
+			border-b
+			border-neutral-300
+			dark:border-neutral-700
+			focus:border-accent-500
+			rounded-none
+			after:rounded-none
+		"
 		v-model="linkText"
-		v-model:input-value="inputValue"
-		v-model:open="isOpen"
-		@submit="submitHandler"
+		@keydown.enter="saveChanges"
+		@keydown.escape="emit('close')"
 	/>
+	<BubbleMenuLinkActions
+		:link-mark="linkMark"
+		:is-changed="isChanged"
+		@save="saveChanges"
+		@copy="emit('copy', $event)"
+		@remove="emit('remove')"
+	/>
+	<WIcon
+		aria-label="Internal Link Text"
+		class="flex items-start pt-1"
+	>
+		<IconLink/>
+	</WIcon>
+	<ComboboxRoot
+		class="w-full flex flex-col gap-1"
+		:diplay-value="(_:{ text: string }) => _?.text"
+		:reset-search-term-on-select="false"
+		:reset-search-term-on-blur="false"
+		:default-value="linkSelected"
+		v-model="linkSelected"
+	>
+		<ComboboxInput
+			class="
+				link-link-input
+				flex-1
+				border-b
+				border-neutral-300
+				dark:border-neutral-700
+				focus:border-accent-500
+				px-1
+				focus-outline
+			"
+			aria-label="Internal Link"
+			placeholder="Search..."
+			v-model="searchTerm"
+			@focus="searchTerm = ''"
+			@blur="searchTerm= linkSelected?.text ?? ''"
+			@keydown.enter="searchTerm= linkSelected?.text ?? ''"
+			@keydown.escape="emit('close')"
+		/>
+		<ComboboxContent>
+			<ComboboxViewport class="py-2 flex flex-col gap-1">
+				<ComboboxItem
+					:value="option"
+					class="
+					data-highlighted:bg-accent-500/50
+					rounded-md
+					px-1
+					py-1
+					cursor-pointer
+				"
+					v-for="(option, index) in linkSuggestions"
+					:key="index"
+				>
+					{{ option.text }}
+				</ComboboxItem>
+			</ComboboxViewport>
+		</ComboboxContent>
+	</ComboboxRoot>
 </div>
 </template>
 
 <script setup lang="ts">
 import type { Mark } from "@tiptap/pm/model"
 import type { Editor } from "@tiptap/vue-3"
-import WLabel from "@witchcraft/ui/components/LibLabel"
-import WSimpleInput from "@witchcraft/ui/components/LibSimpleInput"
-import WSuggestions from "@witchcraft/ui/components/LibSuggestions"
-import { twMerge } from "@witchcraft/ui/utils/twMerge"
+import { ComboboxContent, ComboboxInput, ComboboxItem, ComboboxRoot, ComboboxViewport } from "reka-ui"
 import { ref, watch } from "vue"
-// https://github.com/vuejs/language-tools/issues/3206#issuecomment-1563399071
-import type { ComponentExposed } from "vue-component-type-helpers"
 
-import BubbleMenuLinkActions from "./BubbleMenuLinkActions.vue"
-
+import IconText from "~icons/lucide/case-sensitive"
 // https://github.com/unplugin/unplugin-vue-components/issues/633
-import iIcRoundLink from "~icons/ic/round-link"
+import IconLink from "~icons/lucide/file-symlink"
+
 
 const props = defineProps<{
 	editor: Editor
-	linkSuggestions?: string[]
+	linkSuggestions?: { text: string, id: string }[]
 	linkMark: Mark | undefined
 	isChanged: boolean
-	getInternalLinkHref: (href: string) => string
+	itemToHref: (item: { text: string, id: string }) => string
+	hrefToItem: (href: string) => { text: string, id: string } | undefined
 }>()
+
 const emit = defineEmits<{
 	close: [e?: Event]
 	copy: [value: string]
 	remove: []
 }>()
 
-const linkText = defineModel<string>("linkText", { required: true })
-const inputValue = defineModel<string>("tempLinkTextValue", { default: "" })
-const canOpen = ref(false)
-const isOpen = ref(false)
 const el = ref<HTMLElement | null>(null)
-const suggestionsComponent = ref<ComponentExposed<typeof WSuggestions>>()
-
-watch(linkText, () => {
-	inputValue.value = linkText.value
-}, { immediate: true })
-
-// function goToLink() {
-// 	window.open(linkText.value, "_blank")
-// }
-
-function keydownHandler(e: KeyboardEvent) {
-	if (e.key === "Escape") {
-		emit("close", e)
-	}
-
-	(suggestionsComponent.value as any)?.inputKeydownHandler?.(e)
+const linkHref = defineModel<string>("linkHref", { required: true })
+const linkText = defineModel<string>("linkText", { required: true })
+const linkSelected = ref<{ text: string, id: string } | undefined>(props.hrefToItem(linkHref.value))
+const searchTerm = ref("")
+if (linkSelected.value?.text) {
+	linkText.value = linkSelected.value.text
+	searchTerm.value = linkSelected.value.text
 }
+
+
+watch(linkSelected, () => {
+	if (linkSelected.value?.text) {
+		linkText.value = linkSelected.value.text
+		searchTerm.value = linkSelected.value.text
+	}
+})
+
 function saveChanges(e?: Event) {
-	const href = props.getInternalLinkHref(inputValue.value)
+	if (!linkSelected.value) return
+	const href = props.itemToHref(linkSelected.value)
 	props.editor.commands.changeOrAddLink(
 		href,
-		inputValue.value,
+		linkText.value,
 		true
 	)
 	emit("close", e)
 }
 
-function blurHandler(e: FocusEvent) {
-	(suggestionsComponent.value as any)?.inputBlurHandler?.(e)
-}
-// make the user hit enter once to select, then enter again to submit and close
-function submitHandler(): void {
-	if (linkText.value === inputValue.value) {
-		saveChanges()
-	}
-}
-
 defineExpose({
-	focus: () => {
-		const input = el.value?.querySelector(`input`)
-		if (input) input.focus()
+	focus: (type: "text" | "link") => {
+		const inputType = type === "link" ? "link-link-input" : "link-text-input"
+		const input = el.value?.querySelector(`.${inputType}`)
+		if (input && input instanceof HTMLInputElement) input.focus()
 	}
 })
 </script>

@@ -1,38 +1,47 @@
 <template>
-<WPopup
+<WPopover
 	:model-value="menu.opened"
-	:preferred-horizontal="['left-most']"
-	:preferred-vertical="popupVerticalPositioner"
-	:position-modifier="popupPositionModifier"
-	ref="popup"
-	@update:model-value="!$event && props.editor.commands.closeItemMenu()"
+
+	:content-props="{
+		collisionBoundary,
+		reference: virtualMenuEl,
+		side: 'left',
+		align: 'start',
+		class: `
+			bg-neutral-100
+			dark:bg-neutral-700
+			text-sm
+			z-10
+		`
+	}"
+	:show-arrow="false"
+	:use-backdrop="false"
+	:animation-direction="'show'"
+	:tabindex="0"
+	@update:model-value="editor.commands.closeItemMenu()"
 >
-	<template #popup="{ extractEl }">
-		<div
-			:ref="extractEl"
-		>
-			<CommandsMenuList
-				:entries="commandsMenu"
-				@close="(props.editor.commands as any).closeItemMenu()"
-			/>
-		</div>
+	<template #button/>
+	<template #popover>
+		<CommandsMenuList
+			:editor="editor"
+			:entries="commandsMenu"
+			@close="(props.editor.commands as any).closeItemMenu()"
+		/>
 	</template>
-</WPopup>
+</WPopover>
 </template>
 
 <script setup lang="ts">
 import { unreachable } from "@alanscodelog/utils/unreachable"
 import type { Editor } from "@tiptap/core"
 import type { Transaction } from "@tiptap/pm/state"
-import WPopup from "@witchcraft/ui/components/LibPopup"
+import WPopover from "@witchcraft/ui/components/WPopover"
 import { computed, provide, ref, toRef, watch } from "vue"
 
 import { defaultItemMenu as commandsMenu } from "./defaultItemMenu.js"
 
 import CommandsMenuList from "../../CommandsMenus/components/CommandMenuList.vue"
 import { commandExecuterInjectionKey, menuBlockIdInjectionKey, menuEditorInjectionKey } from "../../CommandsMenus/types.js"
-import { popupPositionModifier } from "../../CommandsMenus/utils/popupPositionModifier.js"
-import { popupVerticalPositioner } from "../../CommandsMenus/utils/popupVerticalPositioner.js"
 import { itemMenuPluginKey, type ItemMenuPluginState } from "../types.js"
 import { createItemMenuCommandExecuter } from "../utils/createItemMenuCommandExecuter.js"
 
@@ -41,9 +50,9 @@ const props = defineProps<{
 }>()
 
 const menu = ref<ItemMenuPluginState>({ opened: false, id: undefined })
-const popup = ref<InstanceType<typeof WPopup>>()
 
-const virtualMenuEl = ref<{ getBoundingClientRect(): DOMRect } | null>(null)
+const collisionBoundary = ref<HTMLElement | null>(null)
+const virtualMenuEl = ref<{ getBoundingClientRect(): DOMRect } | undefined>(undefined)
 function virtualGetBoundingClientRect(): DOMRect {
 	// note this will not work if we allow recursive embedding
 	const el = props.editor.view.dom.querySelector(`li[blockid='${menu.value.id}']`)
@@ -66,14 +75,13 @@ function updateState({ editor }: { transaction: Transaction, editor: Editor }): 
 	const willBe = itemMenuPluginKey.getState(editor.state as any) ?? menu.value
 	if (willBe.opened && (was.opened !== willBe.opened || was.id !== willBe.id)) {
 		virtualMenuEl.value = { getBoundingClientRect: virtualGetBoundingClientRect }
-		popup.value!.setReference(virtualMenuEl.value)
 	} else if (virtualMenuEl.value && !willBe.opened) {
-		virtualMenuEl.value = null
-		popup.value!.setReference(virtualMenuEl.value!)
+		virtualMenuEl.value = undefined
 	}
 	// we can't open the popup before the virtualMenuEl is set
 	menu.value = willBe
 }
+
 const editorRef = toRef(props, "editor")
 provide(menuEditorInjectionKey, editorRef as any)
 const blockId = computed(() => menu.value.id)
@@ -82,6 +90,7 @@ provide(commandExecuterInjectionKey, createItemMenuCommandExecuter(() => blockId
 watch(() => props.editor, (newVal, oldVal) => {
 	oldVal.off("transaction", updateState)
 	newVal.on("transaction", updateState)
+	collisionBoundary.value = newVal.view.dom.parentElement
 })
 props.editor.on("transaction", updateState)
 </script>

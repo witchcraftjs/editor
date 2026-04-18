@@ -1,25 +1,26 @@
 import type { ItemMenuCommand, ItemMenuGroup } from "./types.js"
 
-import FaTable from "~icons/fa/table"
-import FaTrash from "~icons/fa-solid/trash"
-import FaSolidPar from "~icons/fa6-solid/paragraph"
-import FluentDocumentSyncFilled from "~icons/fluent/document-sync-16-filled"
-import HeroIconsCode from "~icons/heroicons/code-bracket-16-solid"
-import HeroIconsBulletList from "~icons/heroicons/list-bullet-16-solid"
-import HeroIconsNumberedList from "~icons/heroicons/numbered-list-16-solid"
-import LucideHeading1 from "~icons/lucide/heading-1"
-import LucideHeading2 from "~icons/lucide/heading-2"
-import LucideHeading3 from "~icons/lucide/heading-3"
-import LucideHeading4 from "~icons/lucide/heading-4"
-import LucideHeading5 from "~icons/lucide/heading-5"
-import LucideHeading6 from "~icons/lucide/heading-6"
+// lucides lists are weird
+import IconBulletList from "~icons/heroicons/list-bullet-16-solid"
+import IconNumberedList from "~icons/heroicons/numbered-list-16-solid"
+import IconCode from "~icons/lucide/code"
+import IconEmbeddedDocument from "~icons/lucide/file-text"
+import IconHeading1 from "~icons/lucide/heading-1"
+import IconHeading2 from "~icons/lucide/heading-2"
+import IconHeading3 from "~icons/lucide/heading-3"
+import IconHeading4 from "~icons/lucide/heading-4"
+import IconHeading5 from "~icons/lucide/heading-5"
+import IconHeading6 from "~icons/lucide/heading-6"
+import IconParagraph from "~icons/lucide/pilcrow"
+import IconTable from "~icons/lucide/sheet"
+import IconTrash from "~icons/lucide/trash"
 
 export const deleteNodesCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "deleteItem",
 	title: "Delete",
 	args: ["$blockPos"],
-	icon: { props: { class: "w-[0.7em]" }, component: FaTrash }
+	icon: { props: { class: "w-[0.7em]" }, component: IconTrash }
 }
 export const regularItemCommand: ItemMenuCommand = {
 	type: "command" as const,
@@ -31,13 +32,13 @@ export const bulletItemCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "changeItemType",
 	title: "Bullet Item",
-	icon: HeroIconsBulletList,
+	icon: IconBulletList,
 	args: [{ type: "unordered" }, "$blockPos"]
 }
 export const numberedItemCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "changeItemType",
-	icon: HeroIconsNumberedList,
+	icon: IconNumberedList,
 	title: "Numbered Item",
 	args: [{ type: "ordered" }, "$blockPos"]
 }
@@ -46,28 +47,28 @@ export const codeBlockCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setNode",
 	title: "Code",
-	icon: HeroIconsCode,
+	icon: IconCode,
 	args: ["codeBlock", { language: "", loading: false }, "$blockPos"]
 }
 export const embeddedDocCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setNode",
 	title: "Embed",
-	icon: FluentDocumentSyncFilled,
+	icon: IconEmbeddedDocument,
 	args: ["embeddedDoc", { embedId: { docId: undefined, embedId: undefined } }, "$blockPos"]
 }
 export const paragraphCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setNode",
 	title: "Paragraph",
-	icon: FaSolidPar,
+	icon: IconParagraph,
 	args: ["paragraph", { }, "$blockPos"]
 }
 export const tableCommand: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setNode",
 	title: "Table",
-	icon: FaTable,
+	icon: IconTable,
 	args: ["table", { }, "$blockPos"]
 }
 
@@ -75,46 +76,46 @@ export const heading1Command: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setHeading",
 	title: "Heading Level 1",
-	icon: LucideHeading1,
+	icon: IconHeading1,
 	args: [{ level: 1, onlyHeadings: false }, "$contentPos"]
 }
 export const heading2Command: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setHeading",
 	title: "Heading Level 2",
-	icon: LucideHeading2,
+	icon: IconHeading2,
 	args: [{ level: 2, onlyHeadings: false }, "$contentPos"]
 }
 export const heading3Command: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setHeading",
 	title: "Heading Level 3",
-	icon: LucideHeading3,
+	icon: IconHeading3,
 	args: [{ level: 3, onlyHeadings: false }, "$contentPos"]
 }
 export const heading4Command: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setHeading",
 	title: "Heading Level 4",
-	icon: LucideHeading4,
+	icon: IconHeading4,
 	args: [{ level: 4, onlyHeadings: false }, "$contentPos"]
 }
 export const heading5Command: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setHeading",
 	title: "Heading Level 5",
-	icon: LucideHeading5,
+	icon: IconHeading5,
 	args: [{ level: 5, onlyHeadings: false }, "$contentPos"]
 }
 export const heading6Command: ItemMenuCommand = {
 	type: "command" as const,
 	command: "setHeading",
 	title: "Heading Level 6",
-	icon: LucideHeading6,
+	icon: IconHeading6,
 	args: [{ level: 6, onlyHeadings: false }, "$contentPos"]
 }
 export const defaultItemMenu = [
-	deleteNodesCommand,
+
 	{
 		type: "group" as const,
 		title: "Change Item Type",
@@ -139,5 +140,6 @@ export const defaultItemMenu = [
 			heading5Command,
 			heading6Command
 		]
-	} satisfies ItemMenuGroup
+	} satisfies ItemMenuGroup,
+	deleteNodesCommand
 ]

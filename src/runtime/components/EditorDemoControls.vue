@@ -10,6 +10,9 @@
 		gap-2
 	"
 >
+	<div class="dark:bg-tint-red-500/10 dark:bg-(--mix) w-[1rem] h-[1rem]">
+		What
+	</div>
 	<div
 		class="
 			flex
@@ -67,7 +70,8 @@
 </template>
 
 <script setup lang="ts">
-import WDarkModeSwitcher from "@witchcraft/ui/components/LibDarkModeSwitcher"
+import WCheckbox from "@witchcraft/ui/components/WCheckbox"
+import WDarkModeSwitcher from "@witchcraft/ui/components/WDarkModeSwitcher"
 import { useRoute } from "nuxt/app"
 
 import CodeBlockThemePicker from "./CodeBlockThemePicker.vue"

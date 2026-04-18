@@ -22,6 +22,7 @@ export function getMarkPosition(
 	const startOffset = isAtEnd
 		? $pos.parentOffset - 1
 		: $pos.parentOffset
+	if (startOffset === -1) return null
 	const start = $pos.parent.childAfter(startOffset)
 	if (!start) return null
 	function hasMark(node: Node): boolean {

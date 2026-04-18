@@ -1,50 +1,43 @@
 <template>
 <div
-	class="
-	commands-list
-	flex
-	flex-col
-	rounded-sm
-	border
-	bg-neutral-100
-	border-neutral-300
-	dark:bg-neutral-800
-	dark:border-neutral-700
-	m-1
-	[&>*:first-child]:border-t-0
-	[&>*:first-child]:rounded-t-sm
-	[&>*:last-child]:rounded-b-sm
-"
+	class="commands-list flex flex-col rounded-sm gap-1"
 >
 	<template
-		v-for="item in entries"
+		v-for="item, i in entries"
 		:key="item.type + item.title"
 	>
-		<div
-
-			class="
-			border-t
-			border-neutral-300
-		"
-		>
-			<div v-if="item.type === 'command'">
-				<CommandMenuItem
-					:item="item"
-					@close="emit('close')"
-				/>
-			</div>
-
-			<CommandMenuGroup
-				v-else-if="item.type === 'group'"
+		<div v-if="item.type === 'command'">
+			<CommandMenuItem
 				:item="item"
 				@close="emit('close')"
 			/>
 		</div>
+
+		<CommandMenuGroup
+			v-else-if="item.type === 'group'"
+			:item="item"
+			:editor="editor"
+			:is-open="shownMenu === item.title"
+			@update:is-open="shownMenu = item.title"
+			@close="emit('close')"
+		/>
+		<div
+			v-if="i !== entries.length - 1"
+			class="
+				w-full
+				h-px
+				bg-neutral-300
+				dark:bg-neutral-700
+			"
+		/>
 	</template>
 </div>
 </template>
 
 <script setup lang="ts">
+import type { Editor } from "@tiptap/core"
+import { onUnmounted, ref } from "vue"
+
 import CommandMenuGroup from "./CommandMenuGroup.vue"
 import CommandMenuItem from "./CommandMenuItem.vue"
 
@@ -53,8 +46,16 @@ import type { CommandGroup } from "../types.js"
 
 /* const props =  */defineProps<{
 	entries: (ItemMenuCommand | CommandGroup)[]
+	editor: Editor
 }>()
+
+const shownMenu = ref<string | undefined>(undefined)
 const emit = defineEmits<{
 	(e: "close"): void
 }>()
+
+
+onUnmounted(() => {
+	shownMenu.value = undefined
+})
 </script>

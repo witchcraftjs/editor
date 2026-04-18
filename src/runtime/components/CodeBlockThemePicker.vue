@@ -1,6 +1,6 @@
 <!-- todo replace with ui libs search select when implemented -->
 <script setup lang="ts">
-import WIcon from "@witchcraft/ui/components/Icon"
+import WIcon from "@witchcraft/ui/components/WIcon"
 import {
 	ComboboxAnchor,
 	ComboboxContent,

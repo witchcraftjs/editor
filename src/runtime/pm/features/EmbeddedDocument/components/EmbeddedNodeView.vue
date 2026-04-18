@@ -40,32 +40,13 @@
 			>
 				Blank Embed
 			</div>
-			<WButton
-				v-if="editor?.isEditable"
-				title="Change embed link."
-				:border="true"
-				@click="showChangeEmbed = true"
-			>
-				<WIcon><i-fa-solid-link class="w-[0.7rem]"/></WIcon>
-			</WButton>
-			<WPopup
-				:use-backdrop="true"
-				:preferred-horizontal="['center-screen']"
-				:preferred-vertical="['center-screen']"
-				class="backdrop:bg-neutral-900/50 backdrop:dark:bg-neutral-100/50"
+			<EmbeddedDocumentPicker
+				:is-editable="editor?.isEditable"
+				:embed-id="embedId"
 				v-model="showChangeEmbed"
-			>
-				<template #popup="{	extractEl }">
-					<EmbeddedDocumentPicker
-						:is-shown="showChangeEmbed"
-						:embed-id="embedId"
-						v-extract-root-el="extractEl"
-						@submit="pickEmbed"
-						@cancel="showChangeEmbed = false"
-					/>
-				</template>
-				>
-			</WPopup>
+				@submit="pickEmbed"
+				@cancel="showChangeEmbed = false"
+			/>
 		</div>
 		<Transition>
 			<div
@@ -116,15 +97,9 @@
 
 <script setup lang="ts">
 import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3"
-import WIcon from "@witchcraft/ui/components/Icon"
-import WButton from "@witchcraft/ui/components/LibButton"
-import WPopup from "@witchcraft/ui/components/LibPopup"
-import { vExtractRootEl } from "@witchcraft/ui/directives/vExtractRootEl"
 import { computed, inject, ref, watch } from "vue"
 
 import EmbeddedDocumentPicker from "./EmbeddedDocumentPicker.vue"
-
-import IFaSolidLink from "~icons/fa-solid/link"
 
 import Editor from "../../../../components/Editor.vue"
 import type { MaybeEmbedId } from "../../DocumentApi/types.js"

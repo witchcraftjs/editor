@@ -66,7 +66,7 @@
 <script setup lang="ts">
 // all imports must be explicit so this also works without nuxt
 import type { EditorOptions } from "@tiptap/core"
-import WRoot from "@witchcraft/ui/components/LibRoot"
+import WRoot from "@witchcraft/ui/components/WRoot"
 import { useRoute } from "nuxt/app"
 import { reactive, ref, shallowRef } from "vue"
 
@@ -103,18 +103,31 @@ const linkOptions: EditorLinkOptions = {
 		console.log(`Would open internal link to ${href}.`)
 	}
 }
-const fakeSuggestions = reactive<string[]>(["some", "suggestions"])
+
+const fakeInternalLinkSuggestions = reactive<{ text: string, id: string }[]>([
+	{ text: "Internal Link", id: "some-id" },
+	{ text: "Internal Some Other Link", id: "some-other-link-id" },
+	{ text: "Internal Duplicate Text - Different Id", id: "dupe-link-id" },
+	{ text: "Internal Duplicate Text - Different Id", id: "dupe-link-id-2" }
+])
 
 const menus = shallowRef<Record<string, MenuRenderInfo>>({
 	linkMenu: {
 		component: BubbleMenuLink,
-		props: editor => ({
-			editor,
-			linkSuggestions: fakeSuggestions,
-			getInternalLinkHref(href: string) {
-				return `internal://${href.replace(/[^\w-]/g, "")}`
+		props: editor => {
+			return {
+				editor,
+				internalLinkSuggestions: fakeInternalLinkSuggestions,
+				internalItemToHref(item: { text: string, id: string }) {
+					return `internal://${item.id.replace(/[^\w-]/g, "")}`
+				},
+				hrefToInternalItem(href: string) {
+					const idWanted = href.replace("internal://", "")
+					const found = fakeInternalLinkSuggestions.find(_ => _.id === idWanted)
+					return found
+				}
 			}
-		})
+		}
 	},
 	commandBar: {
 		component: CommandBar,

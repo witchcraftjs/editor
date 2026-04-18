@@ -9,10 +9,10 @@
 		@click="emit('save', $event)"
 	>
 		<WIcon v-if="linkMark">
-			<i-fa-solid-check class="w-[1.25em]"/>
+			<IconCheck class="scale-120"/>
 		</WIcon>
 		<WIcon v-else>
-			<i-fa-solid-plus/>
+			<IconPlus/>
 		</WIcon>
 	</WButton>
 	<WButton
@@ -23,7 +23,7 @@
 		title="Copy"
 		@click="emit('copy', linkHref)"
 	>
-		<WIcon><i-fa-solid-copy class="w-[1.25em]"/></WIcon>
+		<WIcon><IconCopy class=""/></WIcon>
 	</WButton>
 	<WButton
 		v-if="linkMark"
@@ -33,20 +33,20 @@
 		title="Remove Link"
 		@click="emit('remove')"
 	>
-		<WIcon><i-fa-solid-trash class="w-[1.25em]"/></WIcon>
+		<WIcon><IconTrash class=""/></WIcon>
 	</WButton>
 </div>
 </template>
 
 <script setup lang="ts">
 import type { Mark } from "@tiptap/pm/model"
-import WIcon from "@witchcraft/ui/components/Icon"
-import WButton from "@witchcraft/ui/components/LibButton"
+import WButton from "@witchcraft/ui/components/WButton"
+import WIcon from "@witchcraft/ui/components/WIcon"
 
-import IFaSolidCheck from "~icons/fa-solid/check"
-import IFaSolidCopy from "~icons/fa-solid/copy"
-import IFaSolidPlus from "~icons/fa-solid/plus"
-import IFaSolidTrash from "~icons/fa-solid/trash"
+import IconCheck from "~icons/lucide/check"
+import IconCopy from "~icons/lucide/copy"
+import IconPlus from "~icons/lucide/plus"
+import IconTrash from "~icons/lucide/trash"
 
 defineProps<{
 	linkMark: Mark | undefined

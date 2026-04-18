@@ -2,19 +2,16 @@ import type { EditorState } from "@tiptap/pm/state"
 
 import TextIcon from "./components/TextIcon.vue"
 import HighlightIcon from "./icons/HighlightIcon.vue"
-import SubscriptIcon from "./icons/SubscriptIcon.vue"
-import SuperscriptIcon from "./icons/SuperscriptIcon.vue"
 import type { CommandBarCommand, CommandBarMenu } from "./types.js"
 
-import DashIconsTableColAfter from "~icons/dashicons/table-col-after"
-import DashIconsTableColBefore from "~icons/dashicons/table-col-before"
-import DashIconsTableColDelete from "~icons/dashicons/table-col-delete"
-import DashIconsTableRowAfter from "~icons/dashicons/table-row-after"
-import DashIconsTableRowBefore from "~icons/dashicons/table-row-before"
-import DashIconsTableRowDelete from "~icons/dashicons/table-row-delete"
-
-// import FaSolidBold from "~icons/fa-solid/bold"
-// import FaSolidItalic from "~icons/fa-solid/italic"
+import SubscriptIcon from "~icons/lucide/subscript"
+import SuperscriptIcon from "~icons/lucide/superscript"
+import IconTableColAfter from "~icons/wordpress/table-column-after"
+import IconTableColBefore from "~icons/wordpress/table-column-before"
+import IconTableColDelete from "~icons/wordpress/table-column-delete"
+import IconTableRowAfter from "~icons/wordpress/table-row-after"
+import IconTableRowBefore from "~icons/wordpress/table-row-before"
+import IconTableRowDelete from "~icons/wordpress/table-row-delete"
 
 export const toggleBoldCommand: CommandBarCommand = {
 	type: "command" as const,
@@ -87,7 +84,7 @@ export const tableAddColBeforeCommand: CommandBarCommand = {
 	command: "addColumnBefore" as const,
 	title: "Add column before.",
 	description: "Add a column before the selected column.",
-	icon: { component: DashIconsTableColBefore },
+	icon: { component: IconTableColBefore },
 	canShow: tableCanShow
 }
 
@@ -96,7 +93,7 @@ export const tableAddColAfterCommand: CommandBarCommand = {
 	command: "addColumnAfter" as const,
 	title: "Add column after.",
 	description: "Add a column after the selected column.",
-	icon: { component: DashIconsTableColAfter },
+	icon: { component: IconTableColAfter },
 	canShow: tableCanShow
 }
 
@@ -105,7 +102,7 @@ export const tableAddRowBeforeCommand: CommandBarCommand = {
 	command: "addRowBefore" as const,
 	title: "Add row before.",
 	description: "Add a row before the selected row.",
-	icon: { component: DashIconsTableRowBefore },
+	icon: { component: IconTableRowBefore },
 	canShow: tableCanShow
 }
 
@@ -114,7 +111,7 @@ export const tableAddRowAfterCommand: CommandBarCommand = {
 	command: "addRowAfter" as const,
 	title: "Add row after.",
 	description: "Add a row after the selected row.",
-	icon: { component: DashIconsTableRowAfter },
+	icon: { component: IconTableRowAfter },
 	canShow: tableCanShow
 }
 export const tableDeleteRowCommand: CommandBarCommand = {
@@ -122,7 +119,7 @@ export const tableDeleteRowCommand: CommandBarCommand = {
 	command: "deleteRow" as const,
 	title: "Delete row.",
 	description: "Delete the selected row.",
-	icon: { component: DashIconsTableRowDelete },
+	icon: { component: IconTableRowDelete },
 	canShow: tableCanShow
 }
 
@@ -131,7 +128,7 @@ export const tableDeleteColCommand: CommandBarCommand = {
 	command: "deleteColumn" as const,
 	title: "Delete column.",
 	description: "Delete the selected column.",
-	icon: { component: DashIconsTableColDelete },
+	icon: { component: IconTableColDelete },
 	canShow: tableCanShow
 }
 

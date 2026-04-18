@@ -32,19 +32,19 @@
 			:border="false"
 			@click="deleteNode();editor.commands.focus()"
 		>
-			<WIcon><i-fa-solid-trash/></WIcon>
+			<WIcon><IconTrash/></WIcon>
 		</WButton>
 		<WButton
 			:border="false"
 			@click="copy(node.attrs.src)"
 		>
-			<WIcon><i-fa-solid-copy/></WIcon>
+			<WIcon><IconCopy/></WIcon>
 		</WButton>
 		<WButton
 			:border="false"
 			@click="openLink"
 		>
-			<WIcon><i-fa-solid-external-link-alt class="w-[1.25em]"/></WIcon>
+			<WIcon><IconExternalLink class="w-[1.25em]"/></WIcon>
 		</WButton>
 	</div>
 	<node-view-content
@@ -62,14 +62,14 @@
 
 <script setup lang="ts">
 import { NodeViewContent, nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3"
-import WIcon from "@witchcraft/ui/components/Icon"
-import WButton from "@witchcraft/ui/components/LibButton"
+import WButton from "@witchcraft/ui/components/WButton"
+import WIcon from "@witchcraft/ui/components/WIcon"
 import { copy } from "@witchcraft/ui/helpers/copy"
 import { twMerge } from "tailwind-merge"
 
-import IFaSolidCopy from "~icons/fa-solid/copy"
-import IFaSolidExternalLinkAlt from "~icons/fa-solid/external-link-alt"
-import IFaSolidTrash from "~icons/fa-solid/trash"
+import IconCopy from "~icons/lucide/copy"
+import IconExternalLink from "~icons/lucide/external-link"
+import IconTrash from "~icons/lucide/trash"
 
 const props = defineProps(nodeViewProps)
 

@@ -249,8 +249,14 @@ export const Link = TipTapLink.extend({
 			appendTransaction(_trs, oldState, newState) {
 				const value = linkMenuPluginKey.getState(newState)
 				const wasJustCreatedNewLink = value?.justChangedLink ?? false
+
+				const { from, to } = newState.selection
 				const newMark = getMarksInSelection(newState).find(_ => _.type.name === self.name)
 				const prevMark = getMarksInSelection(oldState).find(_ => _.type.name === self.name)
+
+
+				const markPos = getMarkPosition(newState, self.type, newState.selection.from)
+				const isInsideMark = markPos && markPos.from <= from && markPos.to >= to
 
 				const selectionSame = oldState.selection.eq(newState.selection)
 				if (!selectionSame) {
@@ -258,7 +264,7 @@ export const Link = TipTapLink.extend({
 					const allowAutoOpenOnRecentlyChangedLink = value?.allowAutoOpenOnRecentlyChangedLink ?? false
 					const considerUnchanged = allowAutoOpenOnRecentlyChangedLink && wasJustCreatedNewLink
 					const changedMark = prevMark !== newMark && !considerUnchanged
-					if ((value?.autoOpen ?? false) && newMark) {
+					if ((value?.autoOpen ?? false) && newMark && isInsideMark) {
 						const newStateValue = changedMark
 							? "open"
 							: wasOpen

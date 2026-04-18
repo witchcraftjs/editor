@@ -1,46 +1,33 @@
 <template>
-<!-- Every focusable element needs to checkCloseOnBlur to preserve focus when focusing to another element inside the component -->
+<!-- If the element creates a further popup every focusable element needs to checkCloseOnBlur to preserve focus when focusing to another element inside the popup. In general popups should be avoided. -->
 
-<div
-	v-if="showBubbleMenu"
-	tabindex="0"
-	:class="twMerge(`
-		rounded-sm
-		border-neutral-300
-		dark:border-neutral-700
-		border
-		bg-neutral-50
-		dark:bg-neutral-950
-		p-2
-	`)"
->
-	<bubble-menu-external-link
-		v-if="!isInternalLink"
-		:editor="editor"
-		:link-suggestions="finalLinkSuggestions"
-		:link-mark="linkMark"
-		:is-changed="isChanged"
-		ref="component"
-		v-model:link-href="linkHref"
-		v-model:link-text-value="linkTextValue"
-		@close="close"
-		@copy="copy"
-		@remove="removeLink"
-	/>
-	<bubble-menu-internal-link
-		v-if="isInternalLink"
-		:editor="editor"
-		:link-suggestions="finalInternalLinkSuggestions"
-		:link-mark="linkMark"
-		:is-changed="isChanged"
-		:get-internal-link-href="getInternalLinkHref"
-		ref="component"
-		v-model:link-text="linkTextValue"
-		@close="close"
-		@copy="copy"
-		@remove="removeLink"
-	/>
-</div>
+<bubble-menu-external-link
+	v-if="showBubbleMenu && !isInternalLink"
+	:editor="editor"
+	:link-mark="linkMark"
+	:is-changed="isChanged"
+	ref="component"
+	v-model:link-href="linkHref"
+	v-model:link-text="linkText"
+	@close="close"
+	@copy="copy"
+	@remove="removeLink"
+/>
+<bubble-menu-internal-link
+	v-else-if="showBubbleMenu && isInternalLink"
+	:editor="editor"
+	:link-suggestions="finalInternalLinkSuggestions"
+	:link-mark="linkMark"
+	:is-changed="isChanged"
+	:item-to-href="internalItemToHref"
+	:href-to-item="hrefToInternalItem"
+	ref="component"
+	v-model:link-text="linkText"
+	v-model:link-href="linkHref"
+	@close="close"
+	@copy="copy"
+	@remove="removeLink"
+/>
 </template>
 
 <script setup lang="ts">
@@ -48,7 +35,6 @@ import { unreachable } from "@alanscodelog/utils/unreachable"
 import type { Mark } from "@tiptap/pm/model"
 import type { Editor } from "@tiptap/vue-3"
 import { copy } from "@witchcraft/ui/helpers/copy"
-import { twMerge } from "@witchcraft/ui/utils/twMerge"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from "vue"
 
 import BubbleMenuExternalLink from "./BubbleMenuExternalLink.vue"
@@ -59,18 +45,17 @@ import { linkMenuPluginKey } from "../types.js"
 
 const props = defineProps<{
 	editor: Editor
-	linkSuggestions?: string[]
 	internalLinkSuggestions?: string[]
-	getLinkSuggestions?: (href: string, text: string) => string[]
 	getLinkInternalSuggestions?: (href: string) => string[]
-	getInternalLinkHref: (title: string) => string
+	internalItemToHref: (item: { text: string, id: string }) => string
+	hrefToInternalItem: (href: string) => { text: string, id: string } | undefined
 }>()
 
 const component = ref<InstanceType<typeof BubbleMenuExternalLink>>()
 // const bubbleEl = ref<HTMLElement | null>(null)
 const showBubbleMenu = ref(false)
 const linkHref = ref("")
-const linkTextValue = ref("")
+const linkText = ref("")
 const originalLinkTextValue = ref("")
 const isInternalLink = ref(false)
 const linkMark = ref<Mark | undefined>()
@@ -84,16 +69,16 @@ function updateFromMark(mark: Mark | undefined) {
 		// grab text from mark
 		const markPos = getMarkPosition(state, toRaw(mark.type), sel.from)
 		if (!markPos) unreachable()
-		linkTextValue.value = state.doc.cut(markPos.from, markPos.to).textContent
+		linkText.value = state.doc.cut(markPos.from, markPos.to).textContent
 	} else {
 		if (!sel.empty) {
 			// grab text from selection
-			linkTextValue.value = state.doc.cut(sel.from, sel.to).textContent
+			linkText.value = state.doc.cut(sel.from, sel.to).textContent
 		} else {
-			linkTextValue.value = ""
+			linkText.value = ""
 		}
 	}
-	originalLinkTextValue.value = linkTextValue.value
+	originalLinkTextValue.value = linkText.value
 	if (mark?.attrs.internal) {
 		isInternalLink.value = true
 	}
@@ -101,7 +86,7 @@ function updateFromMark(mark: Mark | undefined) {
 
 const isChanged = computed(() =>
 	!linkMark.value
-	|| originalLinkTextValue.value !== linkTextValue.value
+	|| originalLinkTextValue.value !== linkText.value
 	|| linkHref.value !== linkMark.value.attrs.href
 )
 
@@ -130,8 +115,6 @@ function updateState() {
 		})
 	}
 }
-
-const finalLinkSuggestions = computed(() => props.linkSuggestions ?? props.getLinkSuggestions?.(linkHref.value, linkTextValue.value))
 
 const finalInternalLinkSuggestions = computed(() => props.internalLinkSuggestions ?? props.getLinkInternalSuggestions?.(linkHref.value))
 watch(() => props.editor.state, () => updateState())

@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import type { Editor as TipTapEditor, EditorOptions } from "@tiptap/core"
-import WRoot from "@witchcraft/ui/components/LibRoot"
+import WRoot from "@witchcraft/ui/components/WRoot"
 import { ref, watchEffect } from "vue"
 
 import Editor from "./Editor.vue"

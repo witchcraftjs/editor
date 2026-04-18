@@ -3,7 +3,6 @@
 <div
 	class="
 		group/menu-item
-		px-1
 		rounded-xs
 		hover:text-accent-700
 		dark:hover:text-accent-300

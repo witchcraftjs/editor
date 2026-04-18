@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import { pretty } from "@alanscodelog/utils"
 import type { Editor, SingleCommands } from "@tiptap/core"
-import WButton from "@witchcraft/ui/components/LibButton"
+import WButton from "@witchcraft/ui/components/WButton"
 import { twMerge } from "tailwind-merge"
 
 const props = defineProps<{

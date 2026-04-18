@@ -43,6 +43,7 @@ export const Table = TiptapTable.extend({
 	},
 	addCommands() {
 		return {
+			...(this as any).parent?.(),
 			tableEnter: tableEnter()
 		}
 	},
