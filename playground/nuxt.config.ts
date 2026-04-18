@@ -15,6 +15,14 @@ export default defineNuxtConfig({
 		compatibilityVersion: 4 as const
 	},
 	compatibilityDate: "2024-09-23",
+	// workaround for hmr issue
+	vite: {
+		server: {
+			watch: {
+				usePolling: true
+			}
+		}
+	},
 	witchcraftEditor: {
 		// only needed for the package's playground
 		// because we can't resolve the package name from tailwind
