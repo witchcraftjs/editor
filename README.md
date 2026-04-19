@@ -65,7 +65,7 @@ The components library explains how to configure anything, you just need to add 
 
 # Usage
 
-An example of how to setup the editor for full use of all it's features is in [src/runtime/demo/App.vue](src/runtime/demo/App.vue).
+An example of how to setup the editor for full use of all it's features is in [src/runtime/playground/App.vue](src/runtime/playground/App.vue).
 
 Note that the default editor does not load any shortcuts as extensions have all been purposely created without them. You can import the extensions from the schema and add the BaseShortcuts extension to load some basic shortcuts.
  

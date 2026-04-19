@@ -45,6 +45,7 @@ jobs:
         fi
         if [ -d "demo" ]; then
           pushd demo && pnpm i --frozen-lockfile
+          pnpm build
           popd
           cp -r demo/dist docs/demo
         fi
