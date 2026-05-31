@@ -11,25 +11,25 @@ export interface EmbeddedDocumentNodeOptions extends WithOnTriggerByEmbeddedBloc
 }
 
 /** Tells the editor and embedded doc view whether it's deeply embedded (more than one level) or not. */
-export const isDeepEmbeddedInjectionKey = Symbol("isEmbeddedInjectionKey") as InjectionKey<boolean>
+export const isDeepEmbeddedInjectionKey = Symbol.for("@witchcraft/editor:isEmbeddedInjectionKey") as InjectionKey<boolean>
 /** Tells the editor and embedded doc view whether it's embedded or not. */
-export const isEmbeddedInjectionKey = Symbol("isEmbeddedInjectionKey") as InjectionKey<boolean>
+export const isEmbeddedInjectionKey = Symbol.for("@witchcraft/editor:isEmbeddedInjectionKey") as InjectionKey<boolean>
 
 /* Tells the editor whether it's a single block embed so it can set the right class on the wrapper. See {@link isEmbeddedBlock}. */
-export const isEmbeddedBlockInjectionKey = Symbol("isEmbeddedBlockInjectionKey") as InjectionKey<ComputedRef<boolean> | Ref<boolean>>
+export const isEmbeddedBlockInjectionKey = Symbol.for("@witchcraft/editor:isEmbeddedBlockInjectionKey") as InjectionKey<ComputedRef<boolean> | Ref<boolean>>
 
 /** Injects the editor component to use for embedded editors. */
-export const embeddedEditorComponentInjectionKey = Symbol("embeddedEditorComponentInjectionKey") as InjectionKey<new (...args: any) => { editor?: Editor }>
+export const embeddedEditorComponentInjectionKey = Symbol.for("@witchcraft/editor:embeddedEditorComponentInjectionKey") as InjectionKey<new (...args: any) => { editor?: Editor }>
 
 /** Injects the parent editor id so the embedded editor can know who is embedding it (to track recursive/disallowed embeds). */
-export const parentEditorIdInjectionKey = Symbol("parentEditorIdInjectionKey") as InjectionKey<Ref<string | undefined>>
+export const parentEditorIdInjectionKey = Symbol.for("@witchcraft/editor:parentEditorIdInjectionKey") as InjectionKey<Ref<string | undefined>>
 
 /**
 	* Injects the editor options so the embedded editor can use the same ones as it's parent.
 	*
 	* Note that autofocus is always disabled for embedded editors, hence it's omission.
 	*/
-export const embededEditorOptionsInjectionKey = Symbol("embededEditorOptionsInjectionKey") as InjectionKey<Partial<Omit<EditorOptions, "autofocus">>>
+export const embededEditorOptionsInjectionKey = Symbol.for("@witchcraft/editor:embededEditorOptionsInjectionKey") as InjectionKey<Partial<Omit<EditorOptions, "autofocus">>>
 
 export type WithOnTriggerByEmbeddedBlockOptions = {
 	/**

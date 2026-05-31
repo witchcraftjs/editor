@@ -61,4 +61,4 @@ export type MenuRenderInfo = {
 	}
 }
 
-export const menusInjectionKey = Symbol("menusInjectionKey") as InjectionKey<(Ref<Record<string, MenuRenderInfo>>)>
+export const menusInjectionKey = Symbol.for("@witchcraft/editor:menusInjectionKey") as InjectionKey<(Ref<Record<string, MenuRenderInfo>>)>

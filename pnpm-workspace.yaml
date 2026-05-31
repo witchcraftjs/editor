@@ -59,7 +59,7 @@ catalog:
   '@vitest/browser-playwright': ^4.0.14
   '@vitest/coverage-v8': ^4.0.14
   '@witchcraft/nuxt-utils': ^0.3.6
-  '@witchcraft/ui': ^0.4.1
+  '@witchcraft/ui': ^0.5.0
   colord: ^2.9.3
   concurrently: ^9.2.1
   cross-env: ^10.0.0
@@ -102,3 +102,21 @@ patchedDependencies:
 settings:
   catalogMode: strict
   cleanupUnusedCatalogs: false
+
+overrides:
+  '@tiptap/pm': 'catalog:'
+  '@tiptap/vue-3': 'catalog:'
+  '@tiptap/core': 'catalog:'
+  '@tiptap/y-tiptap': 'catalog:'
+
+allowBuilds:
+  '@alanscodelog/eslint-config': false
+  '@alanscodelog/tsconfigs': false
+  '@parcel/watcher': false
+  esbuild: false
+  unrs-resolver: false
+  vue-demi: false
+
+minimumReleaseAgeExclude:
+  - "@alanscodelog/*"
+  - "@witchcraft/*"

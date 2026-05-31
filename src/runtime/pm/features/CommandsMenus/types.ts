@@ -43,8 +43,8 @@ export type CommandGroup<
 	title: string
 	variations: TNestable extends false ? TCommand[] : (TCommand | CommandGroup<T, TCommand, TNestable>)[]
 }
-export const menuEditorInjectionKey = Symbol("menuEditorInjectionKey") as InjectionKey<Ref<Editor>>
-export const menuBlockIdInjectionKey = Symbol("menuBlockIdInjectionKey") as InjectionKey<Ref<string | undefined>>
+export const menuEditorInjectionKey = Symbol.for("@witchcraft/editor:menuEditorInjectionKey") as InjectionKey<Ref<Editor>>
+export const menuBlockIdInjectionKey = Symbol.for("@witchcraft/editor:menuBlockIdInjectionKey") as InjectionKey<Ref<string | undefined>>
 
 export type CommandBarMenuState = {
 	state: boolean
@@ -70,4 +70,4 @@ export type CommandBarMenu = {
 
 export type CommandExecuter = (item: Command, editor: Editor) => void
 
-export const commandExecuterInjectionKey = Symbol("commandExecuterInjectionKey") as InjectionKey<CommandExecuter>
+export const commandExecuterInjectionKey = Symbol.for("@witchcraft/editor:commandExecuterInjectionKey") as InjectionKey<CommandExecuter>

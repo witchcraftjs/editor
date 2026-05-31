@@ -157,8 +157,8 @@ catalogs:
       specifier: ^0.3.6
       version: 0.3.6
     '@witchcraft/ui':
-      specifier: ^0.4.1
-      version: 0.4.1
+      specifier: ^0.5.0
+      version: 0.5.0
     colord:
       specifier: ^2.9.3
       version: 2.9.3
@@ -390,7 +390,7 @@ importers:
         version: 0.3.6(magicast@0.5.2)
       '@witchcraft/ui':
         specifier: 'catalog:'
-        version: 0.4.1(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
+        version: 0.5.0(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
       colord:
         specifier: 'catalog:'
         version: 2.9.3
@@ -640,7 +640,7 @@ importers:
         version: link:..
       '@witchcraft/ui':
         specifier: 'catalog:'
-        version: 0.4.1(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.2(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
+        version: 0.5.0(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.2(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
       lowlight:
         specifier: 'catalog:'
         version: 3.3.0
@@ -3688,8 +3688,8 @@ packages:
     resolution: {integrity: sha512-+TrBV1r7/4XSjihwVy6NzLS8PBNTxkQhMDLGP5Y2NXq7bU6PW4crSHD2k/2sqU64EKtEwNGCmO1oN9DIQLLn7A==}
     engines: {node: '>=20.0.0'}
 
-  '@witchcraft/ui@0.4.1':
-    resolution: {integrity: sha512-TJHbYbBMtDoZ+BZH1GOKXCud0VR6AAcay5c4Gwew4+yjJxbOHkNegTTnec4ojmgiHPcaqbjh5v8n+xoOEfPzZw==}
+  '@witchcraft/ui@0.5.0':
+    resolution: {integrity: sha512-HYyd+MRQ/b2avqOO+C+JO2GguShBTuWhZLgKulXkE3GPJoWL2vEp/GKSfAtaNTi5pP276WIadeb6v5rGjXkj+g==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       tailwindcss: ^4.2.1
@@ -11025,7 +11025,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       estraverse: 5.3.0
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
   '@swc/helpers@0.5.18':
     dependencies:
@@ -12123,7 +12123,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@witchcraft/ui@0.4.1(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))':
+  '@witchcraft/ui@0.5.0(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))':
     dependencies:
       '@alanscodelog/utils': 6.2.0
       '@iconify/json': 2.2.462
@@ -12152,7 +12152,7 @@ snapshots:
       - supports-color
       - vite
 
-  '@witchcraft/ui@0.4.1(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.2(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))':
+  '@witchcraft/ui@0.5.0(@babel/parser@7.29.2)(magicast@0.5.2)(tailwindcss@4.2.2)(unplugin-icons@22.5.0(@vue/compiler-sfc@3.5.32))(vite@7.3.2(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))':
     dependencies:
       '@alanscodelog/utils': 6.2.0
       '@iconify/json': 2.2.462
@@ -13454,7 +13454,7 @@ snapshots:
       get-tsconfig: 4.13.0
       is-bun-module: 2.0.0
       stable-hash-x: 0.2.0
-      tinyglobby: 0.2.15
+      tinyglobby: 0.2.16
       unrs-resolver: 1.11.1
     optionalDependencies:
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@9.39.2(jiti@2.6.1))

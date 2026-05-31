@@ -19,7 +19,7 @@ export interface ItemNodeOptions extends HTMLAttributesOptions {
 }
 export interface ListNodeOptions extends HTMLAttributesOptions {}
 
-export const statesInjectionKey = Symbol("statesInjectionKey") as InjectionKey<Ref<StatefulNodeStates>>
+export const statesInjectionKey = Symbol.for("@witchcraft/editor:statesInjectionKey") as InjectionKey<Ref<StatefulNodeStates>>
 
 export type StatefulNodeStateEntry<T extends string = string> = {
 	icon: string

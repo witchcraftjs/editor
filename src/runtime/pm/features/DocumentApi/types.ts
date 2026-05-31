@@ -2,7 +2,7 @@ import type { Content, Editor, EditorOptions } from "@tiptap/core"
 import type { EditorState, Transaction } from "@tiptap/pm/state"
 import type { InjectionKey } from "vue"
 
-export const documentApiInjectionKey = Symbol("documentApiInjectionKey") as InjectionKey<DocumentApiInterface>
+export const documentApiInjectionKey = Symbol.for("@witchcraft/editor:documentApiInjectionKey") as InjectionKey<DocumentApiInterface>
 
 export type DocId = {
 	docId: string

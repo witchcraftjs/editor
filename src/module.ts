@@ -34,7 +34,7 @@ export default defineNuxtModule<ModuleOptions>({
 	},
 	moduleDependencies: {
 		"@witchcraft/ui/nuxt": {
-			version: "^0.4.0"
+			version: "^0.5.0"
 		}
 	},
 	async setup(options, nuxt) {
