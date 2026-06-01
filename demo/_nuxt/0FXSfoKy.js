@@ -1,0 +1,1 @@
+import{i as e}from"./BuX2WBq9.js";import{i as n}from"./weshC9XZ.js";function r(){const i=n(e,void 0);if(i===void 0)throw new Error("witchcraft/ui: i18n is not injected. See useSetupI18n.");return i}export{r as u};
