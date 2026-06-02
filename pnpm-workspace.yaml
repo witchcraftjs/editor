@@ -117,6 +117,9 @@ allowBuilds:
   unrs-resolver: false
   vue-demi: false
 
+strictPeerDependencies: false
+minimumReleaseAge: 20160
+blockExoticSubdeps: true
 minimumReleaseAgeExclude:
   - "@alanscodelog/*"
   - "@witchcraft/*"
