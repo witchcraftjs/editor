@@ -1,6 +1,9 @@
-[![Docs](https://github.com/witchcraftjs/editor/workflows/Docs/badge.svg)](https://github.com/witchcraftjs/editor/actions/workflows/docs.yml)
-[![Release](https://github.com/witchcraftjs/editor/actions/workflows/release.yml/badge.svg)](https://github.com/witchcraftjs/editor/actions/workflows/release.yml)
-[![NPM Version (with latest tag)](https://img.shields.io/npm/v/%40alanscodelog%2FREPONAME/latest)](https://www.npmjs.com/package/@witchcraft/editor/v/latest)
+[![Docs][docs-src]][docs-href]
+[![Release][release-src]][release-href]
+[![npm version][npm-version-src]][npm-version-href]
+[![License][license-src]][license-href]
+[![Nuxt][nuxt-src]][nuxt-href]
+
 # [Docs](https://witchcraftjs.github.io/editor)
 # [Demo](https://witchcraftjs.github.io/editor/demo)
 
@@ -111,3 +114,14 @@ src/
 - Be careful when applying steps/transactions across different editor instances. They do not share the same schema instance and are therefore considered incompatible for many operations. Likeliest cause of "invalid content" errors.
 - Invalid node content errors while testing are likely the result of using an invalid doc since the builder nodes are not created and filled. For example, items require some content (e.g. a paragraph).
 
+<!-- Badges -->
+[docs-src]: https://github.com/witchcraftjs/editor/actions/workflows/docs.yml/badge.svg
+[docs-href]: https://github.com/witchcraftjs/editor/actions/workflows/docs.yml
+[release-src]: https://github.com/witchcraftjs/editor/actions/workflows/release.yml/badge.svg
+[release-href]: https://github.com/witchcraftjs/editor/actions/workflows/release.yml
+[npm-version-src]: https://img.shields.io/npm/v/@witchcraft/editor/latest
+[npm-version-href]: https://www.npmjs.com/package/@witchcraft/editor/v/latest
+[license-src]: https://img.shields.io/npm/l/@witchcraft/editor.svg?style=flat&colorA=020420&colorB=00DC82
+[license-href]: https://npmjs.com/package/@witchcraft/editor
+[nuxt-src]: https://img.shields.io/badge/Nuxt-020420?logo=nuxt.js
+[nuxt-href]: https://nuxt.com
