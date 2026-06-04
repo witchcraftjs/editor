@@ -30,7 +30,7 @@ jobs:
       - name: Deploy Docs
         uses: alanscodelog/actions/.github/actions/docs@master
         with:
-          BUILD_PLAYGROUND: true
-          BUILD_DEMO: true
+          use_playground: "true"
+          use_typedoc: "true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -14,7 +14,7 @@ export default {
 		"src/runtime/**/*.ts"
 	],
 	skipErrorChecking: true, // for vue imports
-	out: "docs",
+	out: "docs-types",
 	excludePrivate: true,
 	excludeExternals: true,
 	exclude: [
