@@ -129,9 +129,6 @@
 		},
 		"tailwindcss": {
 			"optional": false
-		},
-		"vue": {
-			"optional": false
 		}
 	},
 	"dependencies": {
