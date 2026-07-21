@@ -32,7 +32,7 @@ export function posByNode(
 			// the query might not be json serializable
 			throw new Error(`posWanted is undefined: ${JSON.stringify({ textContent, attrs, type: nodeType })}`)
 		} catch (e) {
-			throw new Error(`posWanted is undefined: ${textContent}, ${Object.keys(attrs ?? {}).join(",")}, ${nodeType}`)
+			throw new Error(`posWanted is undefined: ${textContent}, ${Object.keys(attrs ?? {}).join(",")}, ${nodeType}`, { cause: e })
 		}
 	}
 	return posWanted
