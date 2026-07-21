@@ -115,7 +115,7 @@ interface Props {
 </script>
 
 <script setup lang="ts">
-import { twMerge } from "@witchcraft/ui/utils/twMerge"
+import { twMerge } from "tailwind-merge"
 import { onMounted, onUnmounted, ref, useAttrs } from "vue"
 
 

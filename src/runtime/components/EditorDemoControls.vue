@@ -10,9 +10,6 @@
 		gap-2
 	"
 >
-	<div class="dark:bg-tint-red-500/10 dark:bg-(--mix) w-[1rem] h-[1rem]">
-		What
-	</div>
 	<div
 		class="
 			flex
