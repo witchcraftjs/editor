@@ -137,6 +137,7 @@
 		"@commitlint/cli": "catalog:",
 		"@faker-js/faker": "catalog:",
 		"@nuxt/eslint-config": "catalog:",
+		"@tiptap/extensions": "catalog:",
 		"@tiptap/html": "catalog:",
 		"@witchcraft/nuxt-utils": "catalog:",
 		"@witchcraft/ui": "catalog:",
