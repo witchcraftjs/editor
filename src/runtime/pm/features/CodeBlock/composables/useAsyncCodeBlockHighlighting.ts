@@ -124,7 +124,6 @@ export function useAsyncCodeBlockHighlighting(
 			console.log(`lazyLoadCodeBlocks called, docChanged: ${transaction?.docChanged}.`)
 		}
 		if (!transaction?.docChanged) return
-		const tr = editor.state.tr
 		const langs = getLangListFromEditor(editor)
 		const loadableLangs = (await Promise.allSettled(langs.map(loadLang)))
 			.filter(_ => {
@@ -139,6 +138,7 @@ export function useAsyncCodeBlockHighlighting(
 			console.log(`Found ${loadableLangs.length} loadable languages. \n\t${loadableLangs.join("\n\t")}`)
 		}
 
+		const tr = editor.state.tr
 		editor.state.doc.nodesBetween(0, editor.state.doc.resolve(0).end(), (node, pos) => {
 			if (node.type?.name === "codeBlock") {
 				const langAttr = node.attrs?.language
