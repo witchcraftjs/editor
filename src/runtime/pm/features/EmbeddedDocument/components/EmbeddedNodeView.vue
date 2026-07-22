@@ -51,7 +51,7 @@
 		<Transition>
 			<div
 				v-if="showUndoWarning"
-				class="absolute inset-0 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 px-2"
+				class="absolute inset-0 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 px-2 py-1"
 				contenteditable="false"
 			>
 				Warning: Undo applied to document part that is not visible/embedded.

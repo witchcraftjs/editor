@@ -151,10 +151,16 @@ export function useEmbeddedEditor(
 		}
 		if (!tr) return
 		const diff = getDiffReplacementRange(stateBefore.doc, tr.doc)
-		const { start, end } = getStateEmbedRange(tr.doc, embedIdRef.value)
-		if (diff && end !== undefined && start !== undefined
-			&& (diff.start < start || diff.end > end)
-		) {
+		const beforeRange = getStateEmbedRange(stateBefore.doc, embedIdRef.value)
+		const afterRange = getStateEmbedRange(tr.doc, embedIdRef.value)
+
+		const isOutside = diff && beforeRange.start !== undefined && beforeRange.end !== undefined
+			&& afterRange.start !== undefined && afterRange.end !== undefined
+			&& (
+				diff.start < beforeRange.start || diff.end > beforeRange.end
+				|| diff.start < afterRange.start || diff.sliceEnd > afterRange.end
+			)
+		if (isOutside) {
 			onUndoWarning
 				? onUndoWarning(showUndoWarning)
 				: defaultOnUndoWarning(showUndoWarning, warningState, undoTimeouts)
