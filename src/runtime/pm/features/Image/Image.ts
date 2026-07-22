@@ -3,6 +3,7 @@ import TipTapImage from "@tiptap/extension-image"
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const Image = (TipTapImage as any as Extension /* vue-tsc issue */).configure({
+	inline: true,
 	HTMLAttributes: {
 		class: `
 			rounded-xs

@@ -85,7 +85,7 @@ describe("Image Insertion", () => {
 					pm.itemNoId(pm.fileLoader({ fileName: file.file.name, loading: true }))
 				],
 				[
-					pm.itemNoId(pm.image({ src: file.base64 }))
+					pm.itemNoId(pm.paragraph(pm.image({ src: file.base64 })))
 				]
 			)
 		})
@@ -103,8 +103,8 @@ describe("Image Insertion", () => {
 					pm.itemNoId(pm.fileLoader({ fileName: file2.file.name, loading: true }))
 				],
 				[
-					pm.itemNoId(pm.image({ src: file.base64 })),
-					pm.itemNoId(pm.image({ src: file2.base64 }))
+					pm.itemNoId(pm.paragraph(pm.image({ src: file.base64 }))),
+					pm.itemNoId(pm.paragraph(pm.image({ src: file2.base64 })))
 				]
 			)
 		})

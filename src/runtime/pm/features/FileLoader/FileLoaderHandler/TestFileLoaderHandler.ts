@@ -25,9 +25,9 @@ export const TestFileLoaderHandler = new FileLoaderHandler({
 		const parsedMime = res.file.parsedMime
 		const returnVal = editor.commands.command(({ tr }) => {
 			if (parsedMime.startsWith("image")) {
-				tr.replaceWith(pos, pos + 1, pm.image.create({
+				tr.replaceWith(pos, pos + 1, pm.paragraph.create(undefined, pm.image.create({
 					src: res.result
-				}))
+				})))
 				return true
 			}
 			tr.delete(pos, pos + 1)
