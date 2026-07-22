@@ -67,11 +67,9 @@ export function useTestDocumentApi(
 			if (useCollab && !yDoc) unreachable()
 			if (!cache.value[docId].state) unreachable()
 
-			const perDoc = ["history"]
-
 			options.content = cache.value[docId].state.doc.toJSON()
 			options.extensions = [
-				...(options.extensions ?? []).filter(ext => !perDoc.includes(ext.name)),
+				...(options.extensions ?? []),
 				...(useCollab
 					? [Collaboration]
 					: [])

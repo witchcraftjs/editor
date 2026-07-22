@@ -39,10 +39,8 @@ declare module "@tiptap/extension-history" {
 
 export const filterKey = "filterForHistoryForwarding"
 /**
-	* Extends the existing history extension to allow for forwarding of history for embedded editors.
-	*
-	* The embedded editor node view will take care of
-	*/
+ * Extends the existing history extension to allow for forwarding of history for embedded editors.
+ */
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const History = (TipTapHistoryExtension as any as Extension /* vue-tsc issue */).extend({
