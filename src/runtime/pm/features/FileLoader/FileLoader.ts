@@ -1,6 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/core"
 
 import { insertFile } from "./commands/insertFile.js"
+import { pickImage } from "./commands/pickImage.js"
 import { fileLoaderPlugin } from "./plugins/fileLoaderPlugin.js"
 import type { FileLoaderExtensionOptions } from "./types.js"
 import { optionsCheck } from "./utils/optionsCheck.js"
@@ -106,7 +107,17 @@ export const FileLoader = Node.create<FileLoaderExtensionOptions>({
 		optionsCheck(this.editor, this.options)
 		const self = this
 		return {
-			insertFile: insertFile(self.options.handler)
+			insertFile: insertFile(self.options.handler),
+			pickImage: pickImage()
+		}
+	},
+	addKeyboardShortcuts() {
+		return {
+			...(import.meta.dev
+				? {
+					[`Ctrl-Shift-u`]: () => this.editor.commands.pickImage()
+				}
+				: {})
 		}
 	},
 	addProseMirrorPlugins() {
