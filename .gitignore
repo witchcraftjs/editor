@@ -38,3 +38,5 @@ components.d.ts
 .npmrc
 .direnv/
 .devenv/
+*/__screenshots__/
+.vitest-attachments
