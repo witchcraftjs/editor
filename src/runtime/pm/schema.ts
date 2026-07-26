@@ -9,6 +9,7 @@ import { Strike } from "@tiptap/extension-strike"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Text } from "@tiptap/extension-text"
+import { TextAlign } from "@tiptap/extension-text-align"
 import { Underline } from "@tiptap/extension-underline"
 import type { Schema } from "@tiptap/pm/model"
 
@@ -46,6 +47,9 @@ export const extensions: EditorOptions["extensions"] = [
 	stripShortcuts(Paragraph.extend({
 		group: "block"
 	})),
+	TextAlign.configure({
+		types: ["paragraph", "heading"]
+	}),
 	CommandBar,
 	Base,
 	List,

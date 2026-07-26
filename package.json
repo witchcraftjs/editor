@@ -115,6 +115,7 @@
 		"@tiptap/extension-table-row": "catalog:",
 		"@tiptap/extension-text": "catalog:",
 		"@tiptap/extension-underline": "catalog:",
+		"@tiptap/extension-text-align": "catalog:",
 		"@tiptap/html": "catalog:",
 		"@tiptap/pm": "catalog:",
 		"@tiptap/vue-3": "catalog:",

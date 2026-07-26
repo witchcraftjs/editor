@@ -4,6 +4,9 @@ import TextIcon from "./components/TextIcon.vue"
 import HighlightIcon from "./icons/HighlightIcon.vue"
 import type { CommandBarCommand, CommandBarMenu } from "./types.js"
 
+import AlignCenterIcon from "~icons/lucide/align-center"
+import AlignLeftIcon from "~icons/lucide/align-left"
+import AlignRightIcon from "~icons/lucide/align-right"
 import SubscriptIcon from "~icons/lucide/subscript"
 import SuperscriptIcon from "~icons/lucide/superscript"
 import IconTableColAfter from "~icons/wordpress/table-column-after"
@@ -71,6 +74,33 @@ export const toggleSuperscriptCommand: CommandBarCommand = {
 	title: "Superscript",
 	description: "Superscript the selected text.",
 	icon: { component: SuperscriptIcon }
+}
+
+export const alignLeftCommand: CommandBarCommand = {
+	type: "command" as const,
+	command: "setTextAlign" as const,
+	args: ["left"],
+	title: "Align Left",
+	description: "Align the paragraph to the left.",
+	icon: { component: AlignLeftIcon }
+}
+
+export const alignCenterCommand: CommandBarCommand = {
+	type: "command" as const,
+	command: "setTextAlign" as const,
+	args: ["center"],
+	title: "Align Center",
+	description: "Align the paragraph to the center.",
+	icon: { component: AlignCenterIcon }
+}
+
+export const alignRightCommand: CommandBarCommand = {
+	type: "command" as const,
+	command: "setTextAlign" as const,
+	args: ["right"],
+	title: "Align Right",
+	description: "Align the paragraph to the right.",
+	icon: { component: AlignRightIcon }
 }
 
 export const tableCanShow = (state: EditorState): boolean => {
@@ -190,6 +220,16 @@ export const defaultCommandBarMenuItems: CommandBarMenu = {
 			variations: [
 				toggleSubscriptCommand,
 				toggleSuperscriptCommand
+			]
+		},
+		{
+			type: "group" as const,
+			groupType: "inline" as const,
+			title: "Align",
+			variations: [
+				alignLeftCommand,
+				alignCenterCommand,
+				alignRightCommand
 			]
 		},
 		{
