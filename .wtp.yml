@@ -1,0 +1,25 @@
+version: "1.0"
+defaults:
+  base_dir: "./.worktrees"
+hooks:
+  post_create:
+    - type: symlink
+      from: "node_modules"
+      to: "node_modules"
+
+    - type: symlink
+      from: "playground/node_modules"
+      to: "playground/node_modules"
+
+    - type: symlink
+      from: ".devenv"
+      to: ".devenv"
+
+    - type: symlink
+      from: ".direnv"
+      to: ".direnv"
+
+    - type: command
+      command: "direnv allow"
+
+

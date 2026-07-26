@@ -99,7 +99,7 @@ export default defineConfig({
 		port: 3001,
 		watch: {
 			// apparently still including stuff it shouldn't, regardless of above
-			ignored: ["**/.direnv/**", "**/.direnv/**"]
+			ignored: ["**/.direnv/**", "**/.direnv/**", "**/.worktrees/**"]
 		}
 	}
 })
