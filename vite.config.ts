@@ -39,7 +39,13 @@ export default defineConfig({
 }, {
 	plugins: [
 		highlightJsLanguageInfoPlugin(),
-		vue() as any,
+		vue({
+			template: {
+				compilerOptions: {
+					isCustomElement: tag => tag.startsWith("i-")
+				}
+			}
+		}) as any,
 		Components({
 			// don't auto-import our own components
 			dirs: [],
