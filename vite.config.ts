@@ -96,6 +96,10 @@ export default defineConfig({
 	},
 	css: { postcss: undefined },
 	server: {
-		port: 3001
+		port: 3001,
+		watch: {
+			// apparently still including stuff it shouldn't, regardless of above
+			ignored: ["**/.direnv/**", "**/.direnv/**"]
+		}
 	}
 })
