@@ -136,7 +136,11 @@ export function useTestDocumentApi(
 					unreachable()
 				}
 			}
-		}
+		},
+		// just to silence the warning during tests
+		save: import.meta.env.MODE === "test"
+			? async (..._args: any[]) => { }
+			: undefined
 	})
 	return { documentApi, cache, embeds }
 }
