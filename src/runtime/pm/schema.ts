@@ -21,12 +21,12 @@ import { CodeBlock, type NodeCodeBlockName } from "./features/CodeBlock/CodeBloc
 import { CommandBar } from "./features/CommandsMenus/CommandBar.js"
 import { Document, type NodeDocumentName } from "./features/Document/Document.js"
 import { EmbeddedDocument, type NodeEmbeddedDocumentName } from "./features/EmbeddedDocument/EmbeddedDocument.js"
+import { File } from "./features/File/File.js"
 import { HardBreak } from "./features/HardBreak/HardBreak.js"
 import { Heading, type NodeHeadingName } from "./features/Heading/Heading.js"
 import { Highlight, type MarkHighlightName } from "./features/Highlight/Highlight.js"
 import { History } from "./features/History/History.js"
 import { Iframe, type NodeIframeName } from "./features/Iframe/Iframe.js"
-import { Image } from "./features/Image/Image.js"
 import { Link } from "./features/Link/Link.js"
 import { Menus } from "./features/Menus/Menus.js"
 import { type NodeTableCellName, type NodeTableHeaderName, type NodeTableName, type NodeTableRowName, TableExtensions } from "./features/Tables/index.js"
@@ -60,7 +60,7 @@ export const extensions: EditorOptions["extensions"] = [
 	EmbeddedDocument,
 	Link, // needs to be before other marks so we don't get link splitting
 	HardBreak,
-	Image,
+	File,
 	Highlight,
 	...TableExtensions,
 	...[
@@ -99,7 +99,7 @@ type MarkSuperscriptName = "superscript"
 type MarkCodeName = "code"
 type MarkItalicName = "italic"
 type MarkBoldName = "bold"
-type NodeImageName = "image"
+type NodeFileName = "file"
 
 const _schema = getSchema(extensions) as Schema<
 	NodeListName
@@ -111,7 +111,7 @@ const _schema = getSchema(extensions) as Schema<
 	| NodeEmbeddedDocumentName
 	| NodeParagraphName
 	| NodeTextName
-	| NodeImageName
+	| NodeFileName
 	| NodeTableName
 	| NodeTableHeaderName
 	| NodeTableRowName

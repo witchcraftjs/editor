@@ -48,7 +48,7 @@ export const generatorConfig = [
 			["heading", 4],
 			["codeBlock", 2],
 			["table", 2],
-			["image", 3],
+			["file", 3],
 			["blockquote", 4],
 			["embeddedDoc", 1],
 			["iframe", 1]

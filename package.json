@@ -38,9 +38,9 @@
 			"types": "./dist/runtime/pm/features/EmbeddedDocument/components/*.vue.d.ts",
 			"import": "./dist/runtime/pm/features/EmbeddedDocument/components/*.vue"
 		},
-		"./pm/features/FileLoader/components/*": {
-			"types": "./dist/runtime/pm/features/FileLoader/components/*.vue.d.ts",
-			"import": "./dist/runtime/pm/features/FileLoader/components/*.vue"
+		"./pm/features/FileInserter/components/*": {
+			"types": "./dist/runtime/pm/features/FileInserter/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/FileInserter/components/*.vue"
 		},
 		"./pm/features/Iframe/components/*": {
 			"types": "./dist/runtime/pm/features/Iframe/components/*.vue.d.ts",

@@ -66,7 +66,7 @@ export const Embedded = Extension.create<EmbeddedDocumentNodeOptions>({
 				}
 				switch (commandName) {
 					case "insertFile":
-						return rootEditor.commands.insertFile(args[0], nodePos)
+						return rootEditor.commands.insertFiles(args[0], nodePos)
 					case "splitItem":
 						if (!nodePos) return false
 						return rootEditor.commands.command(({ tr, commands, state, dispatch }) => {

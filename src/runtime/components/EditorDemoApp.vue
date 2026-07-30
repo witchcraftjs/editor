@@ -68,8 +68,9 @@
 import type { EditorOptions } from "@tiptap/core"
 import WRoot from "@witchcraft/ui/components/WRoot"
 import { useRoute } from "nuxt/app"
-import { reactive, ref, shallowRef } from "vue"
+import { provide, reactive, ref, shallowRef } from "vue"
 
+import DemoFilePreview from "./DemoFilePreview.vue"
 import Editor from "./Editor.vue"
 import EditorDemoControls from "./EditorDemoControls.vue"
 
@@ -77,11 +78,14 @@ import { useHighlightJsTheme } from "../pm/features/CodeBlock/composables/useHig
 import { defaultCommandBarMenuItems } from "../pm/features/CommandsMenus/commandBarMenuItems.js"
 import CommandBar from "../pm/features/CommandsMenus/components/CommandBar.vue"
 import { useTestDocumentApi } from "../pm/features/DocumentApi/composables/useTestDocumentApi.js"
+import { fileViewInjectionKey } from "../pm/features/File/types.js"
 import BubbleMenuLink from "../pm/features/Link/components/BubbleMenuLink.vue"
 import type { EditorLinkOptions } from "../pm/features/Link/types.js"
 import type { MenuRenderInfo } from "../pm/features/Menus/types"
 import { testExtensions } from "../pm/testSchema.js"
 import { testDocuments } from "../testDocuments.js"
+
+provide(fileViewInjectionKey, DemoFilePreview)
 
 const {
 	theme: codeBlocksTheme,

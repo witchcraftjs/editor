@@ -6,9 +6,10 @@ export * from "../pm/features/Menus/types.js"
 export * from "../pm/features/Blocks/types.js"
 export * from "../pm/features/CommandsMenus/types.js"
 export * from "../pm/features/CodeBlock/types.js"
-export * from "../pm/features/FileLoader/types.js"
+export * from "../pm/features/FileInsert/types.js"
 export * from "../pm/features/DocumentApi/types.js"
 export * from "../pm/features/EmbeddedDocument/types.js"
+export * from "../pm/features/File/types.js"
 
 export type NodesBetweenFilter = (node: Node | null, start: number, parent: Node | null, index: number) => boolean
 

@@ -33,7 +33,6 @@ export function findUpwards(
 
 		const newPos = $from.before(currentDepth)
 		const $pos = node.resolve(newPos)
-		// console.log("newPos", newPos, $pos)
 		if ((!filter && stop === loops) || filter($pos, newPos, loops)) {
 			return { $pos, pos: newPos }
 		}
