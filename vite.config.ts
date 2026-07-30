@@ -64,6 +64,8 @@ export default defineConfig({
 	test: {
 		// specifying just tests/... is including stuff it shouldn't ???
 		dir: `${path.resolve(import.meta.dirname)}/tests`,
+		// reduce memory usage when using llms
+		maxWorkers: process.env.AGENT ? 1 : undefined,
 		projects: [
 			{
 				extends: "vite.config.ts",
@@ -78,7 +80,18 @@ export default defineConfig({
 					dir: "tests",
 					browser: {
 						enabled: true,
-						provider: playwright(),
+						provider: playwright({
+							launchOptions: {
+								// reduce memory usage when using llms
+								args: process.env.AGENT
+									? [
+											"--disable-gpu",
+											"--disable-dev-shm-usage",
+											"--js-flags=\"--max-old-space-size=512\""
+										]
+									: []
+							}
+						}),
 						instances: [
 							{
 								browser: "chromium"
