@@ -16,7 +16,7 @@ export interface FileUploadOptions extends Omit<_FileUploadOptions, "types"> {
 	 *
 	 * @default [{ description: "Images", accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"] } }]
 	 */
-	acceptTypes: _FileUploadOptions["types"]
+	acceptTypes?: _FileUploadOptions["types"]
 }
 
 export interface FileInsertExtensionOptions extends HTMLAttributesOptions, WithOnTriggerByEmbeddedBlockOptions, FileUploadOptions {
@@ -112,5 +112,9 @@ export type IFileInsertHandler<
 	 * This can be used to filter out mime types you can't handle with a library like `mime`. Mime type filtering is not handled by the extension since it can be complicated.
 	 */
 	filterFile: (file: File) => TFile | undefined
+	/**
+	 * Generate a unique ID for placeholders and batches.
+	 */
+	generateId: () => string
 }
 

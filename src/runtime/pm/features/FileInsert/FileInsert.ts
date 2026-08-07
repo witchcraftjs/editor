@@ -13,6 +13,7 @@ import type { FileInsertExtensionOptions } from "./types.js"
  * An {@link IFileInsertHandler} interface should be passed to describe what to do with the file at each step.
  * There is a default implementation at {@link FileInsertHandler} that tries to handle as much as possible.
  *
+ * To customize ID generation, extend {@link FileInsertHandler} and override its {@link FileInsertHandler.generateId} method.
  */
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

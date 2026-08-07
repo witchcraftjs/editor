@@ -20,14 +20,14 @@ declare module "@tiptap/core" {
 }
 export const pickFile = (defaultOptions: FileUploadOptions): ((opts?: FileUploadOptions) => Command) => {
 	return ({
-		types = defaultOptions.types,
+		acceptTypes = defaultOptions.acceptTypes,
 		multiple = defaultOptions.multiple ?? false
 	}: FileUploadOptions = {}): Command => ({ editor }) => {
 		// tiptap doesn't support async commands
 		// https://github.com/ueberdosis/tiptap/discussions/4825
 		;(async () => {
 			const files = await browserUploadFile({
-				types,
+				types: acceptTypes,
 				multiple
 			})
 			editor.chain().command(({ editor }) => {

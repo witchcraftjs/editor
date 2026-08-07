@@ -20,7 +20,7 @@ interface BatchEntry {
  *
  * Extend it to use it and define the `saveFile` method. Everything else has a default implementation (but they can be overridden as needed).
  *
- * To identify each placeholder and fetch it again once the file is uploaded, it uses a 10 character nanoid.
+ * To use a custom ID generation strategy, override {@link generateId}.
  */
 export class FileInsertHandler<
 	TFile extends File = File,
@@ -37,6 +37,17 @@ export class FileInsertHandler<
 	 */
 	protected getBatchInfo(insertId: string): BatchEntry | undefined {
 		return this.insertionBatch.get(insertId)
+	}
+
+	/**
+	 * Generate a unique ID for placeholders and batches.
+	 *
+	 * Override this method to use a custom ID generation strategy.
+	 *
+	 * @default Uses a 10 digit nanoid.
+	 */
+	generateId(): string {
+		return nanoid(10)
 	}
 
 	async saveFile(_file: TFile, _insertId: TKey, _editor: Editor): Promise<T | undefined> {
@@ -77,10 +88,10 @@ export class FileInsertHandler<
 	}
 
 	/**
-	 * Adds a widget decoration at the insert position. It uses a nanoid for the loading id.
+	 * Adds a widget decoration at the insert position. Uses {@link generateId} for the loading id.
 	 */
 	insertAsyncPlaceholder(file: TFile, editor: Editor, insertPos: number, _originalPos?: number): TKey {
-		const loadingId = nanoid(10)
+		const loadingId = this.generateId()
 		editor.commands.command(({ tr }) => {
 			const $pos = tr.doc.resolve(insertPos)
 			if ($pos.parent.inlineContent) {
@@ -220,7 +231,7 @@ export class FileInsertHandler<
 		// insert all placeholders synchronously (in reverse so they appear in original order)
 		// batchIndex is assigned in original file order
 		const insertEntries: Array<{ file: TFile, insertId: TKey, batchIndex: number }> = []
-		const batchId = nanoid(10)
+		const batchId = this.generateId()
 		const reversedFiles = files.reverse()
 		const totalFiles = reversedFiles.length
 
