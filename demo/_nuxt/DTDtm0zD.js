@@ -1,0 +1,1 @@
+import{Pt as e}from"./CoKk4mC0.js";function t(t){return t.id??e()}export{t};
