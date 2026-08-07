@@ -39,7 +39,7 @@ export class FileInsertHandler<
 		return this.insertionBatch.get(insertId)
 	}
 
-	saveFile(_file: TFile, _insertId: TKey, _editor: Editor): Promise<T | undefined> {
+	async saveFile(_file: TFile, _insertId: TKey, _editor: Editor): Promise<T | undefined> {
 		throw new Error("saveFile must be implemented by subclass")
 	}
 

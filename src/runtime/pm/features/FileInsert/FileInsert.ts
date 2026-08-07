@@ -24,14 +24,12 @@ export const FileInsert = Extension.create<FileInsertExtensionOptions>({
 			handler: undefined as any,
 			embeddedBlockCommandRedirect: undefined,
 			HTMLAttributes: {},
-			acceptTypes: [
-				{
-					description: "Images",
-					accept: {
-						"image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"]
-					}
+			acceptTypes: [{
+				description: "Images",
+				accept: {
+					"image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"]
 				}
-			],
+			}],
 			multiple: false
 		}
 	},

@@ -19,8 +19,8 @@ catalogs:
       specifier: ^6.3.0
       version: 6.3.1
     '@alanscodelog/utils':
-      specifier: ^6.6.0
-      version: 6.6.0
+      specifier: ^6.6.1
+      version: 6.6.1
     '@alanscodelog/vite-config':
       specifier: ^0.0.7
       version: 0.0.7
@@ -289,7 +289,7 @@ importers:
         version: 6.3.2(eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.63.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint@9.39.4(jiti@2.7.0)))(jiti@2.7.0)(typescript@5.9.3)
       '@alanscodelog/utils':
         specifier: 'catalog:'
-        version: 6.6.0
+        version: 6.6.1
       '@commitlint/cli':
         specifier: 'catalog:'
         version: 20.5.3(@types/node@24.13.3)(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(typescript@5.9.3)
@@ -692,6 +692,10 @@ packages:
 
   '@alanscodelog/utils@6.6.0':
     resolution: {integrity: sha512-WTjUam1j3RB/se8UT23bYihX5UeHzR+Jr/qUrFuiE4GyZonOoGo4Ef0BfhE50rqlWV47U02OR9gXiI0BfzH+qg==}
+    engines: {node: '>=20.0.0'}
+
+  '@alanscodelog/utils@6.6.1':
+    resolution: {integrity: sha512-q2RjiOs2EqCKMi2pFbQ0jb+SGDtDKd2FtOECFwgytxAZiF4e+DupnEkVStPCleAG4UHURvxmtzgjuOSRwYMjTw==}
     engines: {node: '>=20.0.0'}
 
   '@alanscodelog/vite-config@0.0.7':
@@ -8626,6 +8630,8 @@ snapshots:
   '@alanscodelog/tsconfigs@6.3.1': {}
 
   '@alanscodelog/utils@6.6.0': {}
+
+  '@alanscodelog/utils@6.6.1': {}
 
   '@alanscodelog/vite-config@0.0.7(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(happy-dom@20.10.6)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.49.0)(typescript@5.9.3)(yaml@2.9.0)':
     dependencies:
@@ -17928,7 +17934,7 @@ time:
   '@alanscodelog/eslint-config@6.3.2': '2026-06-02T19:32:43.740Z'
   '@alanscodelog/semantic-release-config@6.0.3': '2026-06-02T18:50:13.331Z'
   '@alanscodelog/tsconfigs@6.3.1': '2026-06-04T23:49:19.416Z'
-  '@alanscodelog/utils@6.6.0': '2026-07-22T20:06:13.595Z'
+  '@alanscodelog/utils@6.6.1': '2026-08-07T18:12:13.349Z'
   '@alanscodelog/vite-config@0.0.7': '2025-11-30T16:05:26.946Z'
   '@commitlint/cli@20.5.3': '2026-04-30T08:16:16.929Z'
   '@faker-js/faker@10.5.0': '2026-06-17T18:02:33.374Z'

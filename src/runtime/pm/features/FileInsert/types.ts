@@ -1,10 +1,12 @@
+import type { FileUploadOptions as _FileUploadOptions } from "@alanscodelog/utils/types"
 import type { Editor } from "@tiptap/core"
 
 import type { HTMLAttributesOptions } from "../../../types/index.js"
 import type { WithOnTriggerByEmbeddedBlockOptions } from "../EmbeddedDocument/types.js"
 
 /** Options for the pickFile command. Pass at registration time or override at call time. */
-export interface FileInputOptions {
+export interface FileUploadOptions extends Omit<_FileUploadOptions, "types"> {
+	// keep first two lines in sync with _FileInputOptions jsdoc
 	/**
 	 * Allowed file types for the file picker dialog.
 	 *
@@ -14,16 +16,10 @@ export interface FileInputOptions {
 	 *
 	 * @default [{ description: "Images", accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"] } }]
 	 */
-	acceptTypes?: { description?: string, accept: Record<string, string[]> }[]
-	/**
-	 * Allow multiple file selection in the picker.
-	 *
-	 * @default false
-	 */
-	multiple?: boolean
+	acceptTypes: _FileUploadOptions["types"]
 }
 
-export interface FileInsertExtensionOptions extends HTMLAttributesOptions, WithOnTriggerByEmbeddedBlockOptions, FileInputOptions {
+export interface FileInsertExtensionOptions extends HTMLAttributesOptions, WithOnTriggerByEmbeddedBlockOptions, FileUploadOptions {
 	/** See {@link IFileInsertHandler} */
 	handler: IFileInsertHandler<File, any>
 }
