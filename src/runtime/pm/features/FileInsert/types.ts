@@ -33,7 +33,8 @@ export interface FileInsertExtensionOptions extends HTMLAttributesOptions, WithO
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type IFileInsertHandler<
 	TFile extends File,
-	T = { file: TFile, result: string | ArrayBuffer | null },
+	TAttrs extends Record<string, unknown> = Record<string, unknown>,
+	T extends { file: TFile, attrs: TAttrs, previewSrc?: string } = { file: TFile, attrs: TAttrs, previewSrc?: string },
 	TKey = string
 > = {
 	/**
@@ -62,11 +63,20 @@ export type IFileInsertHandler<
 	 */
 	insertFiles: (files: File[], editor: Editor, pos?: number) => Promise<void>
 	/**
-	 * Should load/save/upload the file and return the information necessary to create the uploaded node.
+	 * Should load/save/upload the file and return the node attributes.
+	 *
+	 * The `attrs` object returned should be spread onto the file node.
+	 * The `previewSrc` is the result of {@link generatePreview}.
 	 *
 	 * The `id` and `editor` are provided in case you're uploading the file or doing some other heavy operation and want to update the placeholder as soon as you can upload the file.
 	 */
-	saveFile: (file: TFile, id: TKey, editor: Editor) => Promise<T | undefined>
+	saveFile: (file: TFile, id: TKey, editor: Editor, previewSrc: string | undefined) => Promise<T | undefined>
+	/**
+	 * Generate a preview for the placeholder widget before saving starts.
+	 *
+	 * If a preview is returned, it should be used to update the placeholder widget immediately, allowing the user to see a preview image as the file saves. It should also be passed to saveFile.
+	 */
+	generatePreview: (file: TFile, id: TKey, editor: Editor) => Promise<string | undefined>
 	/**
 	 * This can be used to remove the placeholder on errors.
 	 */
@@ -91,7 +101,7 @@ export type IFileInsertHandler<
 	 */
 	insertAsyncPlaceholder: (file: TFile, editor: Editor, insertPos: number, originalPos?: number) => TKey | undefined
 	/**
-	 * After saving/uploading the file, if it's successful, this is passed the result and the position of the placeholder.
+	 * After saving/uploading the file, if it's successful, this is passed the node attributes returned by {@link saveFile} and the position of the placeholder.
 	 *
 	 * Replace the placeholder with the final node (e.g. an image) and remove the decoration.
 	 *
@@ -100,7 +110,7 @@ export type IFileInsertHandler<
 	replacePlaceholder: (
 		editor: Editor,
 		pos: number,
-		res: T,
+		attrs: Record<string, unknown>,
 		loadingKey: TKey
 	) => void
 	/**
@@ -113,7 +123,7 @@ export type IFileInsertHandler<
 	 */
 	filterFile: (file: File) => TFile | undefined
 	/**
-	 * Generate a unique ID for placeholders and batches.
+	 * Should generate a unique ID for placeholders and batches.
 	 */
 	generateId: () => string
 }

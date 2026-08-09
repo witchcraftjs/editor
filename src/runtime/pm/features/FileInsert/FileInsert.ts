@@ -4,6 +4,7 @@ import type { EditorView } from "@tiptap/pm/view"
 
 import { insertFiles } from "./commands/insertFile.js"
 import { pickFile } from "./commands/pickFile.js"
+import { updateFilePreviewPlaceholder } from "./commands/updateFilePreviewPlaceholder.js"
 import { placeholderPlugin } from "./plugins/placeholderPlugin.js"
 import type { FileInsertExtensionOptions } from "./types.js"
 
@@ -13,6 +14,7 @@ import type { FileInsertExtensionOptions } from "./types.js"
  * An {@link IFileInsertHandler} interface should be passed to describe what to do with the file at each step.
  * There is a default implementation at {@link FileInsertHandler} that tries to handle as much as possible.
  *
+ * Extend it to use it and define `saveFile` and `generatePreview`. Everything else has a default implementation (but can be overridden as needed).
  * To customize ID generation, extend {@link FileInsertHandler} and override its {@link FileInsertHandler.generateId} method.
  */
 
@@ -46,7 +48,8 @@ export const FileInsert = Extension.create<FileInsertExtensionOptions>({
 			pickFile: pickFile({
 				acceptTypes: self.options.acceptTypes,
 				multiple: self.options.multiple
-			})
+			}),
+			updateFilePreviewPlaceholder: updateFilePreviewPlaceholder()
 		}
 	},
 

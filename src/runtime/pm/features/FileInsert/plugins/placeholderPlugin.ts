@@ -29,9 +29,9 @@ export function placeholderPlugin(): Plugin<DecorationSet> {
 				} else if (action.remove) {
 					set = set.remove(set.find(undefined, undefined, spec => spec.id === action.remove!.id))
 				} else if (action.update) {
-					// Update existing widget DOM in-place when preview arrives
+					if (!action.update.preview) return set
 					const dom = document.querySelector(`[data-file-inserter-id="${action.update.id}"]`)
-					if (dom && action.update.preview) {
+					if (dom) {
 						const inner = dom.querySelector("span")
 						if (inner) {
 							let img = dom.querySelector("img")

@@ -18,15 +18,16 @@ interface BatchEntry {
 /**
  * A partial implementation of {@link IFileInsertHandler}.
  *
- * Extend it to use it and define the `saveFile` method. Everything else has a default implementation (but they can be overridden as needed).
+ * To use it extend it and define the `saveFile` and `generatePreview` methods. Everything else has a default implementation (but they can be overridden as needed).
  *
  * To use a custom ID generation strategy, override {@link generateId}.
  */
 export class FileInsertHandler<
 	TFile extends File = File,
-	T extends { file: TFile, result: string | ArrayBuffer | null } = { file: TFile, result: string | ArrayBuffer | null },
+	TAttrs extends Record<string, unknown> = Record<string, unknown>,
+	T extends { file: TFile, attrs: TAttrs, previewSrc?: string } = { file: TFile, attrs: TAttrs, previewSrc?: string },
 	TKey = string
-> implements IFileInsertHandler<TFile, T, TKey> {
+> implements IFileInsertHandler<TFile, TAttrs, T, TKey> {
 	/** Maps insert IDs to their batch info for position adjustment during concurrent replacements. */
 	insertionBatch = new Map<string, BatchEntry>()
 
@@ -50,8 +51,12 @@ export class FileInsertHandler<
 		return nanoid(10)
 	}
 
-	async saveFile(_file: TFile, _insertId: TKey, _editor: Editor): Promise<T | undefined> {
+	async saveFile(_file: TFile, _insertId: TKey, _editor: Editor, _previewSrc: string | undefined): Promise<T | undefined> {
 		throw new Error("saveFile must be implemented by subclass")
+	}
+
+	async generatePreview(_file: TFile, _id: TKey, _editor: Editor): Promise<string | undefined> {
+		throw new Error("generatePreview must be implemented by subclass")
 	}
 
 	filterFile(file: File): TFile | undefined {
@@ -133,30 +138,29 @@ export class FileInsertHandler<
 	 *
 	 * Handles both inline (replace at position) and block (replace paragraph content) contexts.
 	 */
-	replacePlaceholder(editor: Editor, pos: number, res: T, loadingKey: TKey): void {
+	replacePlaceholder(
+		editor: Editor,
+		pos: number,
+		attrs: Record<string, unknown>,
+		loadingKey: TKey
+	): void {
 		if (editor.isDestroyed) return
 
 		const pm = editor.schema.nodes
-		const result = res.result
 
 		editor.commands.command(({ tr }) => {
-			// only create file node if we have a string result
-			if (typeof result === "string") {
-				const adjustedPos = this.adjustInsertPosition(tr.doc, pos, String(loadingKey))
-				const $pos = tr.doc.resolve(adjustedPos)
+			const adjustedPos = this.adjustInsertPosition(tr.doc, pos, String(loadingKey))
+			const $pos = tr.doc.resolve(adjustedPos)
 
-				const attrs = { src: result, id: String(loadingKey) }
-
-				if ($pos.parent.inlineContent) {
-					tr.replaceWith(adjustedPos, adjustedPos, pm.file.create(attrs))
-				} else {
-					const $inside = tr.doc.resolve(adjustedPos + 1)
-					const paragraphPos = $inside.before($inside.depth)
-					const paragraphEnd = $inside.after($inside.depth)
-					const fileNode = pm.file.create(attrs)
-					const newParagraph = pm.paragraph.create(null, fileNode)
-					tr.replaceWith(paragraphPos, paragraphEnd, newParagraph)
-				}
+			if ($pos.parent.inlineContent) {
+				tr.replaceWith(adjustedPos, adjustedPos, pm.file.create(attrs))
+			} else {
+				const $inside = tr.doc.resolve(adjustedPos + 1)
+				const paragraphPos = $inside.before($inside.depth)
+				const paragraphEnd = $inside.after($inside.depth)
+				const fileNode = pm.file.create(attrs)
+				const newParagraph = pm.paragraph.create(null, fileNode)
+				tr.replaceWith(paragraphPos, paragraphEnd, newParagraph)
 			}
 
 			tr.setMeta(placeholderPluginKey, { remove: { id: String(loadingKey) } })
@@ -255,11 +259,17 @@ export class FileInsertHandler<
 			insertEntries.push({ file: f, insertId, batchIndex })
 		}
 
-		// save files concurrently, then replace placeholder by ID
+		// save files concurrently, generate preview first, update placeholder, then replace
 		await Promise.allSettled(insertEntries.map(async entry => {
 			const { file, insertId } = entry
 
-			const res = await this.saveFile(file, insertId, editor)
+			// generate preview first so we can show it immediately
+			const previewSrc = await this.generatePreview(file, insertId, editor)
+			if (previewSrc && !editor.isDestroyed) {
+				editor.commands.updateFilePreviewPlaceholder({ id: String(insertId), preview: previewSrc })
+			}
+
+			const res = await this.saveFile(file, insertId, editor, previewSrc)
 			if (!res) {
 				return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), insertId)
 			}
@@ -269,7 +279,7 @@ export class FileInsertHandler<
 				return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), insertId)
 			}
 
-			this.replacePlaceholder(editor, replacePos, res, insertId)
+			this.replacePlaceholder(editor, replacePos, res.attrs, insertId)
 		}))
 
 		// cleanup batch maps

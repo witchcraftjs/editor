@@ -3,7 +3,6 @@ import type { Editor } from "@tiptap/core"
 
 import { FileInsertHandler } from "./FileInsertHandler.js"
 
-import { findPlaceholder, placeholderPluginKey } from "../plugins/placeholderPlugin.js"
 import { readAsDataUrl } from "../utils/readAsDataUrl.js"
 
 /**
@@ -25,25 +24,16 @@ export class TestFileInsertHandler extends FileInsertHandler {
 		this.delay = delay
 	}
 
-	override async saveFile(file: File, insertId: string, editor: Editor) {
-		const result = await readAsDataUrl(file)
+	override async generatePreview(file: File, _insertId: string, _editor: Editor) {
+		return readAsDataUrl(file)
+	}
 
-		const replacePos = findPlaceholder(editor.state, insertId)
-		if (replacePos !== null && !editor.isDestroyed) {
-			editor.commands.command(({ tr }) => {
-				tr.setMeta("addToHistory", false)
-				tr.setMeta(placeholderPluginKey, {
-					update: { id: insertId, preview: result }
-				})
-				return true
-			})
-		}
-
+	override async saveFile(file: File, insertId: string, _editor: Editor, previewSrc: string | undefined) {
 		// simulating a upload, using Math.random() to simulate different speeds
 		await delay(this.delay * Math.random())
 		return {
 			file,
-			result
+			attrs: { src: previewSrc ?? "", id: insertId }
 		}
 	}
 }
