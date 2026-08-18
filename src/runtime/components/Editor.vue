@@ -66,7 +66,6 @@ import { computed, type ComputedRef, inject, provide, ref, toRef, toRefs, watch 
 import handleCollapseIndicatorImage from "../assets/handle-arrow.svg"
 import handleImage from "../assets/handle-border-circles-single.svg"
 import { useEditor } from "../composables/useEditor.js"
-import { useWindowDebugging } from "../composables/useWindowDebugging.js"
 import { editorCssVariablesInjectionKey, editorScrollInjectionKey } from "../injectionKeys.js"
 import ItemMenu from "../pm/features/Blocks/components/ItemMenu.vue"
 import { statefulStates } from "../pm/features/Blocks/states/stateful.js"
@@ -210,7 +209,6 @@ watch(editor, newVal => {
 		emit("load")
 	}
 })
-useWindowDebugging(editor)
 
 /* const { langsInfo } = */useAsyncCodeBlockHighlighting({
 	lowlightInstance,

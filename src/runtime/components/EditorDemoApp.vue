@@ -35,6 +35,7 @@
 			editorOptions,
 			menus
 		}"
+		ref="editorComponent"
 	/>
 	<Editor
 		v-if="useTwoEditors"
@@ -48,6 +49,7 @@
 			rounded-sm
 			min-h-0
 		"
+		ref="editorComponent2"
 		v-bind="{
 			codeBlocksThemeIsDark,
 			cssVariables: {
@@ -68,12 +70,13 @@
 import type { EditorOptions } from "@tiptap/core"
 import WRoot from "@witchcraft/ui/components/WRoot"
 import { useRoute } from "nuxt/app"
-import { provide, reactive, ref, shallowRef } from "vue"
+import { provide, reactive, ref, shallowRef, useTemplateRef } from "vue"
 
 import DemoFilePreview from "./DemoFilePreview.vue"
 import Editor from "./Editor.vue"
 import EditorDemoControls from "./EditorDemoControls.vue"
 
+import { useWindowDebugging } from "../composables/useWindowDebugging.js"
 import { useHighlightJsTheme } from "../pm/features/CodeBlock/composables/useHighlightJsTheme.js"
 import { defaultCommandBarMenuItems } from "../pm/features/CommandsMenus/commandBarMenuItems.js"
 import CommandBar from "../pm/features/CommandsMenus/components/CommandBar.vue"
@@ -163,4 +166,10 @@ const { documentApi } = useTestDocumentApi(
 	{ useCollab: useYjs === "true" }
 )
 const docId = ref("root")
+
+const editorComponent = useTemplateRef("editorComponent")
+const editorComponent2 = useTemplateRef("editorComponent2")
+
+useWindowDebugging(editorComponent, "witchcraftEditor1")
+useWindowDebugging(editorComponent2, "witchcraftEditor2")
 </script>
