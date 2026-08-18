@@ -105,7 +105,7 @@ function createPlaceholderWidget(entry: NonNullable<PlaceholderAction["add"]>): 
 	return outer
 }
 
-/** Find the current position of a placeholder by ID. Returns undefined if not found. */
+/** Find the current position of a placeholder by id. Returns undefined if not found. */
 export function findPlaceholder(state: EditorState, id: string): number | undefined {
 	const plugin = placeholderPlugin()
 	const decos = plugin.getState(state)

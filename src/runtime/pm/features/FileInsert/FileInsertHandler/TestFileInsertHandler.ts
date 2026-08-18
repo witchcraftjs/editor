@@ -24,16 +24,16 @@ export class TestFileInsertHandler extends FileInsertHandler {
 		this.delay = delay
 	}
 
-	override async generatePreview(file: File, _insertId: string, _editor: Editor) {
+	override async generatePreview(file: File, _id: string, _editor: Editor) {
 		return readAsDataUrl(file)
 	}
 
-	override async saveFile(file: File, insertId: string, _editor: Editor, previewSrc: string | undefined) {
+	override async saveFile(file: File, id: string, _editor: Editor, previewSrc: string | undefined) {
 		// simulating a upload, using Math.random() to simulate different speeds
 		await delay(this.delay * Math.random())
 		return {
 			file,
-			attrs: { src: previewSrc ?? "", id: insertId }
+			attrs: { src: previewSrc ?? "", id: id }
 		}
 	}
 }

@@ -3,13 +3,13 @@ import { TextSelection } from "@tiptap/pm/state"
 import type { Editor } from "@tiptap/vue-3"
 import { describe, expect, it } from "vitest"
 
+import { findAnyPlaceholder } from "./utils/findAnyPlaceholder.js"
 import { isPartiallyEqual } from "./utils/isPartiallyEqual.js"
 import { pm } from "./utils/pm.js"
 import { posByNode } from "./utils/posByNode.js"
 import { setupWrapper } from "./utils/setupWrapper.js"
 
 import { testFileInsertHandler } from "../src/runtime/pm/features/FileInsert/FileInsertHandler/TestFileInsertHandler.js"
-import { findPlaceholder, placeholderPluginKey } from "../src/runtime/pm/features/FileInsert/plugins/placeholderPlugin.js"
 
 const documents = {
 	doc: {
@@ -181,12 +181,9 @@ describe("Image Insertion", () => {
 			)).toJSON()
 			expect(isPartiallyEqual(changedDoc, expectedDoc)).to.equal(true)
 
-			// Placeholder decoration should exist
-			const placeholderPos = findPlaceholder(editor.state, "test-id")
-			// We can't easily check by ID without the handler's insertId, so just verify
-			// the decoration plugin has decorations
-			const decos = placeholderPluginKey.getState(editor.state)
-			expect(decos).not.to.equal(null)
+			// Placeholder decoration should exist (we can't easily check by id without knowing the id the handler used)
+			const placeholders = findAnyPlaceholder(editor.state)
+			expect(placeholders.length).to.equal(1)
 			c.unmount()
 		})
 

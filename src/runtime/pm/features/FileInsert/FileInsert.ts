@@ -15,7 +15,7 @@ import type { FileInsertExtensionOptions } from "./types.js"
  * There is a default implementation at {@link FileInsertHandler} that tries to handle as much as possible.
  *
  * Extend it to use it and define `saveFile` and `generatePreview`. Everything else has a default implementation (but can be overridden as needed).
- * To customize ID generation, extend {@link FileInsertHandler} and override its {@link FileInsertHandler.generateId} method.
+ * To customize id generation, extend {@link FileInsertHandler} and override its {@link FileInsertHandler.generateId} method.
  */
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

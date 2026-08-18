@@ -8,7 +8,7 @@ import type { IFileInsertHandler } from "../types.js"
 
 /**
  * Maps insert IDs to their batch info for position adjustment during concurrent replacements.
- * Keyed by insertId (which becomes the file node's `id` attr after replacement).
+ * Keyed by an id (which becomes the file node's `id` attr after replacement).
  */
 interface BatchEntry {
 	batchId: string
@@ -20,42 +20,42 @@ interface BatchEntry {
  *
  * To use it extend it and define the `saveFile` and `generatePreview` methods. Everything else has a default implementation (but they can be overridden as needed).
  *
- * To use a custom ID generation strategy, override {@link generateId}.
+ * To use a custom id generation strategy, override {@link generateId}.
  */
 export class FileInsertHandler<
 	TFile extends File = File,
 	TAttrs extends Record<string, unknown> = Record<string, unknown>,
-	T extends { file: TFile, attrs: TAttrs, previewSrc?: string } = { file: TFile, attrs: TAttrs, previewSrc?: string },
-	TKey = string
-> implements IFileInsertHandler<TFile, TAttrs, T, TKey> {
+	T extends { file: TFile, attrs: TAttrs, previewSrc?: string } = { file: TFile, attrs: TAttrs, previewSrc?: string }
+> implements IFileInsertHandler<TFile, TAttrs, T> {
 	/** Maps insert IDs to their batch info for position adjustment during concurrent replacements. */
 	insertionBatch = new Map<string, BatchEntry>()
 
 	/**
-	 * Look up batch info for an insert ID.
+	 * Look up batch info for an insert id.
 	 *
 	 * @returns batch info or undefined if not tracked
 	 */
-	protected getBatchInfo(insertId: string): BatchEntry | undefined {
-		return this.insertionBatch.get(insertId)
+	protected getBatchInfoByInsertId(id: string): BatchEntry | undefined {
+		return this.insertionBatch.get(id)
 	}
 
 	/**
-	 * Generate a unique ID for placeholders and batches.
+	 * Generate a unique id for placeholders and batches.
 	 *
-	 * Override this method to use a custom ID generation strategy.
+	 * Override this method to use a custom id generation strategy.
 	 *
 	 * @default Uses a 10 digit nanoid.
 	 */
 	generateId(): string {
-		return nanoid(10)
+		const id = nanoid(10)
+		return id
 	}
 
-	async saveFile(_file: TFile, _insertId: TKey, _editor: Editor, _previewSrc: string | undefined): Promise<T | undefined> {
+	async saveFile(_file: TFile, _id: string, _editor: Editor, _previewSrc: string | undefined): Promise<T | undefined> {
 		throw new Error("saveFile must be implemented by subclass")
 	}
 
-	async generatePreview(_file: TFile, _id: TKey, _editor: Editor): Promise<string | undefined> {
+	async generatePreview(_file: TFile, _id: string, _editor: Editor): Promise<string | undefined> {
 		throw new Error("generatePreview must be implemented by subclass")
 	}
 
@@ -84,10 +84,10 @@ export class FileInsertHandler<
 		return position
 	}
 
-	/** Removes the placeholder decoration by ID. */
-	onSaveError(_file: TFile, editor: Editor, _pos: number | undefined, _error: Error, loadingKey: TKey): void {
+	/** Removes the placeholder decoration by id. */
+	onSaveError(_file: TFile, editor: Editor, _pos: number | undefined, _error: Error, id: string): void {
 		editor.commands.command(({ tr }) => {
-			tr.setMeta(placeholderPluginKey, { remove: { id: String(loadingKey) } })
+			tr.setMeta(placeholderPluginKey, { remove: { id: id } })
 			return true
 		})
 	}
@@ -95,15 +95,15 @@ export class FileInsertHandler<
 	/**
 	 * Adds a widget decoration at the insert position. Uses {@link generateId} for the loading id.
 	 */
-	insertAsyncPlaceholder(file: TFile, editor: Editor, insertPos: number, _originalPos?: number): TKey {
-		const loadingId = this.generateId()
+	insertAsyncPlaceholder(file: TFile, editor: Editor, insertPos: number, _originalPos?: number): string {
+		const id = this.generateId()
 		editor.commands.command(({ tr }) => {
 			const $pos = tr.doc.resolve(insertPos)
 			if ($pos.parent.inlineContent) {
 				// inline: add widget decoration directly at position
 				tr.setMeta(placeholderPluginKey, {
 					add: {
-						id: loadingId,
+						id: id,
 						pos: insertPos,
 						fileName: file.name,
 						side: -1
@@ -120,7 +120,7 @@ export class FileInsertHandler<
 					const decoPos = insertPos + 1 + 1
 					tr.setMeta(placeholderPluginKey, {
 						add: {
-							id: loadingId,
+							id: id,
 							pos: decoPos,
 							fileName: file.name,
 							side: -1
@@ -130,7 +130,7 @@ export class FileInsertHandler<
 			}
 			return true
 		})
-		return loadingId as TKey
+		return id
 	}
 
 	/**
@@ -142,14 +142,14 @@ export class FileInsertHandler<
 		editor: Editor,
 		pos: number,
 		attrs: Record<string, unknown>,
-		loadingKey: TKey
+		id: string
 	): void {
 		if (editor.isDestroyed) return
 
 		const pm = editor.schema.nodes
 
 		editor.commands.command(({ tr }) => {
-			const adjustedPos = this.adjustInsertPosition(tr.doc, pos, String(loadingKey))
+			const adjustedPos = this.adjustInsertPosition(tr.doc, pos, id)
 			const $pos = tr.doc.resolve(adjustedPos)
 
 			if ($pos.parent.inlineContent) {
@@ -163,7 +163,7 @@ export class FileInsertHandler<
 				tr.replaceWith(paragraphPos, paragraphEnd, newParagraph)
 			}
 
-			tr.setMeta(placeholderPluginKey, { remove: { id: String(loadingKey) } })
+			tr.setMeta(placeholderPluginKey, { remove: { id: id } })
 			return true
 		})
 	}
@@ -175,9 +175,9 @@ export class FileInsertHandler<
 	protected adjustInsertPosition(
 		doc: Node,
 		pos: number,
-		insertId: string
+		id: string
 	): number {
-		const myBatch = this.getBatchInfo(insertId)
+		const myBatch = this.getBatchInfoByInsertId(id)
 		if (myBatch == null) {
 			return pos
 		}
@@ -187,8 +187,8 @@ export class FileInsertHandler<
 		doc.nodesBetween(0, pos, (node, p) => {
 			if (node.type.name === "file") {
 				const nodeId = node.attrs.id
-				const siblingBatch = this.getBatchInfo(nodeId)
-				if (siblingBatch && siblingBatch.batchId === myBatch.batchId && nodeId !== insertId) {
+				const siblingBatch = this.getBatchInfoByInsertId(nodeId)
+				if (siblingBatch && siblingBatch.batchId === myBatch.batchId && nodeId !== id) {
 					siblings.push({ batchIndex: siblingBatch.batchIndex, pos: p, nodeSize: node.nodeSize })
 				}
 			}
@@ -199,8 +199,8 @@ export class FileInsertHandler<
 		doc.nodesBetween(pos, doc.content.size, (node, p) => {
 			if (node.type.name === "file") {
 				const nodeId = node.attrs.id
-				const siblingBatch = this.getBatchInfo(nodeId)
-				if (siblingBatch && siblingBatch.batchId === myBatch.batchId && nodeId !== insertId) {
+				const siblingBatch = this.getBatchInfoByInsertId(nodeId)
+				if (siblingBatch && siblingBatch.batchId === myBatch.batchId && nodeId !== id) {
 					siblings.push({ batchIndex: siblingBatch.batchIndex, pos: p, nodeSize: node.nodeSize })
 				}
 			}
@@ -234,7 +234,7 @@ export class FileInsertHandler<
 	async insertFiles(files: File[], editor: Editor, pos?: number): Promise<void> {
 		// insert all placeholders synchronously (in reverse so they appear in original order)
 		// batchIndex is assigned in original file order
-		const insertEntries: Array<{ file: TFile, insertId: TKey, batchIndex: number }> = []
+		const insertEntries: Array<{ file: TFile, id: string, batchIndex: number }> = []
 		const batchId = this.generateId()
 		const reversedFiles = files.reverse()
 		const totalFiles = reversedFiles.length
@@ -250,41 +250,41 @@ export class FileInsertHandler<
 			// since we iterate reversed, decrement from totalFiles - 1
 			const batchIndex = totalFiles - reversedFiles.indexOf(file) - 1
 
-			const insertId = this.insertAsyncPlaceholder(f, editor, insertPosition, pos)
-			if (!insertId) continue
+			const id = this.insertAsyncPlaceholder(f, editor, insertPosition, pos)
+			if (!id) continue
 
 			// register batch info upfront so adjustInsertPosition can find it during replacement
-			this.insertionBatch.set(String(insertId), { batchId, batchIndex })
+			this.insertionBatch.set(id, { batchId, batchIndex })
 
-			insertEntries.push({ file: f, insertId, batchIndex })
+			insertEntries.push({ file: f, id, batchIndex })
 		}
 
 		// save files concurrently, generate preview first, update placeholder, then replace
 		await Promise.allSettled(insertEntries.map(async entry => {
-			const { file, insertId } = entry
+			const { file, id } = entry
 
 			// generate preview first so we can show it immediately
-			const previewSrc = await this.generatePreview(file, insertId, editor)
+			const previewSrc = await this.generatePreview(file, id, editor)
 			if (previewSrc && !editor.isDestroyed) {
-				editor.commands.updateFilePreviewPlaceholder({ id: String(insertId), preview: previewSrc })
+				editor.commands.updateFilePreviewPlaceholder({ id: id, preview: previewSrc })
 			}
 
-			const res = await this.saveFile(file, insertId, editor, previewSrc)
+			const res = await this.saveFile(file, id, editor, previewSrc)
 			if (!res) {
-				return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), insertId)
+				return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), id)
 			}
 
-			const replacePos = findPlaceholder(editor.state, String(insertId))
+			const replacePos = findPlaceholder(editor.state, id)
 			if (!replacePos) {
-				return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), insertId)
+				return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), id)
 			}
 
-			this.replacePlaceholder(editor, replacePos, res.attrs, insertId)
+			this.replacePlaceholder(editor, replacePos, res.attrs, id)
 		}))
 
 		// cleanup batch maps
 		for (const entry of insertEntries) {
-			this.insertionBatch.delete(String(entry.insertId))
+			this.insertionBatch.delete(entry.id)
 		}
 	}
 }

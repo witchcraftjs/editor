@@ -123,7 +123,7 @@ export type IFileInsertHandler<
 	 */
 	filterFile: (file: File) => TFile | undefined
 	/**
-	 * Should generate a unique ID for placeholders and batches.
+	 * Should generate a unique id for placeholders and batches.
 	 */
 	generateId: () => string
 }
