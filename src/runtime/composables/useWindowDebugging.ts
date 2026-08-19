@@ -18,15 +18,15 @@ export const useWindowDebugging = (
 				: (editorOrComponent.value as any)?.editor,
 			...(typeof keyName === "string" ? [] : [keyName]) as [Ref<string>]
 		],
-		([editor], keys) => {
+		([editor, maybeNewKey], [_, maybeOldKey]) => {
 			if (!editor) return
 			if (typeof window === "undefined" || typeof process === "undefined") return
 			if (import.meta.dev && editor !== undefined) {
-				const k = typeof keyName === "string" ? keyName : keys[0]
+				const k = typeof keyName === "string" ? keyName : maybeNewKey
+				if (!k) return
 				const w = window as any
-				const oldKey = keys?.[1]
-				if (deleteOldKeyOnKeyChange && oldKey) {
-					w[oldKey] = undefined
+				if (deleteOldKeyOnKeyChange && maybeOldKey) {
+					w[maybeOldKey] = undefined
 				}
 				w[k] = { key: k }
 				w[k].editor = editor
