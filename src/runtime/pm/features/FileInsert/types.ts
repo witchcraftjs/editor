@@ -34,7 +34,7 @@ export interface FileInsertExtensionOptions extends HTMLAttributesOptions, WithO
 export type IFileInsertHandler<
 	TFile extends File,
 	TAttrs extends Record<string, unknown> = Record<string, unknown>,
-	T extends { file: TFile, attrs: TAttrs, previewSrc?: string } = { file: TFile, attrs: TAttrs, previewSrc?: string },
+	T extends { file: TFile, attrs: TAttrs } = { file: TFile, attrs: TAttrs },
 	TKey = string
 > = {
 	/**
@@ -66,7 +66,6 @@ export type IFileInsertHandler<
 	 * Should load/save/upload the file and return the node attributes.
 	 *
 	 * The `attrs` object returned should be spread onto the file node.
-	 * The `previewSrc` is the result of {@link generatePreview}.
 	 *
 	 * The `id` and `editor` are provided in case you're uploading the file or doing some other heavy operation and want to update the placeholder as soon as you can upload the file.
 	 */
@@ -79,13 +78,16 @@ export type IFileInsertHandler<
 	generatePreview: (file: TFile, id: TKey, editor: Editor) => Promise<string | undefined>
 	/**
 	 * This can be used to remove the placeholder on errors.
+	 *
+	 * `previewSrc` is the result of {@link generatePreview} for this file, if one was generated. Can be used for cleaning up resources (e.g. revoking a blob URL) created for the preview.
 	 */
 	onSaveError: (
 		file: TFile,
 		editor: Editor,
 		pos: number | undefined,
 		error: Error,
-		loadingKey: TKey
+		loadingKey: TKey,
+		previewSrc?: string
 	) => void
 
 	/**
@@ -105,13 +107,16 @@ export type IFileInsertHandler<
 	 *
 	 * Replace the placeholder with the final node (e.g. an image) and remove the decoration.
 	 *
+	 * `previewSrc` is the result of {@link generatePreview} for this file, if one was generated. Useful for cleaning up resources (e.g. revoking a blob URL) once the placeholder has been replaced and the preview is no longer needed.
+	 *
 	 * Note this can require special logic if you allow dropping multiple files at once. See {@link IFileInsertHandler.insertFiles}
 	 */
 	replacePlaceholder: (
 		editor: Editor,
 		pos: number,
 		attrs: Record<string, unknown>,
-		loadingKey: TKey
+		loadingKey: TKey,
+		previewSrc?: string
 	) => void
 	/**
 	 * Return the file (or whatever type you'd like) to allow the extension to handle it.

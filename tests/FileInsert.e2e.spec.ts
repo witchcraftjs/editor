@@ -31,8 +31,14 @@ async function simulateDrop(editor: Editor, files: File[], pos: number) {
 }
 
 function createFile(name: string, type: string, content: string) {
-	const base64 = `data:image/png;base64,${btoa(content)}`
-	return { file: new File([content], name, { type }), base64 }
+	return new File([content], name, { type })
+}
+
+function findNodes(node: any, type: string): any[] {
+	if (!node || typeof node !== "object") return []
+	const found = node.type === type ? [node] : []
+	if (Array.isArray(node.content)) for (const child of node.content) found.push(...findNodes(child, type))
+	return found
 }
 
 describe("Image Insertion", () => {
@@ -46,7 +52,7 @@ describe("Image Insertion", () => {
 			const doc = editor.state.doc
 			const targetPos = posByNode(doc, { textContent: "target", type: "paragraph", attrs: {}, insert: true })
 
-			await simulateDrop(editor, [file.file], targetPos)
+			await simulateDrop(editor, [file], targetPos)
 
 			const beforeInsertChangedDoc = editor.state.doc.toJSON()
 			const beforeInsertExpectedDoc = pm.doc(
@@ -63,12 +69,14 @@ describe("Image Insertion", () => {
 				pm.list(
 					pm.itemNoId(pm.paragraph(
 						"target",
-						pm.file({ src: file.base64 })
+						pm.file({ src: "this-is-a-dummy--checked-below" })
 					)),
 					pm.itemNoId(pm.paragraph("item"))
 				)
 			).toJSON()
-			expect(isPartiallyEqual(changedDoc, expectedDoc)).to.equal(true)
+			expect(isPartiallyEqual(changedDoc, expectedDoc, { ignoredKeys: ["src"] })).to.equal(true)
+			const [fileNode] = findNodes(changedDoc, "file")
+			expect(fileNode?.attrs.src?.startsWith("blob:")).to.equal(true)
 			c.unmount()
 		})
 
@@ -82,7 +90,7 @@ describe("Image Insertion", () => {
 			const doc = editor.state.doc
 			const targetPos = posByNode(doc, { textContent: "target", type: "paragraph", attrs: {}, insert: true })
 
-			await simulateDrop(editor, [file.file, file2.file], targetPos)
+			await simulateDrop(editor, [file, file2], targetPos)
 
 			// Before upload: doc is unchanged (decorations don't appear in toJSON)
 			const beforeInsertChangedDoc = editor.state.doc.toJSON()
@@ -100,13 +108,16 @@ describe("Image Insertion", () => {
 				pm.list(
 					pm.itemNoId(pm.paragraph(
 						"target",
-						pm.file({ src: file.base64 }),
-						pm.file({ src: file2.base64 })
+						pm.file({ src: "this-is-a-dummy--checked-below" }),
+						pm.file({ src: "this-is-a-dummy--checked-below" })
 					)),
 					pm.itemNoId(pm.paragraph("item"))
 				)
 			).toJSON()
-			expect(isPartiallyEqual(changedDoc, expectedDoc)).to.equal(true)
+			expect(isPartiallyEqual(changedDoc, expectedDoc, { ignoredKeys: ["src"] })).to.equal(true)
+			const fileNodes = findNodes(changedDoc, "file")
+			expect(fileNodes.length).to.equal(2)
+			expect(fileNodes.every((n: any) => n.attrs.src.startsWith("blob:"))).to.equal(true)
 			c.unmount()
 		})
 
@@ -118,7 +129,7 @@ describe("Image Insertion", () => {
 			)), { documents })
 			const doc = editor.state.doc
 			const targetPos = posByNode(doc, { textContent: "target", type: "paragraph", attrs: {}, insert: true })
-			await simulateDrop(editor, [file.file], targetPos)
+			await simulateDrop(editor, [file], targetPos)
 
 			const changedDoc = editor.state.doc.toJSON()
 			const expectedDoc = pm.doc(pm.list(
@@ -139,7 +150,7 @@ describe("Image Insertion", () => {
 
 			const betweenPos = posByNode(editor.state.doc, { textContent: "A", type: "paragraph", insert: true }) + 1
 			expect(betweenPos).toEqual(5)
-			await simulateDrop(editor, [file1.file], betweenPos)
+			await simulateDrop(editor, [file1], betweenPos)
 			await delay(testFileInsertHandler.delay + 1000)
 			expect(editor.state.doc.toJSON().content[0].content.length).to.equal(3)
 
@@ -156,7 +167,7 @@ describe("Image Insertion", () => {
 			// Drop first image after A paragraph (pos 5)
 			const betweenPos = posByNode(editor.state.doc, { textContent: "A", type: "paragraph", insert: true }) + 1 + 2
 			expect(betweenPos).toEqual(7)
-			await simulateDrop(editor, [file1.file], betweenPos)
+			await simulateDrop(editor, [file1], betweenPos)
 			await delay(testFileInsertHandler.delay + 1000)
 			expect(editor.state.doc.toJSON().content[0].content.length).to.equal(3)
 
@@ -172,7 +183,7 @@ describe("Image Insertion", () => {
 			)), { documents })
 
 			const targetPos = posByNode(editor.state.doc, { textContent: "target", type: "paragraph", attrs: {}, insert: true })
-			await simulateDrop(editor, [file.file], targetPos)
+			await simulateDrop(editor, [file], targetPos)
 
 			// The doc should be unchanged (no node inserted)
 			const changedDoc = editor.state.doc.toJSON()
@@ -194,7 +205,7 @@ describe("Image Insertion", () => {
 			)), { documents })
 
 			const targetPos = posByNode(editor.state.doc, { textContent: "target", type: "paragraph", attrs: {}, insert: true })
-			await simulateDrop(editor, [file.file], targetPos)
+			await simulateDrop(editor, [file], targetPos)
 
 			await delay(testFileInsertHandler.delay + 1000)
 
@@ -203,11 +214,13 @@ describe("Image Insertion", () => {
 				pm.list(
 					pm.itemNoId(pm.paragraph(
 						"target",
-						pm.file({ src: file.base64 })
+						pm.file({ src: "this-is-a-dummy--checked-below" })
 					))
 				)
 			).toJSON()
-			expect(isPartiallyEqual(changedDoc, expectedDoc)).to.equal(true)
+			expect(isPartiallyEqual(changedDoc, expectedDoc, { ignoredKeys: ["src"] })).to.equal(true)
+			const [replacedNode] = findNodes(changedDoc, "file")
+			expect(replacedNode?.attrs.src?.startsWith("blob:")).to.equal(true)
 			c.unmount()
 		})
 	})
@@ -220,7 +233,7 @@ describe("Image Insertion", () => {
 			)), { documents })
 
 			const targetPos = posByNode(editor.state.doc, { textContent: "target", type: "paragraph", attrs: {}, insert: true })
-			await simulateDrop(editor, [file.file], targetPos)
+			await simulateDrop(editor, [file], targetPos)
 
 			await delay(testFileInsertHandler.delay + 1000)
 

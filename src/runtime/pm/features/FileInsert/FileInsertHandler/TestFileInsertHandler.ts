@@ -3,7 +3,20 @@ import type { Editor } from "@tiptap/core"
 
 import { FileInsertHandler } from "./FileInsertHandler.js"
 
-import { readAsDataUrl } from "../utils/readAsDataUrl.js"
+const safeToPreviewTypes = [
+	"image/jpeg",
+	"image/jpg",
+	"image/png",
+	"image/gif",
+	"image/webp",
+	"image/bmp",
+	"image/x-icon",
+	"image/vnd.microsoft.icon",
+	"image/apng",
+	"image/avif",
+	"image/jxl"
+	// "image/svg+xml" is UNSAFE to display like this
+]
 
 /**
  * Test-specific file inserter handler.
@@ -25,7 +38,7 @@ export class TestFileInsertHandler extends FileInsertHandler {
 	}
 
 	override async generatePreview(file: File, _id: string, _editor: Editor) {
-		return readAsDataUrl(file)
+		if (safeToPreviewTypes.includes(file.type)) return URL.createObjectURL(file)
 	}
 
 	override async saveFile(file: File, id: string, _editor: Editor, previewSrc: string | undefined) {
@@ -35,7 +48,28 @@ export class TestFileInsertHandler extends FileInsertHandler {
 			file,
 			attrs: { src: previewSrc ?? "", id: id }
 		}
+		// a real app might look more like this:
+		// const assetId = await save(file, { id: id })
+		//
+		// return {
+		// 	file,
+		// 	attrs: {
+		// 		id: assetId
+		// 	},
+		// }
 	}
+
+	override onSaveError(file: File, editor: Editor, pos: number | undefined, error: Error, id: string, previewSrc?: string) {
+		super.onSaveError(file, editor, pos, error, id, previewSrc)
+		if (previewSrc?.startsWith("blob:")) URL.revokeObjectURL(previewSrc)
+	}
+
+	// we don't revoke here since the demo sets previewSrc to attrs.src, but if we were to return { ..., previewSrc } in saveFile
+	// and note set it to attrs.src more like a real app you'd want to do this:
+	// override replacePlaceholder(editor: Editor, pos: number, attrs: Record<string, unknown>, id: string, previewSrc?: string) {
+	// 	super.replacePlaceholder(editor, pos, attrs, id, previewSrc)
+	// 	if (previewSrc?.startsWith("blob:")) URL.revokeObjectURL(previewSrc)
+	// }
 }
 
 export const testFileInsertHandler = new TestFileInsertHandler()

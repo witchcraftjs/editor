@@ -25,7 +25,7 @@ interface BatchEntry {
 export class FileInsertHandler<
 	TFile extends File = File,
 	TAttrs extends Record<string, unknown> = Record<string, unknown>,
-	T extends { file: TFile, attrs: TAttrs, previewSrc?: string } = { file: TFile, attrs: TAttrs, previewSrc?: string }
+	T extends { file: TFile, attrs: TAttrs } = { file: TFile, attrs: TAttrs }
 > implements IFileInsertHandler<TFile, TAttrs, T> {
 	/** Maps insert IDs to their batch info for position adjustment during concurrent replacements. */
 	insertionBatch = new Map<string, BatchEntry>()
@@ -85,7 +85,7 @@ export class FileInsertHandler<
 	}
 
 	/** Removes the placeholder decoration by id. */
-	onSaveError(_file: TFile, editor: Editor, _pos: number | undefined, _error: Error, id: string): void {
+	onSaveError(_file: TFile, editor: Editor, _pos: number | undefined, _error: Error, id: string, _previewSrc?: string): void {
 		editor.commands.command(({ tr }) => {
 			tr.setMeta(placeholderPluginKey, { remove: { id: id } })
 			return true
@@ -142,7 +142,8 @@ export class FileInsertHandler<
 		editor: Editor,
 		pos: number,
 		attrs: Record<string, unknown>,
-		id: string
+		id: string,
+		_previewSrc?: string
 	): void {
 		if (editor.isDestroyed) return
 
@@ -271,15 +272,15 @@ export class FileInsertHandler<
 
 			const res = await this.saveFile(file, id, editor, previewSrc)
 			if (!res) {
-				return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), id)
+				return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), id, previewSrc)
 			}
 
 			const replacePos = findPlaceholder(editor.state, id)
 			if (!replacePos) {
-				return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), id)
+				return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), id, previewSrc)
 			}
 
-			this.replacePlaceholder(editor, replacePos, res.attrs, id)
+			this.replacePlaceholder(editor, replacePos, res.attrs, id, previewSrc)
 		}))
 
 		// cleanup batch maps
