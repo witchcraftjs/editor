@@ -263,24 +263,29 @@ export class FileInsertHandler<
 		// save files concurrently, generate preview first, update placeholder, then replace
 		await Promise.allSettled(insertEntries.map(async entry => {
 			const { file, id } = entry
-
+			let previewSrc
+			// am paranoid, have had errors slip through
+			try {
 			// generate preview first so we can show it immediately
-			const previewSrc = await this.generatePreview(file, id, editor)
-			if (previewSrc && !editor.isDestroyed) {
-				editor.commands.updateFilePreviewPlaceholder({ id: id, preview: previewSrc })
-			}
+				previewSrc = await this.generatePreview(file, id, editor)
+				if (previewSrc && !editor.isDestroyed) {
+					editor.commands.updateFilePreviewPlaceholder({ id: id, preview: previewSrc })
+				}
 
-			const res = await this.saveFile(file, id, editor, previewSrc)
-			if (!res) {
-				return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), id, previewSrc)
-			}
+				const res = await this.saveFile(file, id, editor, previewSrc).catch(err => err)
+				if (!res || res instanceof Error) {
+					return this.onSaveError(file, editor, undefined, new Error("saveFile returned nothing."), id, previewSrc)
+				}
 
-			const replacePos = findPlaceholder(editor.state, id)
-			if (!replacePos) {
-				return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), id, previewSrc)
-			}
+				const replacePos = findPlaceholder(editor.state, id)
+				if (!replacePos) {
+					return this.onSaveError(file, editor, replacePos, new Error("Could not find node to replace."), id, previewSrc)
+				}
 
-			this.replacePlaceholder(editor, replacePos, res.attrs, id, previewSrc)
+				this.replacePlaceholder(editor, replacePos, res.attrs, id, previewSrc)
+			} catch (err) {
+				this.onSaveError(file, editor, undefined, err as any, id, previewSrc)
+			}
 		}))
 
 		// cleanup batch maps
