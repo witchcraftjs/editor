@@ -34,6 +34,10 @@
 			"types": "./dist/runtime/pm/features/CodeBlock/components/*.vue.d.ts",
 			"import": "./dist/runtime/pm/features/CodeBlock/components/*.vue"
 		},
+		"./pm/features/CommandsMenu/components/*": {
+			"types": "./dist/runtime/pm/features/CommandsMenu/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/CommandsMenu/components/*.vue"
+		},
 		"./pm/features/EmbeddedDocument/components/*": {
 			"types": "./dist/runtime/pm/features/EmbeddedDocument/components/*.vue.d.ts",
 			"import": "./dist/runtime/pm/features/EmbeddedDocument/components/*.vue"
@@ -45,6 +49,10 @@
 		"./pm/features/Iframe/components/*": {
 			"types": "./dist/runtime/pm/features/Iframe/components/*.vue.d.ts",
 			"import": "./dist/runtime/pm/features/Iframe/components/*.vue"
+		},
+		"./pm/features/Link/components/*": {
+			"types": "./dist/runtime/pm/features/Link/components/*.vue.d.ts",
+			"import": "./dist/runtime/pm/features/Link/components/*.vue"
 		},
 		"./pm/features/Menus/components/*": {
 			"types": "./dist/runtime/pm/features/Menus/components/*.vue.d.ts",
