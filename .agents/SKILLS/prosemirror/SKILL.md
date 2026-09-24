@@ -109,6 +109,12 @@ For manual document derivation:
 - `fragment.replaceChild(i, node)` — replace one child
 - `fragment.append(nodes)` — append to fragment
 
+## Debugging
+
+### Plugins
+
+In extreme cases we might need to know the list of plugins loaded in state without knowing their keys. We can log them by doing state.plugins.map(p => p.spec?.key)
+
 ## References
 
 Read more here (careful read only that heading, the docs is huge): https://prosemirror.net/docs/guide/#doc
