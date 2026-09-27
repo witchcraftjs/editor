@@ -87,6 +87,7 @@ export default defineNuxtModule<ModuleOptions>({
 		// otherwise we get two versions of the same thing
 		nuxt.options.build.transpile.push("@tiptap/vue-3")
 		nuxt.options.build.transpile.push("@tiptap/pm")
+		nuxt.options.build.transpile.push("@tiptap/y-tiptap")
 
 		nuxt.hook("vite:extendConfig", config => {
 			// @ts-expect-error - optimizeDeps is now readonly but also possibly undefined :/
@@ -98,6 +99,7 @@ export default defineNuxtModule<ModuleOptions>({
 			// see above
 			config.optimizeDeps.exclude.push("@tiptap/vue-3")
 			config.optimizeDeps.exclude.push("@tiptap/pm")
+			config.optimizeDeps.exclude.push("@tiptap/y-tiptap")
 			config.optimizeDeps.include ??= []
 			config.optimizeDeps.include.push("highlight.js/lib/core")
 			// idk why we also need to do this or it won't work from a real app
