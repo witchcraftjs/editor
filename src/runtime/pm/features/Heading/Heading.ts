@@ -2,6 +2,8 @@ import { isArray } from "@alanscodelog/utils/isArray"
 import { keys } from "@alanscodelog/utils/keys"
 import { mergeAttributes, Node, textblockTypeInputRule } from "@tiptap/core"
 
+// note: to keep command augmentation working
+export * from "./commands/changeLevelAttr.js"
 import { changeLevelAttr } from "./commands/changeLevelAttr.js"
 import type { HeadingNodeOptions } from "./types.js"
 

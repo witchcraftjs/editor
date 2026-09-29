@@ -3,6 +3,11 @@ import type { Node as ProsemirrorNode } from "@tiptap/pm/model"
 import { mergeAttributes, VueNodeViewRenderer } from "@tiptap/vue-3"
 import { createLowlight } from "lowlight"
 
+// note: to keep command augmentation working
+export * from "./commands/codeBlockEnterOrSplit.js"
+export * from "./commands/codeBlockIndent.js"
+export * from "./commands/codeBlockUnindent.js"
+export * from "./commands/focusCodeBlockLanguage.js"
 import { codeBlockEnterOrSplit } from "./commands/codeBlockEnterOrSplit.js"
 import { codeBlockIndent } from "./commands/codeBlockIndent.js"
 import { codeBlockUnindent } from "./commands/codeBlockUnindent.js"

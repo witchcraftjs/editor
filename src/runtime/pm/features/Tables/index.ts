@@ -5,6 +5,8 @@ import {
 	TableRow as TiptapTableRow
 } from "@tiptap/extension-table"
 
+// note: to keep command augmentation working
+export * from "./commands/tableEnter.js"
 import { tableEnter } from "./commands/tableEnter.js"
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

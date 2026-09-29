@@ -2,6 +2,9 @@ import { InputRule, mergeAttributes, Node } from "@tiptap/core"
 import { Blockquote as TiptapBlockquote } from "@tiptap/extension-blockquote"
 import { TextSelection } from "@tiptap/pm/state"
 
+// note: to keep command augmentation working
+export * from "./commands/blockquoteEnter.js"
+export * from "./commands/blockquoteShiftEnter.js"
 import { blockquoteEnter } from "./commands/blockquoteEnter.js"
 import { blockquoteShiftEnter } from "./commands/blockquoteShiftEnter.js"
 

@@ -1,3 +1,15 @@
+// note: to keep command augmentation working
+export * from "./features/Base/Base.js"
+export * from "./features/Blockquote/Blockquote.js"
+export * from "./features/Blocks/Item.js"
+export * from "./features/Blocks/List.js"
+export * from "./features/CodeBlock/CodeBlock.js"
+export * from "./features/Collaboration/Collaboration.js"
+export * from "./features/FileInsert/FileInsert.js"
+export * from "./features/Heading/Heading.js"
+export * from "./features/History/History.js"
+export * from "./features/Tables/index.js"
+
 import { type EditorOptions, getSchema } from "@tiptap/core"
 import { Bold } from "@tiptap/extension-bold"
 import { Code } from "@tiptap/extension-code"

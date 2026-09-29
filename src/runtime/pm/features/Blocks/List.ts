@@ -1,5 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/core"
 
+// note: to keep command augmentation working
+export * from "./commands/setNode.js"
 import { setNode } from "./commands/setNode.js"
 import type { ListNodeOptions } from "./types.js"
 

@@ -2,6 +2,10 @@ import { Extension } from "@tiptap/core"
 import { Plugin } from "@tiptap/pm/state"
 import type { EditorView } from "@tiptap/pm/view"
 
+// note: to keep command augmentation working
+export * from "./commands/insertFile.js"
+export * from "./commands/pickFile.js"
+export * from "./commands/updateFilePreviewPlaceholder.js"
 import { insertFiles } from "./commands/insertFile.js"
 import { pickFile } from "./commands/pickFile.js"
 import { updateFilePreviewPlaceholder } from "./commands/updateFilePreviewPlaceholder.js"
