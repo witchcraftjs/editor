@@ -1,64 +1,111 @@
-import type { Command, Dispatch, Extension } from "@tiptap/core"
-import TipTapHistoryExtension from "@tiptap/extension-history"
+import type { Command, Dispatch } from "@tiptap/core"
+import TipTapHistoryExtension, { type HistoryOptions } from "@tiptap/extension-history"
 import { history, redo, undo } from "@tiptap/pm/history"
 import { type EditorState, Plugin, PluginKey, type Transaction } from "@tiptap/pm/state"
+
+import { yRedo, yUndo, yUndoPluginKey } from "../Collaboration/yUndoPlugin.js"
+
+function getFullState(storage: { documentApi?: any, docId?: string }) {
+	const { documentApi, docId } = storage
+	if (!documentApi || !docId) return undefined
+	return documentApi.getFullState({ docId }) ?? undefined
+}
+
+export interface HistoryStorage {
+	/**
+	 * The document api, so undo/redo can find the per-doc state when a yjs UndoManager exists (collab documents). Set via `setCollabContext`.
+	 */
+	documentApi?: any
+	/**
+	 * The id of the document this editor is bound to. Used with `documentApi` to resolve the per-doc state. Set via `setCollabContext`.
+	 */
+	docId?: string
+	/**
+	 * If set, undo and redo will be forwarded to the editor this function returns instead of the current one, when a per-doc yjs UndoManager is not available (non-collab documents). This makes handling embedded editors easier.
+	 *
+	 * This is a function so as to make it easier to always get the latest state.
+	 */
+	redirectState?: () => EditorState | undefined
+	/**
+	 * Required if redirectState is set. Tells the extension how to forward the transactions.
+	 */
+	redirectDispatch?: Dispatch
+}
+
 
 declare module "@tiptap/core" {
 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Commands<ReturnType> {
 		historyExtended: {
-
 			/**
 			 * Set the functions needed to forward history commands.
 			 *
-			 * Set to null to disable. Should be set to null before destroying the editor.
+			 * Cleared automatically when the editor is destroyed.
 			 */
 			setHistoryRedirect: (
-				redirectState?: () => EditorState | undefined,
-				redirectDispatch?: Dispatch
+				redirectState?: HistoryStorage["redirectState"],
+				redirectDispatch?: HistoryStorage["redirectDispatch"]
+			) => ReturnType
+			/**
+			 * Set the document api and id so undo/redo can be routed to the per-doc yjs UndoManager when one exists.
+			 */
+			setCollabContext: (
+				documentApi?: HistoryStorage["documentApi"],
+				docId?: HistoryStorage["docId"]
 			) => ReturnType
 		}
 	}
-}
 
-declare module "@tiptap/extension-history" {
-	interface HistoryOptions {
-		/**
-		 * If set, undo and redo will be forwarded to the editor this function returns instead of the current one. This makes handling embedded editors easier.
-		 *
-		 * This is a function so as to make it easier to always get the latest state.
-		 */
-		redirectState?: () => EditorState | undefined
-		/**
-		 * Required if redirectState is set. Tells the extension how to forward the transactions.
-		 */
-		redirectDispatch?: Dispatch
+	interface Storage {
+		history: HistoryStorage
 	}
 }
 
 export const filterKey = "filterForHistoryForwarding"
+
 /**
- * Extends the existing history extension to allow for forwarding of history for embedded editors.
+ * Extends the existing history extension to:
+ * - forward undo/redo to a per-doc yjs UndoManager when one exists (collab documents)
+ * - forward undo/redo to another editor's state for embedded editors on non-collab documents
  */
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const History = (TipTapHistoryExtension as any as Extension /* vue-tsc issue */).extend({
+export const History = TipTapHistoryExtension.extend<HistoryOptions, HistoryStorage>({
 	name: "history",
 	addOptions() {
 		return {
 			depth: 100,
-			newGroupDelay: 500,
-			redirectState: undefined,
-			redirectDispatch: undefined
+			newGroupDelay: 500
 		}
+	},
+
+	addStorage(): HistoryStorage {
+		return {}
+	},
+
+	onDestroy() {
+		this.storage.redirectState = undefined
+		this.storage.redirectDispatch = undefined
 	},
 
 	addCommands() {
 		return {
 			undo: (): Command => ({ state, dispatch, tr }) => {
-				const redirectState = this.options.redirectState?.()
-				const redirectDispatch = dispatch && this.options.redirectDispatch
+				const fullState = getFullState(this.storage)
+				if (fullState) {
+					const undoManager = yUndoPluginKey.getState(fullState)?.undoManager ?? undefined
+					if (undoManager) {
+						tr.setMeta("preventDispatch", true)
+						if (!dispatch) return undoManager.undoStack.length > 0
+						if (undoManager.undoStack.length === 0) return false
+						yUndo(fullState)
+						return true
+					}
+				}
+
+				const redirectState = this.storage.redirectState?.()
+				const redirectDispatch = dispatch && this.storage.redirectDispatch
 				if (redirectState) {
 					// commands create transactions whether we return true or not
 					// and because we apply our own transaction before the command ends
@@ -74,8 +121,20 @@ export const History = (TipTapHistoryExtension as any as Extension /* vue-tsc is
 				}
 			},
 			redo: (): Command => ({ state, dispatch, tr }) => {
-				const redirectState = this.options.redirectState?.()
-				const redirectDispatch = this.options.redirectDispatch
+				const fullState = getFullState(this.storage)
+				if (fullState) {
+					const undoManager = yUndoPluginKey.getState(fullState)?.undoManager ?? undefined
+					if (undoManager) {
+						tr.setMeta("preventDispatch", true)
+						if (!dispatch) return undoManager.redoStack.length > 0
+						if (undoManager.redoStack.length === 0) return false
+						yRedo(fullState)
+						return true
+					}
+				}
+
+				const redirectState = this.storage.redirectState?.()
+				const redirectDispatch = this.storage.redirectDispatch
 				if (redirectState) {
 					tr.setMeta(filterKey, true)
 					redo(redirectState, redirectDispatch)
@@ -86,8 +145,15 @@ export const History = (TipTapHistoryExtension as any as Extension /* vue-tsc is
 			},
 			setHistoryRedirect: (redirectState?: () => EditorState | undefined, redirectDispatch?: Dispatch): Command => ({ dispatch }) => {
 				if (dispatch) {
-					this.options.redirectState = redirectState
-					this.options.redirectDispatch = redirectDispatch
+					this.storage.redirectState = redirectState
+					this.storage.redirectDispatch = redirectDispatch
+				}
+				return true
+			},
+			setCollabContext: (documentApi?: any, docId?: string): Command => ({ dispatch }) => {
+				if (dispatch) {
+					this.storage.documentApi = documentApi
+					this.storage.docId = docId
 				}
 				return true
 			}

@@ -3,11 +3,11 @@ import type { Content, Editor, EditorOptions } from "@tiptap/core"
 import type { EditorState, Transaction } from "@tiptap/pm/state"
 import { computed, type ComputedRef, inject, onBeforeUnmount, onMounted, provide, type Ref, ref, type ShallowRef, watch } from "vue"
 
-import { getDiffReplacementRange } from "../../../utils/getDiffReplacementRange.js"
+import { ySyncPluginKey } from "../../Collaboration/ySyncPlugin.js"
 import { type DocId, documentApiInjectionKey, type DocumentApiInterface, type EmbedId, type MaybeEmbedId, type OnUpdateDocumentCallback } from "../../DocumentApi/types.js"
 import { convertFullTransactionForPartialState } from "../../DocumentApi/utils/convertFullTransactionForPartialState.js"
-import { getStateEmbedRange } from "../../DocumentApi/utils/getStateEmbedRange.js"
 import { isEmbedId } from "../../DocumentApi/utils/isEmbedId.js"
+import { isUndoOutsideRange } from "../../History/utils/isUndoOutsideRange.js"
 import { Embedded } from "../Embedded.js"
 import { embededEditorOptionsInjectionKey, isDeepEmbeddedInjectionKey, isEmbeddedBlockInjectionKey, isEmbeddedInjectionKey, parentEditorIdInjectionKey } from "../types.js"
 
@@ -143,24 +143,10 @@ export function useEmbeddedEditor(
 		timeout: undefined,
 		justWarned: false
 	}
-	function forwardDispatchToFullState(tr?: Transaction): void {
+	function checkUndoRangeWithState(stateBefore: EditorState, tr: Transaction): void {
 		castType<EmbedId>(embedIdRef.value)
-		const stateBefore = api!.getFromCache(embedIdRef.value)
-		if (!stateBefore) {
-			throw new Error("Expected stateBefore to exist.")
-		}
-		if (!tr) return
-		const diff = getDiffReplacementRange(stateBefore.doc, tr.doc)
-		const beforeRange = getStateEmbedRange(stateBefore.doc, embedIdRef.value)
-		const afterRange = getStateEmbedRange(tr.doc, embedIdRef.value)
-
-		const isOutside = diff && beforeRange.start !== undefined && beforeRange.end !== undefined
-			&& afterRange.start !== undefined && afterRange.end !== undefined
-			&& (
-				diff.start < beforeRange.start || diff.end > beforeRange.end
-				|| diff.start < afterRange.start || diff.sliceEnd > afterRange.end
-			)
-		if (isOutside) {
+		const outside = isUndoOutsideRange(stateBefore, tr, embedIdRef.value)
+		if (outside) {
 			onUndoWarning
 				? onUndoWarning(showUndoWarning)
 				: defaultOnUndoWarning(showUndoWarning, warningState, undoTimeouts)
@@ -169,11 +155,11 @@ export function useEmbeddedEditor(
 				? onUndoOk(showUndoWarning)
 				: defaultOnUndoOk(showUndoWarning, warningState)
 		}
-		// forwarded transactions bypass the on transaction hook
-		// so we set ignore to false
-		// and don't pass our symbol here
-		// so we can receive the transaction and update the embedded document
-		// we also don't convert the transaction's steps
+	}
+	function forwardDispatchToFullState(tr?: Transaction): void {
+		castType<EmbedId>(embedIdRef.value)
+		if (!tr) return
+		tr.setMeta("undo", true)
 		tr.setMeta("no-step-convert", true)
 		tr.setMeta("no-schema-convert", true)
 		if (!embedIdRef.value.blockId) {
@@ -203,11 +189,15 @@ export function useEmbeddedEditor(
 	const onUpdateDocument: OnUpdateDocumentCallback = (
 		incomingEmbedId: DocId,
 		tr: Transaction,
-		_stateBefore: EditorState,
+		stateBefore: EditorState,
 		_incomingState: EditorState,
 		incomingSelfSymbol?: symbol
 	): void => {
 		castType<EmbedId>(embedIdRef.value)
+		const isUndo = tr.getMeta("undo") || tr.getMeta("y-undo")
+		if (isUndo && stateBefore) {
+			checkUndoRangeWithState(stateBefore, tr)
+		}
 		if (
 			incomingSelfSymbol === selfSymbol
 			|| embedIdRef.value.docId !== incomingEmbedId.docId
@@ -251,19 +241,24 @@ export function useEmbeddedEditor(
 		content.value = res
 
 		watch(editor, () => {
-			// void nextTick(() => {
-			// this needs to be set if the document changes
-			// because the editor gets unmounted and
-			// a new version of the extension
-			// without the callbacks is created
-			editor.value!.commands.setHistoryRedirect(
-				() => api!.getFromCache(embedId),
-				forwardDispatchToFullState
-			)
+			// this needs to be set if the document changes because the editor gets unmounted and
+			// a new version of the extension without the callbacks is created
+			//
 			// wait for the editor to exist
 			editor.value?.on("transaction", onTransaction)
 			isLoading.value = false
 			attached = true
+
+			// configure editor extensions for the embedded editor
+			editor.value!.commands.setHistoryRedirect?.(
+				() => api!.getFromCache(embedId),
+				forwardDispatchToFullState
+			)
+			editor.value!.commands.setCollabContext?.(api!, embedId.docId)
+			const bridge = ySyncPluginKey.getState(api!.getFromCache({ docId: embedId.docId })!)?.bridge
+			if (bridge) {
+				editor.value!.commands.setCollabBridge?.(bridge)
+			}
 		}, { once: true })
 	}
 	function unloadDocument(embedId: MaybeEmbedId, { partial = false }: { partial?: boolean } = {}): void {
@@ -275,8 +270,6 @@ export function useEmbeddedEditor(
 			api!.unload(embedId)
 			attached = false
 		}
-		// the extension is destroyed when the editor is unmounted
-		editor.value?.commands.setHistoryRedirect(undefined, undefined)
 		content.value = null
 	}
 

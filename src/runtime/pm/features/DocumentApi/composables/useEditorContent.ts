@@ -3,7 +3,6 @@ import type { Transaction } from "@tiptap/pm/state"
 import { nextTick, onBeforeUnmount, type Ref, type ShallowRef, watch } from "vue"
 
 import type { DocumentApiInterface, OnUpdateDocumentCallback } from "../types.js"
-import { convertTrForInstance } from "../utils/convertTrForInstance.js"
 
 /**
 	* Provides two ways to load content into the editor.

@@ -18,6 +18,7 @@ import { Blockquote, Cite, type NodeBlockquoteName, type NodeCiteName } from "./
 import { Item, type NodeItemName } from "./features/Blocks/Item.js"
 import { List, type NodeListName } from "./features/Blocks/List.js"
 import { CodeBlock, type NodeCodeBlockName } from "./features/CodeBlock/CodeBlock.js"
+import { Collaboration } from "./features/Collaboration/Collaboration.js"
 import { CommandBar } from "./features/CommandsMenus/CommandBar.js"
 import { Document, type NodeDocumentName } from "./features/Document/Document.js"
 import { EmbeddedDocument, type NodeEmbeddedDocumentName } from "./features/EmbeddedDocument/EmbeddedDocument.js"
@@ -79,12 +80,13 @@ export const extensions: EditorOptions["extensions"] = [
 		Subscript,
 		Superscript,
 
-		Bold,
+		Bold
 		// embedding
 		// other
-		History
 	].map(e => stripShortcuts(e)),
-	Menus
+	Menus,
+	History,
+	Collaboration
 ]
 
 // mostly for the test builder, so we can have proper typing

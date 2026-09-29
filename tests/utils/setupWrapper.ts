@@ -8,8 +8,13 @@ import { nanoid } from "nanoid"
 import TestWrapper from "../../src/runtime/components/TestWrapper.vue"
 import { testExtensions } from "../../src/runtime/pm/testSchema.js"
 
-export async function setupWrapper(doc: Node | string, props?: any, loadDelay: number = 0) {
+export async function setupWrapper(
+	doc: Node | string,
+	props?: any & { ns?: string },
+	loadDelay: number = 0
+) {
 	const testId = nanoid(10)
+	const nsPrefix = props?.ns ? `${props.ns}.` : ""
 
 	const docs = { ...(props?.documents ?? {}) }
 	for (const id of keys(docs)) {
@@ -30,19 +35,26 @@ export async function setupWrapper(doc: Node | string, props?: any, loadDelay: n
 	const c = render(TestWrapper, {
 		props: {
 			testId,
+			ns: props?.ns,
 			docId: "root",
 			...props,
 			documents: {
-				...props?.documents,
+				...docs,
 				root
 			}
 		}
 	})
-	let editor = (window as any)?.[`editor-${testId}`]?.editor as Editor
+	const editor = await waitForEditor(`${nsPrefix}editor-${testId}`, loadDelay)
+	return { c, editor, testId }
+}
+
+// llm: why did you seperate this into a function. minimal changes needed only
+async function waitForEditor(globalKey: string, loadDelay: number): Promise<Editor> {
+	let editor = (window as any)?.[globalKey]?.editor as Editor
 	let editorReadyResolve: (val: Editor) => void
 	const promise = new Promise<Editor>(resolve => editorReadyResolve = resolve)
 	const interval = setInterval(() => {
-		editor = (window as any)?.[`editor-${testId}`]?.editor as Editor
+		editor = (window as any)?.[globalKey]?.editor as Editor
 		if (editor) {
 			clearInterval(interval)
 			editorReadyResolve(editor)
@@ -55,5 +67,6 @@ export async function setupWrapper(doc: Node | string, props?: any, loadDelay: n
 		}
 	}, 5000)
 	await delay(loadDelay)
-	return { c, editor: await promise }
+	return promise
 }
+

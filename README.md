@@ -41,6 +41,12 @@ It's also not designed to be serializable to markdown. There's just no way to do
 
 I've tried to keep the features as seperated and compatible as possible, but it requires a lot of custom functionality. It makes very little use of existing tiptap/prosemirror nodes/commands as they are often not compatible.
 
+### Collaboration (Experimental)
+
+Collaborative editing is supported via a heavily customized version of the tiptap collaboration extension. See [useTestDocumentApi.ts](src/runtime/pm/features/DocumentApi/composables/useTestDocumentApi.ts) for a working example of creating the per-doc bridge and wiring it into editors.
+
+This is experimental and untested against real network providers or concurrent users. Expect rough edges.
+
 # Installation
 
 The package makes use of my component's library [@witchcraft/ui](https://github.com/@witchcraft/ui) for components and theming (through my theming library [metamorphosis](https://github.com/alanscodelog/metamorphosis)). They use a custom set of tailwind colors for easier application theming (e.g. \*-accent) though you could alternatively configure the colors manually in the tailwind config and not use the library (see below).

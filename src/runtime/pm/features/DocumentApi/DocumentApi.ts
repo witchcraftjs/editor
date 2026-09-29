@@ -5,6 +5,7 @@ import { Editor } from "@tiptap/core"
 import type { Schema } from "@tiptap/pm/model"
 import type { EditorState, Plugin, Transaction } from "@tiptap/pm/state"
 import { isProxy } from "vue"
+import type * as Y from "yjs"
 
 import type { DocId, DocumentApiInterface, EmbedId, OnSaveDocumentCallback, OnUpdateDocumentCallback } from "./types.js"
 import { convertTransactionForFullState } from "./utils/convertTransactionForFullState.js"
@@ -40,7 +41,7 @@ import { getEmbedNodeFromDoc } from "./utils/getEmbedNodeFromDoc.js"
  *
  * When an editor **component** is mounted, useEditorContent will call the document api's `preEditorInit` to get a configuration for that component. This configuration can be edited in `preEditorInit` and is **per editor component**. It is disconnected from the **per document** configuration.
  *
- * There is no **per document** editor instance. This makes it tricky to work with extensions like Collaboration that expect this setup. They require some weird workarounds unfortunately.
+ * This all makes it tricky to work with collaboration (yjs) plugins that expect a per-editor setup, so we use custom plugins via {@link createCollaborationPlugins} ONLY **per doc** instead.
  *
  * See {@link useTestDocumentApi} for an example of how to set things up.
  */
@@ -53,7 +54,7 @@ export class DocumentApi<
 		saving: OnSaveDocumentCallback[]
 	} = { update: [], saved: [], saving: [] }
 
-	private readonly _load: (docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => Promise<{ state: EditorState, data?: T }>
+	private readonly _load: (docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => Promise<{ state: EditorState, yDoc?: Y.Doc, data?: T }>
 
 	private readonly _save?: (docId: string) => Promise<void>
 
@@ -74,7 +75,7 @@ export class DocumentApi<
 	 * Load is also passed the data property returned by the regular load function if it returns it.
 	 */
 	private readonly _refCounter: {
-		load: (docId: string, loaded: { state: EditorState, data?: T }) => void
+		load: (docId: string, loaded: { state: EditorState, yDoc?: Y.Doc, data?: T }) => void
 		unload: (docId: string) => void
 	}
 
@@ -116,7 +117,7 @@ export class DocumentApi<
 		getTitle?: (docId: string, blockId?: string) => string
 		getSuggestions: DocumentApiInterface["getSuggestions"]
 		/** Load should create the editor state and return it. It can also optionally return extra data which will be passed to the refCounter's load function. */
-		load: (docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => Promise<{ state: EditorState, data?: T }>
+		load: (docId: string, schema: Schema, plugins: Plugin[], getConnectedEditors: () => Editor[]) => Promise<{ state: EditorState, yDoc?: Y.Doc, data?: T }>
 		save?: DocumentApi["_save"]
 		saveDebounce?: number
 		cache: DocumentApi["_cache"]
@@ -215,9 +216,9 @@ export class DocumentApi<
 		this._refCounter.unload(docId)
 	}
 
-	private readonly _loading: Record<string, Promise<{ state: EditorState, data?: T }> | undefined> = {}
+	private readonly _loading: Record<string, Promise<{ state: EditorState, yDoc?: Y.Doc, data?: T }> | undefined> = {}
 
-	async load({ docId }: DocId): Promise<{ state: EditorState, data?: T }> {
+	async load({ docId }: DocId): Promise<{ state: EditorState, yDoc?: Y.Doc, data?: T }> {
 		// prevent double loading of the same document
 		// this also prevents issues from non-determenistic plugin stateInit functions
 		this._loading[docId] ??= this._loadInternal({ docId })
@@ -233,7 +234,7 @@ export class DocumentApi<
 		return res
 	}
 
-	private async _loadInternal({ docId }: DocId): Promise<{ state: EditorState, data?: T }> {
+	private async _loadInternal({ docId }: DocId): Promise<{ state: EditorState, yDoc?: Y.Doc, data?: T }> {
 		const cachedState = this.getFromCache({ docId }, { errorIfNotFound: false })
 		if (isProxy(cachedState)) {
 			throw new Error("State cannot be a reactive proxy. You can use toRaw as a temporary workaround but you should ideally not make it reactive")
@@ -262,7 +263,7 @@ export class DocumentApi<
 		}
 
 		state = state.apply(tr)
-		return { data: loaded.data, state }
+		return { data: loaded.data, yDoc: loaded.yDoc, state }
 	}
 
 	getFullState(docId: DocId): EditorState {

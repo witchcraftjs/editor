@@ -6,13 +6,13 @@ import { createDocument, generateJSON } from "@tiptap/core"
 import type { Schema } from "@tiptap/pm/model"
 import type { Plugin } from "@tiptap/pm/state"
 import { EditorState } from "@tiptap/pm/state"
-import { prosemirrorToYDoc } from "@tiptap/y-tiptap"
+import { initProseMirrorDoc, prosemirrorToYDoc } from "@tiptap/y-tiptap"
 import { type Ref, ref, toRaw } from "vue"
 import type * as Y from "yjs"
 
 import { testExtensions } from "../../../testSchema.js"
-import { Collaboration } from "../../Collaboration/Collaboration.js"
 import { createCollaborationPlugins } from "../../Collaboration/createCollaborationPlugins.js"
+import { ySyncPluginKey } from "../../Collaboration/ySyncPlugin.js"
 import { DocumentApi } from "../DocumentApi.js"
 import type { DocumentApiInterface } from "../types.js"
 
@@ -24,17 +24,20 @@ export function useTestDocumentApi(
 	embeds: Record<string, { content: any, title?: string }>,
 	{
 		useCollab = false,
-		loadDelay = 0
+		loadDelay = 0,
+		cache: providedCache
 	}: {
 		useCollab?: boolean
 		loadDelay?: number
+		/** Share this cache between multiple document apis (e.g. two views of the same doc). DO NOT pass the same instance when simulating multiple peers. */
+		cache?: Ref<Cache>
 	} = {}
 ): {
 	cache: Ref<Cache>
 	documentApi: DocumentApiInterface
 	embeds: Record<string, { content: any, title?: string }>
 } {
-	const cache = ref<Cache>({})
+	const cache = providedCache ?? ref<Cache>({})
 
 	const documentApi = new DocumentApi({
 		editorOptions,
@@ -68,20 +71,21 @@ export function useTestDocumentApi(
 			if (!cache.value[docId].state) unreachable()
 
 			options.content = cache.value[docId].state.doc.toJSON()
-			options.extensions = [
-				...(options.extensions ?? []),
-				...(useCollab
-					? [Collaboration]
-					: [])
-			]
 			return options
+		},
+		postEditorInit(docId, editor) {
+			editor.commands.setCollabContext?.(documentApi, docId)
+			const bridge = ySyncPluginKey.getState(cache.value[docId].state!)?.bridge
+			if (bridge) {
+				editor.commands.setCollabBridge?.(bridge)
+			}
 		},
 		load: async (
 			docId: string,
 			schema: Schema,
 			plugins: Plugin[],
 			getConnectedEditors: () => Editor[]
-		): Promise<{ state: EditorState, data?: { yDoc?: Y.Doc } }> => {
+		): Promise<{ state: EditorState, yDoc?: Y.Doc }> => {
 			if (loadDelay) {
 				await delay(loadDelay)
 			}
@@ -91,38 +95,44 @@ export function useTestDocumentApi(
 			}
 
 			if (cache.value[docId]?.state) {
-				return { state: toRaw(cache.value[docId].state) as any, data: { yDoc: cache.value[docId].yDoc } }
+				return { state: toRaw(cache.value[docId].state) as any, yDoc: cache.value[docId].yDoc }
 			}
 
-			const json = generateJSON(embeds[docId].content as any, testExtensions)
-			const doc = createDocument(json, schema)
-			const yDoc = useCollab ? prosemirrorToYDoc(doc, "prosemirror") : undefined
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			const existingYDoc = cache.value[docId]?.yDoc
+			const doc = existingYDoc
+				? initProseMirrorDoc(existingYDoc.getXmlFragment("prosemirror"), schema as never).doc
+				: createDocument(generateJSON(embeds[docId].content as any, testExtensions), schema)
+			const yDoc = useCollab ? (existingYDoc ?? prosemirrorToYDoc(doc, "prosemirror")) : undefined
+
 
 			const state = EditorState.create({
 				doc,
 				schema,
 				plugins: [
 					...plugins,
-					...(useCollab
-						? createCollaborationPlugins(
-								{
-									document: yDoc,
-									field: "prosemirror",
-									enableContentCheck: true
-								},
+					...(yDoc
+						? createCollaborationPlugins({
+								yDoc,
+								documentApi,
+								docId,
 								schema,
-								getConnectedEditors
-							)
+								enableContentCheck: true,
+								getConnectedEditors,
+								onContentError: (error: Error) => {
+									alert("[collab] invalid content\n" + error)
+									return undefined
+								}
+							})
 						: [])
 				]
 			})
 
-			return { state, data: { yDoc } } as any
+			return { state, yDoc }
 		},
 		refCounter: {
 			load(docId: string, loaded) {
-				// loaded.data can be accessed here if we need it
-				cache.value[docId] ??= { ...loaded, yDoc: loaded.data!.yDoc, count: 0 }
+				cache.value[docId] ??= { state: loaded.state, yDoc: loaded.yDoc, count: 0 }
 				cache.value[docId].count++
 			},
 			unload: (docId: string) => {

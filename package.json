@@ -161,6 +161,7 @@
 		"tailwind-merge": "catalog:",
 		"unplugin-vue-components": "catalog:",
 		"uuid": "catalog:",
+		"y-protocols": "catalog:",
 		"yjs": "catalog:"
 	},
 	"devDependencies": {

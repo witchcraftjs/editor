@@ -1,6 +1,7 @@
 import type { Content, Editor, EditorOptions } from "@tiptap/core"
 import type { EditorState, Transaction } from "@tiptap/pm/state"
 import type { InjectionKey } from "vue"
+import type * as Y from "yjs"
 
 export const documentApiInjectionKey = Symbol.for("@witchcraft/editor:documentApiInjectionKey") as InjectionKey<DocumentApiInterface>
 
@@ -34,17 +35,19 @@ export type DocumentApiInterface<
 	/** Load should be called the first time, before attempting to load the state. */
 	getFullState: (docId: DocId) => EditorState
 	/**
-	 * For replacing {@link DocumentApi.preEditorInit} which runs after initializing and loading the document but before the transaction listeners are added.
+	 * Like {@link DocumentApi.preEditorInit}, but runs after the editor is initialized and the document loaded (and before the transaction listeners are added).
 	 *
-	 * Can be used to add the Collaboration extension for example (see useTestDocumentApi for an example).
+	 * Can be used to modify / add extensions only for the editor instance.
+	 *
+	 * For example, for collaboration you must call `editor.commands.setCollabContext/Bridge` here so everything works properly. See {@link useTestDocumentApi} for an example.
 	 *
 	 * The default implementation just sets the content:
 	 *
 	 * ```ts
 	 * preEditorInit: (_docId, options, state) => {
-	 *		options.content = state.doc.toJSON()
-	 *		return options
-	 *	}
+	 * 	options.content = state.doc.toJSON()
+	 * 	return options
+	 * }
 	 * ```
 	 *
 	 */
@@ -59,7 +62,7 @@ export type DocumentApiInterface<
 	 *
 	 * So this hook can be used to add these additional per-editor instances of extensions. Be sure to clone the properties you are modifying. They are only shallow cloned before being passed to the function.
 	 *
-	 * If you need **per doc** plugins use `load` instead. See {@link useTestDocumentApi} for an example.
+	 * If you need **per doc** plugins use `load` instead. See {@link useTestDocumentApi} for an example. If you need **per editor** configuration use `postEditorInit` witha custom command (see {@link History} and {@link Collaboration} for examples).
 	 *
 	 * ```ts
 	 * preEditorInit(docId, options: Partial<EditorOptions>, state: EditorState) {
@@ -110,12 +113,12 @@ export type DocumentApiInterface<
 	 * 		plugins
 	 * 	})
 	 * 	// return the state and any additional data we want to cache
-	 * 	return { state, data: { dbDoc } }
-	 * },
-	 * ```
+	 * 	return { state, yDoc, data: { dbDoc } }
+	 * 	},
+	 * 	```
 	 * See {@link DocumentApi.preEditorInit} for how to set this up with sync (e.g. yjs).
 	 */
-	load: (docId: DocId) => Promise<{ state: EditorState, data?: T }>
+	load: (docId: DocId) => Promise<{ state: EditorState, yDoc?: Y.Doc, data?: T }>
 	/** Notifies the document api that an editor has unloaded the document. */
 	unload: (docId: DocId) => void
 }

@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import type { Editor as TipTapEditor, EditorOptions } from "@tiptap/core"
 import WRoot from "@witchcraft/ui/components/WRoot"
-import { ref, watchEffect } from "vue"
+import { onBeforeUnmount, ref, watchEffect } from "vue"
 
 import Editor from "./Editor.vue"
 
@@ -34,6 +34,13 @@ const props = defineProps<{
 	documents: Record<string, { title: string, content: string }>
 	docId: string
 	loadDelay?: number
+	useCollab?: boolean
+	/** If provided, this document api is used instead of creating a new one. Used to test multiple editors sharing the same document. */
+	documentApi?: any
+	/** Share this cache between multiple wrappers (e.g. two peers of the same doc). When an entry already has a yDoc, it is reused instead of creating one from content. */
+	cache?: any
+	/** Namespace prefix for the window globals (editor-/documentApi-/cache- keys) so multiple wrappers can't collide. */
+	ns?: string
 }>()
 
 const editorOptions: Partial<EditorOptions> = {
@@ -49,12 +56,13 @@ const editorOptions: Partial<EditorOptions> = {
 		keymap: false
 	}
 }
-const { documentApi } = useTestDocumentApi(
+const { documentApi: createdDocumentApi, cache: createdCache } = useTestDocumentApi(
 	editorOptions as any,
 	props.documents,
-	{ loadDelay: props.loadDelay }
+	{ loadDelay: props.loadDelay, useCollab: props.useCollab, cache: props.cache }
 
 )
+const documentApi = props.documentApi ?? createdDocumentApi
 
 const linkOptions: EditorLinkOptions = {
 	openInternal: () => {
@@ -64,11 +72,25 @@ const linkOptions: EditorLinkOptions = {
 }
 const editor = ref<TipTapEditor | null>(null)
 
+// window global keys, optionally namespaced so multiple wrappers can't collide
+const nsPrefix = props.ns ? `${props.ns}.` : ""
+
 watchEffect(() => {
 	if (editor.value) {
 		// todo declare global
-		;(window as any)[`editor-${props.testId}`] = editor.value
+		;(window as any)[`${nsPrefix}editor-${props.testId}`] = editor.value
 	}
+})
+
+// expose the document api and cache so tests can share them between wrappers
+;(window as any)[`${nsPrefix}documentApi-${props.testId}`] = documentApi
+;(window as any)[`${nsPrefix}cache-${props.testId}`] = createdCache
+
+// clean up the window globals on unmount so stale references from a previous test don't leak into the next one
+onBeforeUnmount(() => {
+	delete (window as any)[`${nsPrefix}editor-${props.testId}`]
+	delete (window as any)[`${nsPrefix}documentApi-${props.testId}`]
+	delete (window as any)[`${nsPrefix}cache-${props.testId}`]
 })
 </script>
 
