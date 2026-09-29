@@ -36,11 +36,8 @@ export function useEditorContent(
 			&& embedId.docId === id.value
 		) {
 			tr.setMeta("ignore", true)
-			const convertedTr = convertTrForInstance(
-				tr,
-				editor.value!.state
-			)
-			editor.value?.view.dispatch(convertedTr)
+
+			editor.value!.commands.convertTrForInstanceAndDispatch(tr)
 		}
 		if (tr.docChanged) {
 			void documentApi?.save(embedId.docId)

@@ -1,5 +1,6 @@
 import { Extension } from "@tiptap/core"
 
+import { convertTrForInstanceAndDispatch } from "./commands/convertTrForInstanceAndDispatch.js"
 import { deleteNodes } from "./commands/deleteNodes.js"
 import { setCursorVisible } from "./commands/setCursorVisible.js"
 import { debugSelectionPlugin } from "./plugins/debugSelectionPlugin.js"
@@ -33,7 +34,8 @@ export const Base = Extension.create<BaseExtensionOptions>({
 			insertBreak: insertBreak("codeBlock"),
 			backspace: backspace(),
 			changeAttrs: changeAttrs(),
-			setCursorVisible: setCursorVisible()
+			setCursorVisible: setCursorVisible(),
+			convertTrForInstanceAndDispatch: convertTrForInstanceAndDispatch()
 		}
 	}
 })
