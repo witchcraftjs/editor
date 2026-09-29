@@ -267,6 +267,9 @@ catalogs:
     vue-tsc:
       specifier: ^3.1.5
       version: 3.3.7
+    y-protocols:
+      specifier: ^1.0.5
+      version: 1.0.7
     yjs:
       specifier: ^13.6.27
       version: 13.6.31
@@ -434,6 +437,9 @@ importers:
       uuid:
         specifier: 'catalog:'
         version: 13.0.2
+      y-protocols:
+        specifier: 'catalog:'
+        version: 1.0.7(yjs@13.6.31)
       yjs:
         specifier: 'catalog:'
         version: 13.6.31
@@ -18574,4 +18580,5 @@ time:
   vue-component-type-helpers@3.3.8: '2026-07-22T15:54:20.083Z'
   vue-tsc@3.3.7: '2026-07-08T03:44:57.611Z'
   vue@3.5.40: '2026-07-16T03:08:36.848Z'
+  y-protocols@1.0.7: '2025-12-16T20:31:36.997Z'
   yjs@13.6.31: '2026-05-28T16:32:20.157Z'
