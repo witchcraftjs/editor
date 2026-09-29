@@ -1,5 +1,8 @@
 <template>
-<WRoot :test-wrapper-mode="true">
+<WRoot
+	:test-wrapper-mode="true"
+	:use-notifications="false"
+>
 	<Editor
 		:data-testid="`test-editor-${testId}`"
 		ref="editor"
