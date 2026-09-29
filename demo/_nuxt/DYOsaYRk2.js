@@ -1,0 +1,1 @@
+import e from"./DkTKhn5C2.js";function t(){t.warned||(t.warned=!0,console.log(`Deprecation (warning): Using file extension in specifier is deprecated, use "highlight.js/lib/languages/matlab" instead of "highlight.js/lib/languages/matlab.js"`))}t();var n=e;export{n as default};
