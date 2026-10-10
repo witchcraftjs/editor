@@ -105,5 +105,41 @@ export default defineNuxtModule<ModuleOptions>({
 			// idk why we also need to do this or it won't work from a real app
 			config.optimizeDeps.include.push("@witchcraft/editor > highlight.js/lib/core")
 		})
+		// idk why i need the cast ???
+		nuxt.hook("nitro:config" as any, (nitroConfig: any) => {
+			nitroConfig.rollupConfig ??= {}
+			nitroConfig.rollupConfig.plugins ??= []
+			;(nitroConfig.rollupConfig.plugins as any[]).push(
+				// if the schema is imported server side it breaks everything
+				// while adding vue() as a nitro plugin can fix some of it
+				// it doesn't fix things like the icon imports and ?url vite imports
+				// so we stub them all out (just externalizing does not fix the issue)
+				{
+					name: "witchcraft-editor-vite-compat",
+					resolveId(id: string) {
+						// stub ~icons/* - unplugin-icons virtual modules
+						if (id.startsWith("~icons/")) {
+							return `\0witchcraft-stub:${id}`
+						}
+
+						if (id.includes("@witchcraft/editor")) {
+							if (id.endsWith(".vue")) return `\0witchcraft-stub:${id}`
+							const [cleanId, query] = id.split("?")
+							if (query === "url" && cleanId.match(/\.(svg|png|webp)$/)) {
+								return `\0witchcraft-stub-url:${cleanId}`
+							}
+						}
+						return
+					},
+					load(id: string) {
+						if (id.startsWith("\0witchcraft-stub:")) return `export default {}`
+						if (id.startsWith("\0witchcraft-stub-url:")) {
+							return `export default ${JSON.stringify(id.slice("\0witchcraft-stub-url:".length))}`
+						}
+						return
+					}
+				}
+			)
+		})
 	}
 })

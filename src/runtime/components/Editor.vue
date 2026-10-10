@@ -298,7 +298,7 @@ img.ProseMirror-separator {
   position:relative;
 }
 ul > .ProseMirror-gapcursor {
-	@apply pl-[calc(var(--dragHandleSize)+var(--dragHandleMargin)+var(--spacing-1))];
+	padding-left: calc(var(--dragHandleSize) + var(--dragHandleMargin) + var(--spacing-1));
 }
 
 .ProseMirror-gapcursor:after {
