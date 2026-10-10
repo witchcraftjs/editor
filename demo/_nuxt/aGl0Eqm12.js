@@ -1,0 +1,1 @@
+import e from"./C_mGJ3Jy2.js";function t(){t.warned||(t.warned=!0,console.log(`Deprecation (warning): Using file extension in specifier is deprecated, use "highlight.js/lib/languages/livecodeserver" instead of "highlight.js/lib/languages/livecodeserver.js"`))}t();var n=e;export{n as default};

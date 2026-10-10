@@ -1,0 +1,1 @@
+import{tt as e,vn as t}from"./CoKk4mC0.js";function n(n){let r=t(!1);function i(){r.value=!0}function a(t){e(()=>{r.value=!1,n?.(t)})}return{isComposing:r,handleCompositionStart:i,handleCompositionEnd:a}}export{n as t};

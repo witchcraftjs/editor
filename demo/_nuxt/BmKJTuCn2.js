@@ -1,0 +1,1 @@
+import{i as e}from"./DsBY16Hh.js";function t(e){return e==null}var[n,r]=e(`ConfigProvider`);export{t as n,n as t};
